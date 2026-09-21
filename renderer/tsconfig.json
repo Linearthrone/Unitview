@@ -32,7 +32,8 @@
     "src/types/**/*"
   ],
   "exclude": [
-    "src/lib/vault-init.test.ts"
+    "src/lib/vault-init.test.ts",
+    "src/lib/wallpaper-snapshot.test.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

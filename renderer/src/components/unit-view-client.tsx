@@ -363,43 +363,6 @@ export default function UnitViewClient({
     });
   }, [wallpaperActive, currentUser?.employeeNumber, currentLayoutName, toast]);
 
-  // Electron API integration
-  useEffect(() => {
-    if (window.electronAPI) {
-      const handleMenuAction = (action: string) => {
-        switch (action) {
-          case 'new-layout':
-            setIsCreateUnitDialogOpen(true);
-            break;
-          case 'open-layout':
-            // Trigger layout switcher
-            break;
-          case 'save-layout':
-            setIsSaveDialogOpen(true);
-            break;
-          case 'import-data':
-            handleImportData();
-            break;
-          case 'export-data':
-            handleExportData();
-            break;
-          case 'print-report':
-            handlePrintReport();
-            break;
-          case 'wallpaper-toggle':
-            void handleToggleWallpaper();
-            break;
-        }
-      };
-
-      const unsubscribe = window.electronAPI.onMenuAction(handleMenuAction);
-
-      return () => {
-        unsubscribe();
-      };
-    }
-  }, [handleExportData, handleImportData, handlePrintReport, handleToggleWallpaper]);
-
   useEffect(() => {
     if (!wallpaperActive) {
       return;
@@ -529,6 +492,9 @@ export default function UnitViewClient({
         case 'print-report':
           handlePrintReport();
           break;
+        case 'wallpaper-toggle':
+          void handleToggleWallpaper();
+          break;
         default:
           break;
       }
@@ -538,7 +504,7 @@ export default function UnitViewClient({
     return () => {
       unsubscribe();
     };
-  }, [handleExportData, handleImportData, handlePrintReport]);
+  }, [handleExportData, handleImportData, handlePrintReport, handleToggleWallpaper]);
 
   // Set current year on mount
   useEffect(() => {
