@@ -19,7 +19,7 @@
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
     "postinstall": "cd renderer && npm install",
-    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts",
+    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts renderer/src/lib/safety-marks.test.ts",
     "test:fresh": "git pull && npm install && cd renderer && npm install && cd .. && npm run build && npm run electron"
   },
   "keywords": [
