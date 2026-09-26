@@ -2,7 +2,7 @@
 
 **Status:** MERGED  
 **PR:** https://github.com/Linearthrone/Unitview_5.1.5c/pull/2  
-**Merge:** `11754bf` on `master` (2026-09-06, Kurt / Linearthrone)
+**Merge:** `11754bf` on `master` (2026-09-06, LinearThrone / Linearthrone)
 
 ## Lock (unchanged)
 

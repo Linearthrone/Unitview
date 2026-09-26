@@ -1,12 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\kurtw\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\",
+  "WorkspaceRootPath": "%USERPROFILE%\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\",
   "Documents": [
     {
       "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|UnitviewDB||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{12682561-A8F9-4589-97EB-9027BE5A11DE}|UnitviewDB.sqlproj|C:\\Users\\kurtw\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|00106176-fa71-458f-a7ba-edf89df82ad3",
+      "AbsoluteMoniker": "D:0:0:{12682561-A8F9-4589-97EB-9027BE5A11DE}|UnitviewDB.sqlproj|%USERPROFILE%\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|00106176-fa71-458f-a7ba-edf89df82ad3",
       "RelativeMoniker": "D:0:0:{12682561-A8F9-4589-97EB-9027BE5A11DE}|UnitviewDB.sqlproj|solutionrelative:UnitviewDB.sqlproj||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|00106176-fa71-458f-a7ba-edf89df82ad3"
     }
   ],
@@ -35,9 +35,9 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "UnitviewDB",
-              "DocumentMoniker": "C:\\Users\\kurtw\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj",
+              "DocumentMoniker": "%USERPROFILE%\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj",
               "RelativeDocumentMoniker": "UnitviewDB.sqlproj",
-              "ToolTip": "C:\\Users\\kurtw\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj",
+              "ToolTip": "%USERPROFILE%\\Downloads\\_workspace_unitview-v5.05\\DB\\UnitviewDB\\UnitviewDB.sqlproj",
               "RelativeToolTip": "UnitviewDB.sqlproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-11-19T03:57:34.361Z",

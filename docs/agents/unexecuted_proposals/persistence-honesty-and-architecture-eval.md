@@ -17,7 +17,7 @@ source_ticket: docs/agents/tasks/TASK-20260905-001-PM01-to-TT01.md
 
 ## 1. Need / Want
 
-Kurt sent a full architecture review. The thinktank must turn it into **one executable first path**, not a wipeout of every Better-if.
+LinearThrone sent a full architecture review. The thinktank must turn it into **one executable first path**, not a wipeout of every Better-if.
 
 Charge nurses need the unit map, assignments, prints, and shift board to keep working. The live store must stop looking like an empty unit when the vault fails, and must stop fire-and-forget whole-document writes that can lose or overwrite PHI.
 
@@ -30,7 +30,7 @@ Charge nurses need the unit map, assignments, prints, and shift board to keep wo
 - Good-to-Great stays invariant: `sandbox` / `contextIsolation` / `nodeIntegration: false`; Epic PEM in main; domain services; FHIR mapper tests; audit/crypto modules.
 - Explicitly **out of scope for PROP-1:** main-process SQLite, `UnitViewClient` split, FHIR batch rewrite, merging leftover `src/*.tsx` over live `components/`, `ui/` primitive merge, Vercel.
 
-Kurt-facing success: the board does not flash-empty or silently “save” a ghost unit.
+LinearThrone-facing success: the board does not flash-empty or silently “save” a ghost unit.
 
 ## 3. Context & Constraints
 
@@ -48,17 +48,17 @@ Thinktank seats: STRAT, CONTRA, SYS, RISK, USER (2026-09-05). Claims verified ag
 | Review claim that live client imports excluded root files | **False** — imports are `components/` siblings |
 | Hard reload after save-as / unit switch / import | `window.location.href = '/'` |
 | HIPAA SoT already describes the vault | `docs/HIPAA_AND_EPIC_FHIR.md` |
-| Renderer still holds the full decrypted working set | accepted for this product unless Kurt hard-rules otherwise |
+| Renderer still holds the full decrypted working set | accepted for this product unless LinearThrone hard-rules otherwise |
 
 ## 4. Clarifying Q&A (answered)
 
 | Q | Locked default (TT synthesis) | Revisit if |
 | --- | --- | --- |
-| First engine | **Keep vault**; serialize + fail-closed | Kurt mandates SQLite this program |
-| Load failure | **Fail closed** — block UI, keep ciphertext | Kurt prefers board-always-opens |
+| First engine | **Keep vault**; serialize + fail-closed | LinearThrone mandates SQLite this program |
+| Load failure | **Fail closed** — block UI, keep ciphertext | LinearThrone prefers board-always-opens |
 | Seed vacant rooms | First-run only, never `catch` / empty-read | — |
 | SQLite in wave 1 | **No** | Q1 below is Yes |
-| Split `UnitViewClient` in wave 1 | **No** | After persist honesty + Kurt approve |
+| Split `UnitViewClient` in wave 1 | **No** | After persist honesty + LinearThrone approve |
 | FHIR N+1 in wave 1 | **No** unless floor already rate-limited | Q2 |
 
 ## 5. Avenues Explored
@@ -86,7 +86,7 @@ Write queue + fail-loud + README. No fossil purge.
 
 ## 6. Recommended Route
 
-**Avenue A (PROP-1).** Do not start Avenue B until Kurt answers Q1 and PROP-1 persist tests exist.
+**Avenue A (PROP-1).** Do not start Avenue B until LinearThrone answers Q1 and PROP-1 persist tests exist.
 
 Protect G2G. Do not rewrite storage and decompose UI in the same wave.
 
@@ -116,7 +116,7 @@ Protect G2G. Do not rewrite storage and decompose UI in the same wave.
 
 ## 9. Open Questions for User / PM
 
-**Locked 2026-09-05 (Kurt):**
+**Locked 2026-09-05 (LinearThrone):**
 
 1. **Destination store:** Encrypted vault stays 5.x SoT. No SQLite this program.
 2. **Live Epic:** Still sandbox fixtures. FHIR N+1 stays parked.
@@ -127,7 +127,7 @@ Protect G2G. Do not rewrite storage and decompose UI in the same wave.
 ## 10. Suggested PM Handoff
 
 - `prop_id`: **PROP-1-persistence-honesty**
-- Suggested splits (TINA may re-divide; **do not ticket until Kurt approves**):
+- Suggested splits (TINA may re-divide; **do not ticket until LinearThrone approves**):
 
 | Split | Role | One-line |
 | --- | --- | --- |
@@ -141,4 +141,4 @@ Protect G2G. Do not rewrite storage and decompose UI in the same wave.
 
 Optional later (not this PROP): quarantine `database-auth.ts`, `App-auth.tsx`, excluded root twins, debug/backup files — **delete-only**.
 
-What PM should decide first after Kurt approval: accept Avenue A; hold Avenue B; issue 1.1→1.2 sequential (same files), then 1.3+1.4 parallel if paths stay disjoint, then 1.5, then QA→SLOP.
+What PM should decide first after LinearThrone approval: accept Avenue A; hold Avenue B; issue 1.1→1.2 sequential (same files), then 1.3+1.4 parallel if paths stay disjoint, then 1.5, then QA→SLOP.

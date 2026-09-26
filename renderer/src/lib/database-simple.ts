@@ -9,6 +9,7 @@ import type { FacilityProfile } from '../types/facility';
 import { defaultFacilityProfile } from '../types/facility';
 import { getConfiguredDataSource } from './data-source';
 import { STORE_UNAVAILABLE_MESSAGE, decideVaultInit } from './vault-init';
+import { applyAppTheme, normalizeAppTheme, type AppTheme } from './app-theme';
 
 export class StoreUnavailableError extends Error {
   constructor(message = STORE_UNAVAILABLE_MESSAGE) {
@@ -39,7 +40,7 @@ interface DatabaseSchema {
   passwords: { [employeeNumber: string]: string };
   unit_settings: UnitSettings[];
   facility_profile: FacilityProfile;
-  global_theme: 'light' | 'dark' | 'blue' | 'green' | 'purple';
+  global_theme: 'light' | 'dark';
   action_history: any[];
   history_index: number;
 }
@@ -133,6 +134,7 @@ export class SimpleDatabase {
     if (!this.data.unit_settings) this.data.unit_settings = [];
     if (!this.data.facility_profile) this.data.facility_profile = { ...defaultFacilityProfile };
     if (!this.data.global_theme) this.data.global_theme = 'light';
+    this.data.global_theme = normalizeAppTheme(this.data.global_theme);
     if (!this.data.action_history) this.data.action_history = [];
     if (!this.data.history_index) this.data.history_index = -1;
     if (!this.data.nurses_oncoming) this.data.nurses_oncoming = [];
@@ -240,27 +242,19 @@ export class SimpleDatabase {
   }
 
   // Global Theme Management
-  getGlobalTheme(): 'light' | 'dark' | 'blue' | 'green' | 'purple' {
-    return this.data.global_theme || 'light';
+  getGlobalTheme(): AppTheme {
+    return normalizeAppTheme(this.data.global_theme);
   }
 
-  setGlobalTheme(theme: 'light' | 'dark' | 'blue' | 'green' | 'purple'): void {
-    this.data.global_theme = theme;
+  setGlobalTheme(theme: string): void {
+    const next = normalizeAppTheme(theme);
+    this.data.global_theme = next;
     this.saveToLocalStorage();
-    this.applyTheme(theme);
+    this.applyTheme(next);
   }
 
   private applyTheme(theme: string): void {
-    const root = document.documentElement;
-    
-    // Remove all theme classes
-    root.classList.remove('theme-light', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple');
-    
-    // Apply new theme
-    root.classList.add(`theme-${theme}`);
-    
-    // Store theme preference
-    localStorage.setItem('unitview_theme', theme);
+    applyAppTheme(normalizeAppTheme(theme));
   }
 
   // Undo/Redo History Management

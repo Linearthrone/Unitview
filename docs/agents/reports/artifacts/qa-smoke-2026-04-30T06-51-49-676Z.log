@@ -1,5 +1,5 @@
 timestamp: 2026-04-30T06:51:57.773Z
-cwd: C:\Users\kurtw\StudioProjects\UnitView\Unitview_5.1.5c\renderer
+cwd: %USERPROFILE%\StudioProjects\UnitView\Unitview_5.1.5c\renderer
 exit_code: 1
 
 
@@ -35,7 +35,7 @@ Running 1 test using 1 worker
       18 |
       19 |   await page.getByRole('button', { name: 'Oncoming shift board' }).click();
       20 |   await expect(page.getByText('Oncoming Shift Blackboard')).toBeVisible();
-        at C:\Users\kurtw\StudioProjects\UnitView\Unitview_5.1.5c\renderer\smoke\qa-smoke.spec.ts:17:49
+        at %USERPROFILE%\StudioProjects\UnitView\Unitview_5.1.5c\renderer\smoke\qa-smoke.spec.ts:17:49
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\qa-smoke-QA-smoke-startup--d8fee-hboard-menu-and-drag-signal\test-failed-1.png

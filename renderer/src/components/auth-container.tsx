@@ -120,8 +120,12 @@ export default function AuthContainer({ storeUnavailable = false }: { storeUnava
     setSessionWarning(false);
   };
 
+  const wallSession =
+    authState.user != null &&
+    getRoleCapabilities(authState.user.role, authState.user.appRole).isWallDisplay;
+
   useSessionTimeout(
-    authState.isAuthenticated,
+    authState.isAuthenticated && !wallSession,
     () => {
       setSessionWarning(true);
       toast({

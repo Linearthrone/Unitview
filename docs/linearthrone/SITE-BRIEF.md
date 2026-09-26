@@ -6,7 +6,7 @@
 | **Version** | 5.2.0-c companion marketing site |
 | **Owner** | PM-01 |
 | **Primary product focus** | UnitView |
-| **Contact** | kurt.wood@linearthrone.com |
+| **Contact** | LinearThrone contact (linearthrone.com) |
 
 ## Brand
 
@@ -50,7 +50,7 @@ Future-tech, precise, hospital-grounded. Visionary without vaporware. UnitView p
 ## Media assets (DEV / content)
 
 > **Repo note:** The marketing site was split out of UnitView into  
-> `C:\Users\kurtw\OneDrive\Documents\Coding Projects\linearthrone.com_codebase`  
+> `%USERPROFILE%\OneDrive\Documents\Coding Projects\linearthrone.com_codebase`  
 > (see `website/README.md` in this repo). Place media under that project's `public/media/unitview/`.
 
 - Screenshots: board overview, census panel, nurse assignments, print preview.

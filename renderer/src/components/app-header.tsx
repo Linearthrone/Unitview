@@ -57,7 +57,7 @@ interface AppHeaderProps {
   onAcknowledgeNameAlerts?: () => void;
   /** When false, admit/staff/oncoming and admin tools are hidden. */
   canEdit?: boolean;
-  onPrint: (reportType: 'charge' | 'assignments') => void;
+  onPrint?: (reportType: 'charge' | 'assignments') => void;
   onConfigureAssignmentPrint?: () => void;
 }
 
@@ -151,6 +151,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             {/* Time, navigation, and census */}
             <div className="flex flex-col items-end gap-2 ml-auto shrink-0">
               <div className="flex items-center gap-2 flex-wrap justify-end">
+                {onPrint && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="shrink-0">
@@ -175,6 +176,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                )}
                 <div className="text-right shrink-0 tabular-nums">
                   <div className="font-semibold text-lg leading-none">
                     {currentTime

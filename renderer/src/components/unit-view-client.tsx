@@ -215,6 +215,9 @@ export default function UnitViewClient({
   }, [currentLayoutName]);
 
   const handlePrint = useCallback(async (reportType: 'charge' | 'assignments') => {
+    if (roleCaps.isWallDisplay) {
+      return;
+    }
     const printTarget =
       reportType === 'charge' ? 'printable-charge-report' : 'printable-assignments-report';
     const title = reportType === 'charge' ? 'Charge Report' : 'Shift Assignments';
@@ -226,7 +229,7 @@ export default function UnitViewClient({
         description: result.error ?? 'Unable to open the print dialog.',
       });
     }
-  }, [toast]);
+  }, [toast, roleCaps.isWallDisplay]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1609,8 +1612,8 @@ export default function UnitViewClient({
         nameAlertGroups={roleCaps.canSeePatientIdentifiers ? nameAlertGroups : []}
         onAcknowledgeNameAlerts={handleAcknowledgeNameAlerts}
         canEdit={!roleCaps.isReadOnly}
-        onPrint={(type) => void handlePrint(type)}
-        onConfigureAssignmentPrint={() => setIsPrintLayoutDialogOpen(true)}
+        onPrint={roleCaps.isWallDisplay ? undefined : (type) => void handlePrint(type)}
+        onConfigureAssignmentPrint={roleCaps.isWallDisplay ? undefined : () => setIsPrintLayoutDialogOpen(true)}
       />
       <main className="flex-grow flex overflow-hidden print-hide relative pb-16">
         <div className="flex-grow flex flex-col min-w-0 overflow-hidden">

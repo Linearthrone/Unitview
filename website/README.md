@@ -4,12 +4,12 @@ The LinearThrone.com marketing site no longer lives in this UnitView repo.
 
 **New location:**
 
-`C:\Users\kurtw\OneDrive\Documents\Coding Projects\linearthrone.com_codebase`
+`%USERPROFILE%\OneDrive\Documents\Coding Projects\linearthrone.com_codebase`
 
 That project is a standalone Vite + React site. Develop and deploy from there:
 
 ```bash
-cd "C:\Users\kurtw\OneDrive\Documents\Coding Projects\linearthrone.com_codebase"
+cd "%USERPROFILE%\OneDrive\Documents\Coding Projects\linearthrone.com_codebase"
 npm install
 npm run dev
 ```

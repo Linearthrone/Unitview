@@ -48,7 +48,9 @@ You have these subordinates, with tasks relayed through tickets (and role subage
 | **TT-01** | Thinktank Facilitator | Ideas + stuck-ticket eval — proposals only |
 | DEV-01 | *(legacy)* | Existing `to-DEV01` tickets remain valid until archived. **Do not open new DEV-01 tickets** — split to FED/BED/DBD/SEC |
 
-SoulCore-only seats (**REX-01**, **VBOX-01**, **OPS-HOME**, **OPS-TAB**) are imported for Kurt’s shared machines. Do not ticket them for UnitView product work.
+SoulCore-only seats (**REX-01**, **VBOX-01**, **OPS-HOME**, **OPS-TAB**) are imported for LinearThrone's shared machines. Do not ticket them for UnitView product work.
+
+**Owner naming:** The product owner is **LinearThrone** (or **L.T.**). Never use a personal first name, personal mailbox, or personal Windows username in tickets, PRs, docs, or commit messages. See `.cursor/rules/owner-naming.mdc`.
 
 > **Delegation rule:** Prefer specialized agents (FED/BED/DBD/SEC) over DEV-01. See **§8.4 Agent Selection Guide**.
 

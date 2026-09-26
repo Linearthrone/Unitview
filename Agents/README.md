@@ -35,7 +35,7 @@ Start here: [`PM-01.md`](./PM-01.md) → [`PM-01-EN.md`](./PM-01-EN.md) + [`PM-0
 
 ## SoulCore machine seats (not default UnitView owners)
 
-Keep these playbooks for Kurt’s shared machines. Do **not** ticket them for UnitView product work.
+Keep these playbooks for LinearThrone's shared machines. Do **not** ticket them for UnitView product work.
 
 | ID | Scope |
 | --- | --- |

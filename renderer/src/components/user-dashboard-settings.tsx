@@ -32,7 +32,7 @@ export default function UserDashboardSettings({
   }, []);
 
   return (
-    <div className={`min-h-screen bg-background text-foreground theme-${currentTheme} ${currentTheme === 'dark' ? 'dark' : ''}`}>
+    <div className="min-h-screen bg-background text-foreground">
       <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 py-4">

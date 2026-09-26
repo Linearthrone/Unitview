@@ -1,6 +1,6 @@
 ---
 type: config
-updated: 2026-09-05
+updated: 2026-09-21
 project: UnitView
 ---
 
@@ -15,6 +15,6 @@ project: UnitView
 | Code home | `renderer/` + Electron `src/` |
 | Version | `5.1.5-c` |
 | Last sprint | TASK-20260620-004 **COMPLETE** (QA queue READY) |
-| Active PROP | **PROP-1** persistence honesty — sent-to-pm, waiting Kurt approval |
+| Active PROP | **PROP-3** clinical command surface (Option A) — accepted; 3.1–3.5 ticketed |
 
 Do not treat this file as a second product spec. Edit README / HIPAA doc instead.

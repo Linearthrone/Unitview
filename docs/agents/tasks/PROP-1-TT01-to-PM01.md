@@ -5,7 +5,7 @@ prop_full: PROP-1-persistence-honesty
 from: TT-01
 to: PM-01
 priority: P0
-status: Intake — waiting Kurt approval before TINA tickets
+status: Intake — waiting LinearThrone approval before TINA tickets
 created: 2026-09-05
 sent_at: 2026-09-05
 mode: idea
@@ -20,7 +20,7 @@ assignee_role: PM-01 (TINA)
 **For:** PM-01 (TINA). **From:** TT-01. **Mode:** `idea`.  
 **Proposal:** `docs/agents/unexecuted_proposals/persistence-honesty-and-architecture-eval.md`
 
-Kurt directed: thinktank first; **he approves recommendations**; then TINA evaluates as PM and executes at her discretion. **Do not issue PROP-1.M until he approves.**
+LinearThrone directed: thinktank first; **he approves recommendations**; then TINA evaluates as PM and executes at her discretion. **Do not issue PROP-1.M until he approves.**
 
 ## One-paragraph recommended route
 
@@ -42,7 +42,7 @@ None on sequencing. STRAT/CONTRA/SYS/RISK/USER all ranked vault-honesty first. S
 | PROP-1.6 | QA | Persist regression |
 | PROP-1.7 | SLOP | Post-QA audit |
 
-## Open questions still needing Kurt
+## Open questions still needing LinearThrone
 
 1. Vault stays as 5.x SoT, or SQLite this program (encrypted file)?
 2. Any live Epic SMART workstation (not sandbox)?

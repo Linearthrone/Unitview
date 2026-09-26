@@ -1,0 +1,17 @@
+---
+description: Product owner naming — LinearThrone or L.T. only
+alwaysApply: true
+---
+
+# Owner naming
+
+The product owner is **LinearThrone** (or **L.T.**).
+
+In notes, tickets, PRs, docs, comments, commit messages, and chat:
+
+- Use **LinearThrone** or **L.T.**
+- Do not use a personal first name, personal email local-part, or personal Windows username
+- Machine paths: `%USERPROFILE%` (not a named home directory)
+- Contact: LinearThrone / linearthrone.com (do not write a personal mailbox)
+
+Zero exceptions.

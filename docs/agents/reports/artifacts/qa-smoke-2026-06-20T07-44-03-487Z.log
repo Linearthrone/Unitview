@@ -1,5 +1,5 @@
 timestamp: 2026-06-20T07:45:46.431Z
-cwd: C:\Users\kurtw\StudioProjects\UnitView\Unitview_5.1.5c\renderer
+cwd: %USERPROFILE%\StudioProjects\UnitView\Unitview_5.1.5c\renderer
 exit_code: 1
 
 
@@ -43,7 +43,7 @@ Running 1 test using 1 worker
       13 |
       14 |   await expect(page.getByText('UnitView').first()).toBeVisible();
       15 |
-        at C:\Users\kurtw\StudioProjects\UnitView\Unitview_5.1.5c\renderer\smoke\qa-smoke.spec.ts:12:58
+        at %USERPROFILE%\StudioProjects\UnitView\Unitview_5.1.5c\renderer\smoke\qa-smoke.spec.ts:12:58
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\qa-smoke-QA-smoke-startup--d8fee-hboard-menu-and-drag-signal\test-failed-1.png

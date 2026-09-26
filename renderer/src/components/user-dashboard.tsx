@@ -42,6 +42,7 @@ import UserDashboardSettings from './user-dashboard-settings';
 import EditUnitDialog, { type EditUnitValues } from './edit-unit-dialog';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from './ui/context-menu';
 import { Input } from './ui/input';
+import { applyAppTheme, normalizeAppTheme } from '@/lib/app-theme';
 
 /** Placeholder unit created in older versions; not shown on the dashboard. */
 const isPlaceholderDefaultUnit = (u: UnitSettings) => u.id === 'default';
@@ -81,22 +82,12 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
   }, []);
 
   const applyTheme = useCallback((theme: 'light' | 'dark') => {
-    const root = document.documentElement;
-    root.classList.remove('theme-light', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple');
-    root.classList.add(`theme-${theme}`);
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('unitview_theme', theme);
+    applyAppTheme(theme);
   }, []);
 
   const loadCurrentSettings = useCallback(() => {
     try {
-      const stored = localStorage.getItem('unitview_theme');
-      const theme: 'light' | 'dark' =
-        stored === 'light' ? 'light' : 'dark';
+      const theme = normalizeAppTheme(localStorage.getItem('unitview_theme'));
       setCurrentTheme(theme);
       applyTheme(theme);
     } catch {
@@ -258,7 +249,7 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
   }
 
   return (
-    <div className={`min-h-screen bg-background text-foreground theme-${currentTheme} ${currentTheme === 'dark' ? 'dark' : ''}`}>
+    <div className="min-h-screen bg-background text-foreground">
       <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">

@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build:renderer",
+  "outputDirectory": "renderer/dist",
+  "installCommand": "npm install && cd renderer && npm install"
+}

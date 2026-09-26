@@ -1,6 +1,6 @@
 ---
 type: proposal
-status: accepted-pm-ticketed
+status: merged
 tt_id: TT-01
 prop_id: PROP-2-in-memory-transitions
 created: 2026-09-21

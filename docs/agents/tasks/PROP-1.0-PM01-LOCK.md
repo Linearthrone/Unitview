@@ -1,6 +1,6 @@
-# PROP-1.0 — Kurt lock (2026-09-05)
+# PROP-1.0 — LinearThrone lock (2026-09-05)
 
-Source: Kurt follow-up on PROP-1 Q&A.
+Source: LinearThrone follow-up on PROP-1 Q&A.
 
 | Q | Lock |
 |---|------|

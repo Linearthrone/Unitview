@@ -27,4 +27,4 @@ Corporate web presence for **LinearThrone Technologies** at **linearthrone.com**
 
 ## Contact
 
-Public email for site: **kurt.wood@linearthrone.com**
+Public email for site: **LinearThrone contact (linearthrone.com)**
