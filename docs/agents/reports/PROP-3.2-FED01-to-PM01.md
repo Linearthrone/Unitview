@@ -16,6 +16,7 @@ Same-grid workstation expression on the existing room map. No `gridRow` / `gridC
 
 - `cd renderer && ./node_modules/.bin/tsc --noEmit` — exit 0.
 - `npx --yes tsx --test renderer/src/lib/safety-marks.test.ts` — 4/4 pass (isolation subtypes, Fall/DNR/Restraints/Name shape+text, isolation breakdown, name-alert keys).
+- Browser: admin login → North-South View → Insert mock patients. Header shows facility name first, UnitView as tool name, Census/Staff/Safety groups, isolation subtypes, Print → Charge report. Cards show shape+text marks (Contact, Fall, DNR, Name) and No nurse / Assigned at full contrast (no `opacity-70`).
 
 ## Not in this ticket
 

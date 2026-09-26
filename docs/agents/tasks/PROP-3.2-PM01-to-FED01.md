@@ -3,7 +3,7 @@ prop_id: PROP-3.2
 from: PM-01
 to: FED-01
 depends_on: PROP-3.1
-status: in-progress
+status: done-pending-qa
 ---
 
 # PROP-3.2 — PM-01 → FED-01 (same-grid expression)
