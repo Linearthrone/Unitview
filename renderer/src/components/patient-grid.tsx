@@ -1,10 +1,11 @@
 
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Patient, StaffRole } from '@/types/patient';
 import type { Nurse, PatientCareTech } from '@/types/nurse';
 import PatientBlock from './patient-block';
+import { collectNameAlertEntryKeys, computeNameAlertGroups, patientHasNameAlert } from '@/lib/name-alerts';
 import NurseAssignmentCard, { type NurseAssignContext } from './nurse-assignment-card';
 import PatientCareTechCard, { type TechAssignContext } from './patient-care-tech-card';
 import ChargeNurseCard from './charge-nurse-card';
@@ -114,6 +115,11 @@ const PatientGrid: React.FC<PatientGridProps> = ({
   const [fitZoom, setFitZoom] = useState(1);
   const [zoom, setZoom] = useState(1);
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
+
+  const nameAlertKeys = useMemo(
+    () => collectNameAlertEntryKeys(computeNameAlertGroups(patients)),
+    [patients],
+  );
 
   const clampZoom = useCallback((value: number) => clampGridZoom(value), []);
 
@@ -282,6 +288,7 @@ const PatientGrid: React.FC<PatientGridProps> = ({
                   onDeleteRoom={onDeleteRoom}
                   onQuickNote={onQuickNote}
                   onCompleteTransport={onCompleteTransport}
+                  hasNameAlert={patientHasNameAlert(patientInCell, nameAlertKeys)}
                 />
               </div>
             )}

@@ -3,25 +3,11 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Stethoscope,
   LayoutGrid,
   Printer,
   ClipboardSignature,
-  HeartHandshake,
-  Ban,
-  Droplet,
-  ShieldAlert,
-  UserRound,
-  FileWarning,
-  Activity,
-  UtensilsCrossed,
   ChevronDown,
   ChevronUp,
-  BedDouble,
-  DoorOpen,
-  CalendarClock,
-  Users,
-  Gauge,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,10 +18,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import type { NameAlertGroup } from '@/lib/name-alerts';
+import type { IsolationBreakdown } from '@/lib/safety-marks';
 
 interface AppHeaderProps {
   title: string;
   unitName?: string;
+  facilityName?: string;
+  facilityLogoUrl?: string;
+  toolName?: string;
   censusStats: {
     beddedPatients: number;
     availableBeds: number;
@@ -49,6 +39,8 @@ interface AppHeaderProps {
   restraintCount: number;
   foleyCount: number;
   isolationCount: number;
+  isolationBreakdown?: IsolationBreakdown;
+  fallCount?: number;
   sitterCount: number;
   involuntaryHoldCount: number;
   centralLineCount?: number;
@@ -61,32 +53,30 @@ interface AppHeaderProps {
   onConfigureAssignmentPrint?: () => void;
 }
 
-const CompactStat: React.FC<{
-  icon: React.ElementType;
+const CensusRow: React.FC<{
   label: string;
   value: number;
-  className?: string;
-}> = ({ icon: Icon, label, value, className }) => (
-  <div
-    className={cn(
-      'flex items-center gap-1.5 rounded-md border border-border/60 bg-secondary/40 px-2.5 py-1.5 text-sm shrink-0',
-      className
-    )}
-  >
-    <Icon className="h-4 w-4 shrink-0 opacity-80" />
-    <span className="font-bold tabular-nums leading-none">{value}</span>
-    <span className="text-muted-foreground text-xs leading-none hidden sm:inline">{label}</span>
+  emphasize?: boolean;
+}> = ({ label, value, emphasize }) => (
+  <div className="flex items-baseline justify-between gap-3 text-base leading-tight">
+    <span className="text-muted-foreground">{label}</span>
+    <span className={cn('font-bold tabular-nums', emphasize && 'text-destructive')}>{value}</span>
   </div>
 );
 
 const AppHeader: React.FC<AppHeaderProps> = ({
   title,
   unitName,
+  facilityName,
+  facilityLogoUrl,
+  toolName = 'UnitView',
   censusStats,
   dnrCount,
   restraintCount,
   foleyCount,
   isolationCount,
+  isolationBreakdown,
+  fallCount = 0,
   sitterCount,
   involuntaryHoldCount,
   centralLineCount = 0,
@@ -99,6 +89,17 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 }) => {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [statsCollapsed, setStatsCollapsed] = useState(false);
+  const heading = facilityName?.trim() || title;
+  const isolationTotal =
+    isolationBreakdown
+      ? isolationBreakdown.contact +
+        isolationBreakdown.airborne +
+        isolationBreakdown.droplet +
+        isolationBreakdown.other
+      : isolationCount;
+  const overCapacity =
+    censusStats.nurseCount === 0 ||
+    (censusStats.nurseCount > 0 && censusStats.beddedPatients > censusStats.maxPatientsAllowed);
 
   useEffect(() => {
     setCurrentTime(new Date());
@@ -108,21 +109,25 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 
   return (
     <>
-      <header className="bg-card text-card-foreground shadow-md z-40 print-hide border-b">
-        {/* Row 1 — scrolls away with page content */}
+      <header className="bg-card text-card-foreground border-b-2 border-border z-40 print-hide">
         <div className="px-3 sm:px-5 py-3 space-y-3 max-w-[100vw]">
           <div className="flex flex-wrap items-start gap-x-6 gap-y-3 justify-between">
             <div className="flex items-start gap-3 min-w-0">
-              <Stethoscope className="h-10 w-10 sm:h-12 sm:w-12 text-primary shrink-0 mt-0.5" />
+              {facilityLogoUrl ? (
+                <img
+                  src={facilityLogoUrl}
+                  alt=""
+                  className="h-12 w-auto max-w-[8rem] object-contain shrink-0 mt-0.5"
+                />
+              ) : null}
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-headline font-bold text-primary leading-tight">
-                  {title}
+                <h1 className="text-2xl sm:text-3xl font-headline font-bold text-foreground leading-tight">
+                  {heading}
                 </h1>
-                {unitName && (
-                  <h2 className="text-lg sm:text-xl font-semibold text-primary mt-0.5 truncate">
-                    {unitName}
-                  </h2>
-                )}
+                <p className="text-base text-muted-foreground mt-0.5 truncate">
+                  {toolName}
+                  {unitName ? ` · ${unitName}` : ''}
+                </p>
               </div>
             </div>
 
@@ -131,30 +136,29 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2 text-xs text-muted-foreground"
+                className="h-8 px-2 text-base text-muted-foreground"
                 onClick={() => setStatsCollapsed((v) => !v)}
               >
                 {statsCollapsed ? (
                   <>
-                    <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                    <ChevronDown className="h-4 w-4 mr-1" />
                     Show stats
                   </>
                 ) : (
                   <>
-                    <ChevronUp className="h-3.5 w-3.5 mr-1" />
+                    <ChevronUp className="h-4 w-4 mr-1" />
                     Hide stats
                   </>
                 )}
               </Button>
             </div>
 
-            {/* Time, navigation, and census */}
             <div className="flex flex-col items-end gap-2 ml-auto shrink-0">
               <div className="flex items-center gap-2 flex-wrap justify-end">
                 {onPrint && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="shrink-0">
+                    <Button variant="outline" size="sm" className="shrink-0 text-base">
                       <Printer className="h-4 w-4 mr-1.5" />
                       Print
                     </Button>
@@ -183,7 +187,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                       ? currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                       : '—'}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1 max-w-[9rem] sm:max-w-none">
+                  <div className="text-base text-muted-foreground mt-1 max-w-[9rem] sm:max-w-none">
                     {currentTime
                       ? currentTime.toLocaleDateString([], {
                           weekday: 'short',
@@ -194,129 +198,75 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   </div>
                 </div>
               </div>
-
-              <div className="rounded-md border border-border/60 bg-secondary/30 px-3 py-2 min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1.5 text-right">
-                  Census Statistics
-                </p>
-                <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-sm">
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <BedDouble className="h-3.5 w-3.5 text-primary shrink-0" />
-                    <span className="text-muted-foreground">Bedded:</span>
-                    <span className="font-bold tabular-nums">{censusStats.beddedPatients}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <DoorOpen className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                    <span className="text-muted-foreground">Available:</span>
-                    <span className="font-bold tabular-nums">{censusStats.availableBeds}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <Ban className="h-3.5 w-3.5 text-destructive shrink-0" />
-                    <span className="text-muted-foreground">Blocked:</span>
-                    <span className="font-bold tabular-nums">{censusStats.blockedRooms}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <CalendarClock className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                    <span className="text-muted-foreground">Discharges:</span>
-                    <span className="font-bold tabular-nums">{censusStats.anticipatedDischarges}</span>
-                  </div>
-                  <div className="hidden sm:block h-4 w-px bg-border/60 shrink-0" aria-hidden />
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <Users className="h-3.5 w-3.5 text-primary shrink-0" />
-                    <span className="text-muted-foreground">
-                      Nurses: <span className="font-bold text-foreground tabular-nums">{censusStats.nurseCount}</span>
-                      {', '}
-                      PCTs: <span className="font-bold text-foreground tabular-nums">{censusStats.pctCount}</span>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <Gauge className="h-3.5 w-3.5 text-sky-600 shrink-0" />
-                    <span className="text-muted-foreground">Max:</span>
-                    <span
-                      className={cn(
-                        'font-bold tabular-nums',
-                        censusStats.nurseCount === 0 && 'text-destructive',
-                        censusStats.nurseCount > 0 &&
-                          censusStats.beddedPatients > censusStats.maxPatientsAllowed &&
-                          'text-destructive',
-                      )}
-                    >
-                      {censusStats.maxPatientsAllowed}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           {!statsCollapsed && (
-            <div className="flex flex-wrap items-center gap-2 max-w-full">
-              <CompactStat
-                icon={HeartHandshake}
-                label="DNR"
-                value={dnrCount}
-                className="text-purple-700 dark:text-purple-400"
-              />
-              <CompactStat
-                icon={Ban}
-                label="Restraints"
-                value={restraintCount}
-                className="text-destructive"
-              />
-              <CompactStat
-                icon={ShieldAlert}
-                label="Isolation"
-                value={isolationCount}
-                className="text-amber-700 dark:text-amber-400"
-              />
-              <CompactStat
-                icon={FileWarning}
-                label="1013/2013"
-                value={involuntaryHoldCount}
-                className="text-orange-700 dark:text-orange-400"
-              />
-              <CompactStat
-                icon={UserRound}
-                label="Sitter"
-                value={sitterCount}
-                className="text-sky-700 dark:text-sky-400"
-              />
-              <CompactStat icon={Droplet} label="Foleys" value={foleyCount} className="text-blue-600" />
-              <CompactStat
-                icon={Activity}
-                label="Central lines"
-                value={centralLineCount}
-                className="text-teal-700 dark:text-teal-400"
-              />
-              <CompactStat
-                icon={UtensilsCrossed}
-                label="Tube feeds"
-                value={tubeFeedCount}
-                className="text-emerald-700 dark:text-emerald-400"
-              />
+            <div className="grid gap-3 sm:grid-cols-3">
+              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
+                <h3 className="text-base font-semibold mb-1.5">Census</h3>
+                <div className="space-y-1">
+                  <CensusRow label="Bedded" value={censusStats.beddedPatients} />
+                  <CensusRow label="Available" value={censusStats.availableBeds} />
+                  <CensusRow label="Blocked" value={censusStats.blockedRooms} />
+                  <CensusRow label="Discharges" value={censusStats.anticipatedDischarges} />
+                </div>
+              </section>
+              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
+                <h3 className="text-base font-semibold mb-1.5">Staff</h3>
+                <div className="space-y-1">
+                  <CensusRow label="Nurses" value={censusStats.nurseCount} emphasize={censusStats.nurseCount === 0} />
+                  <CensusRow label="PCTs" value={censusStats.pctCount} />
+                  <CensusRow label="Max" value={censusStats.maxPatientsAllowed} emphasize={overCapacity} />
+                </div>
+              </section>
+              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
+                <h3 className="text-base font-semibold mb-1.5">Safety</h3>
+                <div className="space-y-1">
+                  <CensusRow label="Fall" value={fallCount} />
+                  <CensusRow label="DNR" value={dnrCount} />
+                  <CensusRow label="Restraints" value={restraintCount} />
+                  <CensusRow label="Isolation" value={isolationTotal} />
+                  {isolationBreakdown && (
+                    <p className="text-base text-muted-foreground leading-tight">
+                      Contact {isolationBreakdown.contact}
+                      {' · '}
+                      Airborne {isolationBreakdown.airborne}
+                      {' · '}
+                      Droplet {isolationBreakdown.droplet}
+                      {isolationBreakdown.other > 0 ? ` · Other ${isolationBreakdown.other}` : ''}
+                    </p>
+                  )}
+                  <CensusRow label="1013/2013" value={involuntaryHoldCount} />
+                  <CensusRow label="Sitter" value={sitterCount} />
+                  <CensusRow label="Foleys" value={foleyCount} />
+                  <CensusRow label="Central lines" value={centralLineCount} />
+                  <CensusRow label="Tube feeds" value={tubeFeedCount} />
+                </div>
+              </section>
             </div>
           )}
 
           {nameAlertGroups.length > 0 && (
             <div
-              className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+              className="rounded-md border-2 border-amber-800 bg-amber-50 px-3 py-2 text-base text-amber-950 dark:border-amber-200 dark:bg-amber-950 dark:text-amber-50"
               role="status"
             >
               <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                <p className="font-semibold text-amber-900 dark:text-amber-100">Name alerts</p>
+                <p className="font-semibold">Name alerts</p>
                 {onAcknowledgeNameAlerts && canEdit && (
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="h-7 shrink-0 border-amber-600/50 bg-amber-50/80 text-amber-950 hover:bg-amber-100 dark:border-amber-400/40 dark:bg-amber-950/40 dark:text-amber-50 dark:hover:bg-amber-900/60"
+                    className="h-8 shrink-0 text-base border-amber-800 bg-amber-50 text-amber-950 hover:bg-amber-100 dark:border-amber-200 dark:bg-amber-950 dark:text-amber-50 dark:hover:bg-amber-900"
                     onClick={onAcknowledgeNameAlerts}
                   >
                     Acknowledge
                   </Button>
                 )}
               </div>
-              <ul className="space-y-1.5 text-amber-950/90 dark:text-amber-50/90">
+              <ul className="space-y-1.5">
                 {nameAlertGroups.map((g) => (
                   <li key={g.key}>
                     <span className="font-medium">{g.label}:</span>{' '}
