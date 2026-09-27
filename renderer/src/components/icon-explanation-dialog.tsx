@@ -62,6 +62,19 @@ const iconSections = [
     ],
   },
   {
+    title: 'Board counts (symbol + number)',
+    icons: [
+      { Icon: BedDouble, description: 'Bedded / occupied' },
+      { Icon: Accessibility, description: 'Available bed (empty bed icon on the bar)' },
+      { Icon: Ban, description: 'Blocked room' },
+      { Icon: UserMinus, description: 'Discharges today (door icon on the bar)' },
+      { Icon: Stethoscope, description: 'Nurses on the board' },
+      { Icon: UserRound, description: 'PCTs' },
+      { Icon: User, description: 'Max patients by staffing ratio' },
+      { Icon: AlertTriangle, description: 'Fall, DNR, restraints, isolation shapes match the cards' },
+    ],
+  },
+  {
     title: 'Mobility Status',
     icons: [
       { Icon: BedDouble, description: 'Bed Rest' },

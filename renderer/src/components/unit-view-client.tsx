@@ -159,6 +159,7 @@ export default function UnitViewClient({
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const [admitOrUpdatePatient, setAdmitOrUpdatePatient] = useState<Patient | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [opsStatsOnTop, setOpsStatsOnTop] = useState(true);
   const [isAddStaffMemberDialogOpen, setIsAddStaffMemberDialogOpen] = useState(false);
   const [quickAddRole, setQuickAddRole] = useState<StaffRole>('Staff Nurse');
   const [isAssignStaffDialogOpen, setIsAssignStaffDialogOpen] = useState(false);
@@ -1658,6 +1659,7 @@ export default function UnitViewClient({
         canEdit={!roleCaps.isReadOnly}
         onPrint={roleCaps.isWallDisplay ? undefined : (type) => void handlePrint(type)}
         onConfigureAssignmentPrint={roleCaps.isWallDisplay ? undefined : () => setIsPrintLayoutDialogOpen(true)}
+        onOpsStatsPlacement={setOpsStatsOnTop}
       />
       <main className="flex-grow flex overflow-hidden print-hide relative pb-16">
         <div className="flex-grow flex flex-col min-w-0 min-h-0 overflow-hidden">
@@ -1823,6 +1825,8 @@ export default function UnitViewClient({
         viewMode={progressiveView.preferredMode}
         onViewModeChange={roleCaps.isAdmin ? handleViewModeChange : undefined}
         onProgressiveSetup={roleCaps.isAdmin ? () => setIsProgressiveSetupOpen(true) : undefined}
+        censusStats={censusStats}
+        showOpsStats={!opsStatsOnTop}
       />
       <PrintableReport
         patients={patients}
