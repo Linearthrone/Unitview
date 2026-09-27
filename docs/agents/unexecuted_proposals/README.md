@@ -10,5 +10,5 @@ See `docs/agents/PROP_NUMBERING.md`.
 | --- | --- | --- |
 | `persistence-honesty-and-architecture-eval.md` | merged (PROP-1) | Fail-closed vault writes |
 | `in-memory-unit-transitions.md` | merged (PROP-2) | No hard reload between units |
-| `clinical-command-surface.md` | **sent-to-pm** (PROP-3) | Same-map clinical UI redesign |
-| `progressive-view.md` | **sent-to-pm** (PROP-4) | Progressive view after PROP-3; corridor map + cards |
+| `clinical-command-surface.md` | **accepted-pm-ticketed** (PROP-3) | Same-map clinical UI redesign |
+| `progressive-view.md` | **accepted-pm-ticketed** (PROP-4) | Progressive view; corridor map + cards |

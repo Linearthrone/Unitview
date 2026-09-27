@@ -15,6 +15,7 @@ import type { Nurse } from '@/types/nurse';
 import type { Patient } from '@/types/patient';
 import type { PatientCareTech } from '@/types/nurse';
 import { NUM_COLS_GRID, NUM_ROWS_GRID } from '../lib/grid-utils';
+import { sanitizeProgressiveView, type ProgressiveViewState } from '../lib/progressive-view';
 
 const DEFAULT_LAYOUT_METADATA: UnitLayoutMetadata = {
   numRooms: 24,
@@ -341,6 +342,7 @@ export async function getLayoutMetadata(layoutName: LayoutName): Promise<UnitLay
     baselinePctsPerShift: metadata?.baselinePctsPerShift ?? DEFAULT_LAYOUT_METADATA.baselinePctsPerShift,
     nurseToPatientRatio: metadata?.nurseToPatientRatio ?? DEFAULT_LAYOUT_METADATA.nurseToPatientRatio,
     unitType: metadata?.unitType && UNIT_TYPE_VALUES.includes(metadata.unitType) ? metadata.unitType : DEFAULT_LAYOUT_METADATA.unitType,
+    progressiveView: sanitizeProgressiveView(metadata?.progressiveView),
     printLayoutOptions: {
       includedCardTypes: printLayoutOptions.includedCardTypes.length
         ? printLayoutOptions.includedCardTypes
@@ -369,9 +371,23 @@ function sanitizeMetadata(input: Partial<UnitLayoutMetadata>): UnitLayoutMetadat
     baselinePctsPerShift: Math.max(0, Number(input.baselinePctsPerShift ?? DEFAULT_LAYOUT_METADATA.baselinePctsPerShift)),
     nurseToPatientRatio: Math.max(1, Number(input.nurseToPatientRatio ?? DEFAULT_LAYOUT_METADATA.nurseToPatientRatio)),
     unitType: input.unitType && UNIT_TYPE_VALUES.includes(input.unitType) ? input.unitType : DEFAULT_LAYOUT_METADATA.unitType,
+    progressiveView: sanitizeProgressiveView(input.progressiveView),
     printLayoutOptions: {
       includedCardTypes: includedCardTypes.length ? includedCardTypes : defaultPrint.includedCardTypes,
       includedInfoFields: includedInfoFields.length ? includedInfoFields : defaultPrint.includedInfoFields,
     },
   };
+}
+
+export async function saveProgressiveView(
+  layoutName: LayoutName,
+  state: ProgressiveViewState,
+): Promise<void> {
+  const db = await getDb();
+  const current = await getLayoutMetadata(layoutName);
+  db.setLayoutMetadata(layoutName, sanitizeMetadata({
+    ...current,
+    progressiveView: sanitizeProgressiveView(state),
+  }));
+  await db.flushPendingWrites();
 }

@@ -6,6 +6,8 @@ import AppHeader from './app-header';
 import UnitActionBar from './unit-action-bar';
 import ShiftMakerDialog from './shift-maker-dialog';
 import PatientGrid from './patient-grid';
+import ProgressiveWorkstation from './progressive-workstation';
+import ProgressiveSetupDialog from './progressive-setup-dialog';
 import ReportSheet from './report-sheet';
 import PrintableReport from './printable-report';
 import PrintableAssignments from './printable-assignments';
@@ -73,6 +75,13 @@ import { defaultFacilityProfile, getFacilityProfile } from '../services/facility
 import type { FacilityProfile } from '../types/facility';
 import { findCompactEmptySlot, getAvailableSpectra } from '../services/nurseHelpers';
 import { buildWallpaperSnapshot } from '../lib/wallpaper-snapshot';
+import {
+  DEFAULT_PROGRESSIVE_VIEW,
+  ensureProgressiveGeometry,
+  sanitizeProgressiveView,
+  type ProgressiveViewState,
+  type UnitBoardViewMode,
+} from '../lib/progressive-view';
 
 
 interface DraggingPatientInfo {
@@ -178,6 +187,8 @@ export default function UnitViewClient({
   const [isEpicSyncing, setIsEpicSyncing] = useState(false);
   const [wallpaperActive, setWallpaperActive] = useState(false);
   const [wallpaperRedactPhi, setWallpaperRedactPhi] = useState(true);
+  const [progressiveView, setProgressiveView] = useState<ProgressiveViewState>(DEFAULT_PROGRESSIVE_VIEW);
+  const [isProgressiveSetupOpen, setIsProgressiveSetupOpen] = useState(false);
 
   useEffect(() => {
     void getFacilityProfile()
@@ -193,6 +204,7 @@ export default function UnitViewClient({
       const metadata = await layoutService.getLayoutMetadata(currentLayoutName);
       if (!cancelled) {
         setPatientsPerNurse(Math.max(1, metadata.nurseToPatientRatio));
+        setProgressiveView(sanitizeProgressiveView(metadata.progressiveView));
       }
     })();
     return () => {
@@ -1601,6 +1613,27 @@ export default function UnitViewClient({
     });
   }, [patients]);
 
+  const progressiveGeometry = useMemo(
+    () => ensureProgressiveGeometry(progressiveView, patients),
+    [progressiveView, patients],
+  );
+
+  const persistProgressiveView = useCallback(
+    async (next: ProgressiveViewState) => {
+      const sanitized = sanitizeProgressiveView(next);
+      setProgressiveView(sanitized);
+      await layoutService.saveProgressiveView(currentLayoutName, sanitized);
+    },
+    [currentLayoutName],
+  );
+
+  const handleViewModeChange = useCallback(
+    (mode: UnitBoardViewMode) => {
+      void persistProgressiveView({ ...progressiveView, preferredMode: mode });
+    },
+    [persistProgressiveView, progressiveView],
+  );
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader
@@ -1627,7 +1660,21 @@ export default function UnitViewClient({
         onConfigureAssignmentPrint={roleCaps.isWallDisplay ? undefined : () => setIsPrintLayoutDialogOpen(true)}
       />
       <main className="flex-grow flex overflow-hidden print-hide relative pb-16">
-        <div className="flex-grow flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-grow flex flex-col min-w-0 min-h-0 overflow-hidden">
+            {progressiveView.preferredMode === 'progressive' ? (
+              <ProgressiveWorkstation
+                patients={patients}
+                nurses={nurses}
+                geometry={progressiveGeometry}
+                isEffectivelyLocked={isEffectivelyLocked}
+                isReadOnly={roleCaps.isReadOnly}
+                canSeePatientIdentifiers={roleCaps.canSeePatientIdentifiers}
+                onSelectPatient={setSelectedPatient}
+                onPatientDragStart={handlePatientDragStart}
+                onDropOnNurseSlot={handleDropOnNurseSlot}
+                onDragEnd={handleDragEnd}
+              />
+            ) : (
             <PatientGrid
               patients={patients}
               nurses={nurses}
@@ -1665,6 +1712,7 @@ export default function UnitViewClient({
               canSeePatientIdentifiers={roleCaps.canSeePatientIdentifiers}
               isReadOnly={roleCaps.isReadOnly}
             />
+            )}
         {!roleCaps.isReadOnly && (
         <div className="border-t px-4 py-2 flex justify-end shrink-0">
           <Button
@@ -1772,6 +1820,9 @@ export default function UnitViewClient({
         onToggleWallpaper={
           window.electronAPI?.wallpaperStart ? () => void handleToggleWallpaper() : undefined
         }
+        viewMode={progressiveView.preferredMode}
+        onViewModeChange={roleCaps.isAdmin ? handleViewModeChange : undefined}
+        onProgressiveSetup={roleCaps.isAdmin ? () => setIsProgressiveSetupOpen(true) : undefined}
       />
       <PrintableReport
         patients={patients}
@@ -1856,6 +1907,13 @@ export default function UnitViewClient({
         onOpenChange={setIsCreateUnitDialogOpen}
         onSave={handleCreateUnit}
         existingLayoutNames={availableLayouts}
+      />
+      <ProgressiveSetupDialog
+        open={isProgressiveSetupOpen}
+        onOpenChange={setIsProgressiveSetupOpen}
+        patients={patients}
+        initial={progressiveView}
+        onSave={(state) => void persistProgressiveView(state)}
       />
        <EditRoomDesignationDialog
         open={!!patientToEditDesignation}
