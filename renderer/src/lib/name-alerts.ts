@@ -52,6 +52,24 @@ export function computeNameAlertGroups(patients: Patient[]): NameAlertGroup[] {
   return groups.sort((a, b) => a.entries[0]!.room.localeCompare(b.entries[0]!.room, undefined, { numeric: true }));
 }
 
+export function nameAlertEntryKey(room: string, name: string): string {
+  return `${room}\0${name.trim()}`;
+}
+
+export function collectNameAlertEntryKeys(groups: NameAlertGroup[]): Set<string> {
+  const keys = new Set<string>();
+  for (const group of groups) {
+    for (const entry of group.entries) {
+      keys.add(nameAlertEntryKey(entry.room, entry.name));
+    }
+  }
+  return keys;
+}
+
+export function patientHasNameAlert(patient: Patient, keys: Set<string>): boolean {
+  return keys.has(nameAlertEntryKey(patient.roomDesignation, patient.name));
+}
+
 /** Stable id for an alert group; changes when patients in the group change. */
 export function getNameAlertSignature(group: NameAlertGroup): string {
   const entrySig = group.entries

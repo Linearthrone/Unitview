@@ -4,7 +4,6 @@
 import type { Patient, MobilityStatus } from '@/types/patient';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -16,42 +15,24 @@ import {
   BedDouble,
   Accessibility,
   Footprints,
-  AlertTriangle,
-  ShieldAlert,
   Ban,
-  BrainCircuit,
-  Wind,
-  HeartHandshake,
   UserPlus,
   UserMinus,
   Edit,
   Lock,
   Unlock,
   Trash2,
-  Check,
   Mars,
   Venus,
   StickyNote,
-  Scale,
-  Eye,
   Car,
-  Droplets,
-  CircleDot,
   type LucideIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isPatientNurseAssigned } from '@/lib/nurse-assignment-sync';
-import { hasHemodialysis, hasPeritonealDialysis } from '@/lib/patient-clinical-helpers';
-import {
-  isAwaitingTransport,
-  patientNeedsTransportIndicator,
-} from '@/lib/patient-status-helpers';
-
-interface AlertDisplayInfo {
-  IconComponent: LucideIcon;
-  colorClass: string;
-  tooltipText: string;
-}
+import { isAwaitingTransport } from '@/lib/patient-status-helpers';
+import { getPatientSafetyMarks } from '@/lib/safety-marks';
+import { SafetyMarkBadge } from '@/components/safety-mark-badge';
 
 interface PatientBlockProps {
   patient: Patient;
@@ -69,6 +50,7 @@ interface PatientBlockProps {
   /** WALLDISPLAY and privacy — hide patient names/PHI. */
   canSeePatientIdentifiers?: boolean;
   isReadOnly?: boolean;
+  hasNameAlert?: boolean;
 }
 
 
@@ -93,9 +75,11 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
   onCompleteTransport,
   canSeePatientIdentifiers = true,
   isReadOnly = false,
+  hasNameAlert = false,
 }) => {
   const isVacant = patient.name === 'Vacant';
   const { isBlocked } = patient;
+  const nurseAssigned = isPatientNurseAssigned(patient.assignedNurse);
 
   const handleCardClick = () => {
     if (isBlocked) return;
@@ -108,17 +92,17 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
         <ContextMenuTrigger disabled={isEffectivelyLocked || isReadOnly}>
           <Card 
             onClick={handleCardClick}
-            className="flex flex-col h-full shadow-lg bg-muted/40 border-border cursor-pointer"
+            className="flex flex-col h-full bg-muted/40 border-2 border-dashed border-border cursor-pointer"
             title={`View report for ${patient.roomDesignation}`}
           >
             <CardHeader className="p-3">
               <CardTitle className="text-lg flex justify-between items-center">
                 <span>{patient.roomDesignation}</span>
-                <Badge variant="secondary">Vacant</Badge>
+                <Badge variant="secondary" className="text-base">Vacant</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 flex-grow flex items-center justify-center">
-              <span className="text-muted-foreground text-sm">Room Available</span>
+              <span className="text-muted-foreground text-base">Room Available</span>
             </CardContent>
           </Card>
         </ContextMenuTrigger>
@@ -175,54 +159,7 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
         ? 'text-pink-600 dark:text-pink-400'
         : 'text-muted-foreground';
 
-  const ldaText = (patient.ldas ?? []).join(' ').toLowerCase();
-  const hasCentralLine = ldaText.includes('central') || ldaText.includes('picc') || ldaText.includes('midline');
-  const hasTubeFeed = ldaText.includes('tube feed') || ldaText.includes('ng') || ldaText.includes('peg');
-
-
-  const alerts: AlertDisplayInfo[] = [];
-  if (patient.isFallRisk) {
-    alerts.push({ IconComponent: AlertTriangle, colorClass: 'text-accent', tooltipText: 'Fall Risk' });
-  }
-  if (patient.isSeizureRisk) {
-    alerts.push({ IconComponent: BrainCircuit, colorClass: 'text-accent', tooltipText: 'Seizure Risk' });
-  }
-  if (patient.isAspirationRisk) {
-    alerts.push({ IconComponent: Wind, colorClass: 'text-accent', tooltipText: 'Aspiration Risk' });
-  }
-  if (patient.isIsolation) {
-    alerts.push({ IconComponent: ShieldAlert, colorClass: 'text-accent', tooltipText: 'Isolation Precautions' });
-  }
-  if (patient.isInRestraints) {
-    alerts.push({ IconComponent: Ban, colorClass: 'text-destructive', tooltipText: 'Restraints' }); 
-  }
-  if (patient.isComfortCareDNR) {
-    alerts.push({ IconComponent: HeartHandshake, colorClass: 'text-purple-600 dark:text-purple-400', tooltipText: 'Comfort Care / DNR' });
-  }
-  if (patient.isInvoluntaryHold1013) {
-    alerts.push({ IconComponent: Scale, colorClass: 'text-amber-600 dark:text-amber-400', tooltipText: '1013 / 2013 hold' });
-  }
-  if (patient.requiresSitter) {
-    alerts.push({ IconComponent: Eye, colorClass: 'text-orange-600 dark:text-orange-400', tooltipText: 'Sitter (safety / behavioral)' });
-  }
-  if (hasCentralLine) {
-    alerts.push({ IconComponent: AlertTriangle, colorClass: 'text-teal-600 dark:text-teal-400', tooltipText: 'Central line' });
-  }
-  if (hasTubeFeed) {
-    alerts.push({ IconComponent: AlertTriangle, colorClass: 'text-emerald-600 dark:text-emerald-400', tooltipText: 'Tube feed' });
-  }
-  if (hasHemodialysis(patient)) {
-    alerts.push({ IconComponent: Droplets, colorClass: 'text-blue-700 dark:text-blue-400', tooltipText: 'Hemodialysis (HD)' });
-  }
-  if (hasPeritonealDialysis(patient)) {
-    alerts.push({ IconComponent: CircleDot, colorClass: 'text-indigo-700 dark:text-indigo-400', tooltipText: 'Peritoneal dialysis (PD)' });
-  }
-  if (patientNeedsTransportIndicator(patient)) {
-    const transportLabel = isAwaitingTransport(patient)
-      ? 'Awaiting transport'
-      : 'Anticipated discharge today';
-    alerts.push({ IconComponent: Car, colorClass: 'text-sky-700 dark:text-sky-400', tooltipText: transportLabel });
-  }
+  const alerts = getPatientSafetyMarks(patient, { hasNameAlert });
 
   return (
     <ContextMenu>
@@ -230,9 +167,10 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
         <Card 
           onClick={handleCardClick}
           className={cn(
-            "relative flex flex-col h-full shadow-lg hover:shadow-xl transition-shadow duration-200",
+            "relative flex flex-col h-full transition-shadow duration-200",
             isBlocked ? "cursor-not-allowed bg-black dark:bg-gray-900 border-gray-700" : "cursor-pointer bg-card border-border",
-            !isBlocked && isPatientNurseAssigned(patient.assignedNurse) && "opacity-70",
+            !isBlocked && nurseAssigned && "border-2 border-border",
+            !isBlocked && !nurseAssigned && !isVacant && "border-2 border-destructive",
             isDragging ? "opacity-50 ring-2 ring-primary" : ""
           )}
           data-patient-id={patient.id}
@@ -255,13 +193,13 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
                         {patient.roomDesignation}
                     </div>
                      {!isVacant && (
-                      <div className="text-right text-sm leading-tight">
+                      <div className="text-right text-base leading-tight">
                           <div>
-                              <span className="text-xs font-light">Admit </span>
+                              <span className="font-normal">Admit </span>
                               {formatDate(patient.admitDate)}
                           </div>
                           <div>
-                              <span className="text-xs font-light">EDD </span>
+                              <span className="font-normal">EDD </span>
                               {formatDate(patient.dischargeDate)}
                           </div>
                       </div>
@@ -280,7 +218,7 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
                       >
                           {patient.name}
                           {isAwaitingTransport(patient) && (
-                            <span className="block text-[10px] font-medium text-sky-700 dark:text-sky-300">
+                            <span className="block text-base font-medium text-sky-700 dark:text-sky-300">
                               Awaiting transport
                             </span>
                           )}
@@ -291,91 +229,65 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
                       </Badge>
                     )}
                 </div>
-                {canSeePatientIdentifiers && isPatientNurseAssigned(patient.assignedNurse) && (
-                  <div className="text-center text-xs font-medium text-card-foreground/90 pt-1">
-                    {patient.assignedNurse}
+                {!isVacant && !isBlocked && (
+                  <div className="pt-2 flex justify-center">
+                    {nurseAssigned ? (
+                      <span
+                        data-assignment-mark="assigned"
+                        className="inline-flex items-center gap-1.5 border-2 border-solid border-foreground px-1.5 py-0.5 text-base font-semibold leading-none bg-card"
+                      >
+                        <span className="inline-flex h-3.5 w-3.5 items-center justify-center border-2 border-current text-[0.7rem] leading-none" aria-hidden>
+                          ✓
+                        </span>
+                        <span>{canSeePatientIdentifiers && patient.assignedNurse ? patient.assignedNurse : 'Assigned'}</span>
+                      </span>
+                    ) : (
+                      <span
+                        data-assignment-mark="unassigned"
+                        className="inline-flex items-center gap-1.5 border-2 border-destructive px-1.5 py-0.5 text-base font-semibold leading-none text-destructive bg-card"
+                      >
+                        <span className="inline-block h-3.5 w-3.5 border-2 border-current text-center leading-none" aria-hidden>
+                          !
+                        </span>
+                        <span>No nurse</span>
+                      </span>
+                    )}
                   </div>
                 )}
             </CardTitle>
           </CardHeader>
            {!isVacant && (
             <>
-              <CardContent className="p-3 flex-grow space-y-2 text-sm">
+              <CardContent className="p-3 flex-grow space-y-2 text-base">
                 <div className="flex items-center gap-2 whitespace-nowrap">
-                  <span>Mobility:</span>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <MobilityIcon className="h-5 w-5 text-primary" strokeWidth={2.5} aria-label={patient.mobility} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{patient.mobility}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <MobilityIcon className="h-5 w-5 text-primary shrink-0" strokeWidth={2.5} aria-hidden />
+                  <span>{patient.mobility}</span>
                 </div>
                 {patient.pendingProcedures && canSeePatientIdentifiers && (
-                  <p className="text-xs pt-1 border-t mt-2 italic">
-                    <span className="font-semibold not-italic">Pending: </span>
+                  <p className="text-base pt-1 border-t mt-2">
+                    <span className="font-semibold">Pending: </span>
                     {patient.pendingProcedures.length > 50
                       ? `${patient.pendingProcedures.substring(0, 47)}...`
                       : patient.pendingProcedures}
                   </p>
                 )}
                 {patient.notes && canSeePatientIdentifiers && (
-                  <p className="text-xs pt-1 border-t mt-2 italic">
-                    <span className="font-semibold not-italic">Notes: </span>
+                  <p className="text-base pt-1 border-t mt-2">
+                    <span className="font-semibold">Notes: </span>
                     {patient.notes.length > 50 ? `${patient.notes.substring(0, 47)}...` : patient.notes}
                   </p>
                 )}
               </CardContent>
               {alerts.length > 0 && (
                 <CardFooter className="p-3 border-t">
-                  <TooltipProvider delayDuration={100}>
-                    <div className="flex gap-2 flex-wrap">
-                      {alerts.map(({ IconComponent, colorClass, tooltipText }, index) => (
-                        <Tooltip key={index}>
-                          <TooltipTrigger asChild>
-                            <IconComponent className={cn("h-5 w-5", colorClass)} strokeWidth={2.5} aria-label={tooltipText} />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{tooltipText}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      ))}
-                    </div>
-                  </TooltipProvider>
+                  <div className="flex gap-1.5 flex-wrap" role="list" aria-label="Safety marks">
+                    {alerts.map((mark) => (
+                      <SafetyMarkBadge key={mark.id} mark={mark} />
+                    ))}
+                  </div>
                 </CardFooter>
               )}
             </>
-          )}
-
-          {!isVacant && !isBlocked && (
-            <div className="absolute bottom-1 right-2">
-              {isPatientNurseAssigned(patient.assignedNurse) ? (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Check className="h-5 w-5 text-green-600 dark:text-green-400" strokeWidth={3} />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{canSeePatientIdentifiers ? `Assigned to ${patient.assignedNurse}` : 'Nurse assigned'}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                 <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="text-destructive font-bold text-xl">!</div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>No nurse assigned!</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </div>
           )}
         </Card>
       </ContextMenuTrigger>

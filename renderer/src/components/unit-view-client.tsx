@@ -32,6 +32,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from "../hooks/use-toast";
 import { NUM_ROWS_GRID } from '../lib/grid-utils';
 import { computeNameAlertGroups, getNameAlertSignature } from '@/lib/name-alerts';
+import { countIsolationBreakdown } from '@/lib/safety-marks';
 import {
   isOccupiedBed,
   patientHasInvoluntaryHold,
@@ -1572,6 +1573,11 @@ export default function UnitViewClient({
     () => patients.filter((p) => isOccupiedBed(p.name) && p.isIsolation).length,
     [patients]
   );
+  const isolationBreakdown = useMemo(() => countIsolationBreakdown(patients), [patients]);
+  const fallCount = useMemo(
+    () => patients.filter((p) => isOccupiedBed(p.name) && p.isFallRisk).length,
+    [patients]
+  );
   const involuntaryHoldCount = useMemo(
     () => patients.filter((p) => isOccupiedBed(p.name) && patientHasInvoluntaryHold(p)).length,
     [patients]
@@ -1598,13 +1604,18 @@ export default function UnitViewClient({
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader
-        title="UnitView"
+        title={facilityProfile.name || 'UnitView'}
+        facilityName={facilityProfile.name}
+        facilityLogoUrl={facilityProfile.logoDataUrl}
+        toolName="UnitView"
         unitName={`${getFriendlyLayoutName(currentLayoutName)}${isOncomingShiftSetup ? ' (Oncoming shift setup)' : ''}`}
         censusStats={censusStats}
         dnrCount={dnrCount}
         restraintCount={restraintCount}
         foleyCount={foleyCount}
         isolationCount={isolationCount}
+        isolationBreakdown={isolationBreakdown}
+        fallCount={fallCount}
         sitterCount={sitterCount}
         involuntaryHoldCount={involuntaryHoldCount}
         centralLineCount={centralLineCount}
