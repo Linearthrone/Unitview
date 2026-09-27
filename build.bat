@@ -1,12 +1,15 @@
 @echo off
-echo Building UnitView Windows Application...
+echo Building UnitView 5.3.0-c Windows installer...
 
 echo Installing dependencies...
 call npm install
 call npm run postinstall
 
-echo Building application...
-call npm run build:all
+echo Building application and NSIS installer...
+call npm run dist:win
 
-echo Build complete! Installer is located in the release/ directory.
+echo.
+echo Installer: release\UnitView-Setup-5.3.0-c.exe
+echo Portable:  release\win-unpacked\UnitView.exe
+echo.
 pause

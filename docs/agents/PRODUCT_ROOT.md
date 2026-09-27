@@ -1,6 +1,6 @@
 ---
 type: config
-updated: 2026-09-21
+updated: 2026-09-27
 project: UnitView
 ---
 
@@ -13,8 +13,8 @@ project: UnitView
 | Field | Current |
 | --- | --- |
 | Code home | `renderer/` + Electron `src/` |
-| Version | `5.1.5-c` |
-| Last sprint | TASK-20260620-004 **COMPLETE** (QA queue READY) |
-| Active PROP | **PROP-3** clinical command surface (Option A) — accepted; 3.1–3.5 ticketed |
+| Version | `5.3.0-c` |
+| Last sprint | PROP-4 first wave on `master` (PR #14) |
+| Active PROP | **PROP-4** Progressive (tune); Windows pack is `5.3.0-c` — see `WINDOWS_PACK.md` |
 
 Do not treat this file as a second product spec. Edit README / HIPAA doc instead.

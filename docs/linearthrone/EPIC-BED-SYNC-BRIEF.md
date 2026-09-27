@@ -3,7 +3,7 @@
 | Field | Value |
 |--------|--------|
 | **Owner** | PM-01 |
-| **Version** | 5.2.0-c → planned 5.3.0-c |
+| **Version** | 5.3.0-c |
 | **Created** | 2026-07-14 |
 | **Status** | Spec ready — Epic credentials BLOCKED |
 
