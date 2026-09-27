@@ -91,7 +91,7 @@ export default function ProgressiveWorkstation({
   );
 
   return (
-    <div className="flex-grow flex min-h-0 overflow-hidden">
+    <div className="flex-1 min-h-[70vh] flex min-w-0 overflow-hidden">
       <div className="w-full lg:w-[42%] min-w-[18rem] border-r-2 border-border overflow-auto p-3 space-y-3">
         <h3 className="text-base font-semibold">Nurse assignments</h3>
         {assignable.length === 0 && (

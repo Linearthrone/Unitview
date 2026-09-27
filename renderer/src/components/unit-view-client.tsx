@@ -1660,7 +1660,7 @@ export default function UnitViewClient({
         onConfigureAssignmentPrint={roleCaps.isWallDisplay ? undefined : () => setIsPrintLayoutDialogOpen(true)}
       />
       <main className="flex-grow flex overflow-hidden print-hide relative pb-16">
-        <div className="flex-grow flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-grow flex flex-col min-w-0 min-h-0 overflow-hidden">
             {progressiveView.preferredMode === 'progressive' ? (
               <ProgressiveWorkstation
                 patients={patients}

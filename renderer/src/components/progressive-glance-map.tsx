@@ -47,10 +47,10 @@ export default function ProgressiveGlanceMap({
       </header>
       <div className="flex-1 min-h-0 overflow-auto p-3">
         <div
-          className="grid gap-1 w-full max-w-4xl mx-auto"
+          className="grid gap-1 w-full max-w-4xl mx-auto min-h-[24rem]"
           style={{
             gridTemplateColumns: `repeat(${HALLWAY_COLS}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${HALLWAY_ROWS}, minmax(4.5rem, 1fr))`,
+            gridTemplateRows: `repeat(${HALLWAY_ROWS}, minmax(3.25rem, 1fr))`,
           }}
         >
           {Array.from({ length: HALLWAY_ROWS }, (_, rowIdx) =>
@@ -63,7 +63,7 @@ export default function ProgressiveGlanceMap({
                 <div
                   key={cellKey(row, col)}
                   className={cn(
-                    'min-h-[4.5rem] border p-1',
+                    'min-h-[3.25rem] border p-1 overflow-hidden',
                     hallway ? 'bg-muted border-foreground/40' : 'bg-card border-transparent',
                   )}
                 >
