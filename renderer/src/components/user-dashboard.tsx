@@ -43,6 +43,8 @@ import EditUnitDialog, { type EditUnitValues } from './edit-unit-dialog';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from './ui/context-menu';
 import { Input } from './ui/input';
 import { applyAppTheme, normalizeAppTheme } from '@/lib/app-theme';
+import { FieldHint, ManagementShell, shellCard, type ManagementSection } from './management-shell';
+import type { UnitViewMode } from '../types/auth';
 
 /** Placeholder unit created in older versions; not shown on the dashboard. */
 const isPlaceholderDefaultUnit = (u: UnitSettings) => u.id === 'default';
@@ -67,6 +69,7 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isCreateUnitOpen, setIsCreateUnitOpen] = useState(false);
   const [availableLayoutNames, setAvailableLayoutNames] = useState<string[]>([]);
+  const [section, setSection] = useState<ManagementSection>('setup');
   const [screen, setScreen] = useState<'main' | 'settings'>('main');
   const [isEditUnitOpen, setIsEditUnitOpen] = useState(false);
   const [unitToEdit, setUnitToEdit] = useState<UnitSettings | null>(null);
@@ -237,20 +240,60 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
     );
   }
 
-  if (screen === 'settings') {
-    return (
+  const activeUnit = units.find((unit) => unit.name === selectedUnit) ?? null;
+  const sectionTitle: Record<ManagementSection, string> = {
+    setup: 'Unit setup contacts',
+    units: 'Units',
+    views: 'View mode picker',
+    staff: 'Staff and roles',
+    reports: 'Reports',
+    settings: 'Settings',
+  };
+
+  const saveActiveUnit = async (patch: Partial<UnitSettings>) => {
+    if (!activeUnit) return;
+    const success = authService.saveUnitSettings({
+      ...activeUnit,
+      ...patch,
+      lastModified: new Date(),
+    });
+    if (!success) {
+      showMessage('error', 'Unable to save unit settings.');
+      return;
+    }
+    await loadInitialData();
+    showMessage('success', `Saved ${activeUnit.name}.`);
+  };
+
+  return (
+    <>
+    <ManagementShell
+      section={section}
+      onSection={(next) => {
+        setSection(next);
+        if (next === 'settings') setScreen('settings');
+        else setScreen('main');
+      }}
+      title={sectionTitle[section]}
+      unitLabel={activeUnit?.designation || activeUnit?.name}
+      userName={user.username}
+      roleLabel={formatAppRoleLabel(user.role, user.appRole)}
+      onLogout={onLogout}
+    >
+      <div className="space-y-6 max-w-5xl">
+      {screen === 'settings' || section === 'settings' ? (
       <UserDashboardSettings
         user={user}
-        onBack={() => setScreen('main')}
+        onBack={() => {
+          setScreen('main');
+          setSection('setup');
+        }}
         currentTheme={currentTheme}
         onThemeChange={handleThemeChange}
       />
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="bg-card shadow-sm border-b border-border">
+      ) : (
+      <>
+      <header className="hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
@@ -294,6 +337,106 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
           </Alert>
         )}
 
+        {section === 'setup' && shellCard(
+          <form
+            key={activeUnit?.id ?? 'none'}
+            className="space-y-6"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const data = new FormData(event.currentTarget);
+              void saveActiveUnit({
+                designation: String(data.get('designation') ?? ''),
+                chargeContact: String(data.get('chargeContact') ?? ''),
+                clerkContact: String(data.get('clerkContact') ?? ''),
+              });
+            }}
+          >
+            <div>
+              <h2 className="font-semibold text-sky-300">Unit designation</h2>
+              <FieldHint>This identifies the unit and appears on shift assignment sheets.</FieldHint>
+            </div>
+            <label className="block text-sm">
+              Unit designation
+              <Input
+                name="designation"
+                defaultValue={activeUnit?.designation ?? activeUnit?.name ?? ''}
+                className="mt-1 bg-[#07111f] border-white/15"
+                disabled={!activeUnit}
+              />
+            </label>
+            <div>
+              <h2 className="font-semibold text-sky-300">Unit communications / shift sheet contacts</h2>
+              <FieldHint>Printed on every shift assignment sheet. These do not change per shift.</FieldHint>
+            </div>
+            <label className="block text-sm">
+              Charge nurse phone or Spectra number
+              <Input
+                name="chargeContact"
+                defaultValue={activeUnit?.chargeContact ?? ''}
+                placeholder="Enter phone or Spectra number"
+                className="mt-1 bg-[#07111f] border-white/15"
+                disabled={!activeUnit}
+              />
+            </label>
+            <label className="block text-sm">
+              Unit clerk / front desk number
+              <Input
+                name="clerkContact"
+                defaultValue={activeUnit?.clerkContact ?? ''}
+                placeholder="Enter phone or front desk number"
+                className="mt-1 bg-[#07111f] border-white/15"
+                disabled={!activeUnit}
+              />
+            </label>
+            {!activeUnit ? <FieldHint>Create or select a unit before saving contacts.</FieldHint> : null}
+            <Button type="submit" disabled={!activeUnit}>Save unit</Button>
+          </form>,
+        )}
+
+        {section === 'views' && shellCard(
+          <div className="space-y-4">
+            <FieldHint>Admin only. The selected presentation is what the unit board uses. Progressive view is the later hallway map; Command surface is the live assignment grid.</FieldHint>
+            <div className="flex flex-wrap gap-2">
+              {(['command', 'progressive'] as UnitViewMode[]).map((mode) => {
+                const selected = (activeUnit?.viewMode ?? 'command') === mode;
+                return (
+                  <Button
+                    key={mode}
+                    type="button"
+                    variant={selected ? 'default' : 'outline'}
+                    disabled={!activeUnit}
+                    onClick={() => void saveActiveUnit({ viewMode: mode })}
+                  >
+                    {mode === 'command' ? 'Command surface (Option A)' : 'Progressive view'}
+                  </Button>
+                );
+              })}
+            </div>
+            <p className="text-sm text-slate-300">
+              Shared rooms and assignments stay the same in both views. Opening a unit still uses the command-surface board until the progressive map is built.
+            </p>
+          </div>,
+        )}
+
+        {section === 'staff' && shellCard(
+          <div className="space-y-3">
+            <p className="text-sm text-slate-300">Staff accounts and application roles for this facility.</p>
+            {onOpenUserManagement ? (
+              <Button type="button" onClick={onOpenUserManagement}>Manage users</Button>
+            ) : (
+              <FieldHint>User management is available to facility administrators.</FieldHint>
+            )}
+          </div>,
+        )}
+
+        {section === 'reports' && shellCard(
+          <p className="text-sm text-slate-300">
+            Charge and assignment sheets print from inside the unit. Open a unit, then use Print.
+          </p>,
+        )}
+
+        {section === 'units' && (
+        <>
         {/* Facility statistics — collapsible to prioritize unit entry */}
         <section aria-labelledby="facility-stats-heading">
           <div className="flex items-center justify-between mb-3">
@@ -546,7 +689,13 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
             )}
           </CardContent>
         </Card>
+        </>
+        )}
       </main>
+      </>
+      )}
+      </div>
+    </ManagementShell>
       <EditUnitDialog
         open={isEditUnitOpen}
         onOpenChange={(open) => {
@@ -557,6 +706,6 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
         existingLayoutNames={availableLayoutNames}
         onSave={handleSaveEditedUnit}
       />
-    </div>
+    </>
   );
 }

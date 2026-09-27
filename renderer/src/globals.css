@@ -74,34 +74,34 @@ h6 { font-size: 1rem; }
   }
 
   .dark {
-    /* Clinical dark with stronger text/background separation */
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    /* Clinical command surface: navy field, sky actions, amber emphasis */
+    --background: 216 64% 7%;
+    --foreground: 210 40% 96%;
 
-    --card: 222 35% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 216 53% 12%;
+    --card-foreground: 210 40% 96%;
 
-    --popover: 222 35% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 216 53% 12%;
+    --popover-foreground: 210 40% 96%;
 
-    --primary: 207 80% 70%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 204 90% 58%;
+    --primary-foreground: 216 64% 8%;
 
-    --secondary: 217 28% 20%;
+    --secondary: 216 32% 16%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 217 28% 18%;
-    --muted-foreground: 215 25% 78%; /* Brighter muted text on dark surfaces */
+    --muted: 216 32% 14%;
+    --muted-foreground: 215 20% 72%;
 
-    --accent: 36 90% 60%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 28 92% 52%;
+    --accent-foreground: 216 64% 8%;
 
     --destructive: 0 62.8% 40%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 24% 32%;
-    --input: 217 24% 32%;
-    --ring: 207 80% 60%;
+    --border: 214 28% 22%;
+    --input: 214 28% 22%;
+    --ring: 204 90% 58%;
 
     /* Sidebar vars for dark mode */
     --sidebar-background: 240 5.9% 12%;
