@@ -1,67 +1,25 @@
-# UnitView v5.2.0-c - Quick Start Guide
+# UnitView 5.3.0-c — Quick start
 
-## 🚀 Get Started in 5 Minutes
+## Run from source
 
-### Step 1: Install Node.js
-Download and install Node.js 18.x or 20.x from https://nodejs.org/
-
-### Step 2: Extract and Install
 ```bash
-# Extract the zip file
-# Open PowerShell in the extracted folder
-
-# Install dependencies
 npm install
-cd renderer
+npm run dev
+```
+
+Login: `admin` / `password`. If a password change is required, use `ChargeBoard26`.
+
+## Windows installer
+
+See **[WINDOWS_PACK.md](WINDOWS_PACK.md)**. Short form on a Windows box:
+
+```bat
 npm install
-cd ..
-```
-
-### Step 3: Build
-```bash
-# Build renderer
-cd renderer
-npm run build:no-check
-cd ..
-
-# Build main process
-npm run build:main
-```
-
-### Step 4: Run
-```bash
-npm run electron
-
-# Development (renderer + main):
-# npm run dev
-```
-
-### Step 5: Login
-- **Username:** `admin`
-- **Password:** `admin123`
-
-## ✅ That's It!
-
-Your UnitView application is now running!
-
----
-
-## 📚 Need More Help?
-
-- **Full Instructions:** See `BUILD_INSTRUCTIONS.md`
-- **Changelog:** See `CHANGELOG.md`
-- **Troubleshooting:** Check console for errors (Ctrl+Shift+I)
-
----
-
-## 🎯 Create Windows Installer
-
-```bash
 npm run dist:win
 ```
 
-Installer will be in the `release/` folder.
+Installer: `release\UnitView-Setup-5.3.0-c.exe`
 
----
+That is the production pack. `release/` is gitignored — it will never appear as a committed file.
 
-**Version:** 5.2.0-c | **Status:** Candidate build
+**Version:** 5.3.0-c

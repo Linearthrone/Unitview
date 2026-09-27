@@ -64,7 +64,7 @@ export default function ProgressiveGlanceMap({
                   key={cellKey(row, col)}
                   className={cn(
                     'min-h-[3.25rem] border p-1 overflow-hidden',
-                    hallway ? 'bg-muted border-foreground/40' : 'bg-card border-transparent',
+                    hallway ? 'bg-secondary border-foreground' : 'bg-background border-border/40',
                   )}
                 >
                   {pinned.map((patient) => {
