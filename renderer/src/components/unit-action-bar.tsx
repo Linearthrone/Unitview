@@ -29,6 +29,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import type { GridZoomControls } from '@/lib/grid-zoom';
 import IconExplanationDialog from './icon-explanation-dialog';
+import type { UnitBoardViewMode } from '@/lib/progressive-view';
 
 interface UnitActionBarProps {
   canEdit?: boolean;
@@ -47,6 +48,9 @@ interface UnitActionBarProps {
   onLeaveUnit?: () => void;
   wallpaperActive?: boolean;
   onToggleWallpaper?: () => void;
+  viewMode?: UnitBoardViewMode;
+  onViewModeChange?: (mode: UnitBoardViewMode) => void;
+  onProgressiveSetup?: () => void;
 }
 
 const UnitActionBar: React.FC<UnitActionBarProps> = ({
@@ -66,6 +70,9 @@ const UnitActionBar: React.FC<UnitActionBarProps> = ({
   onLeaveUnit,
   wallpaperActive = false,
   onToggleWallpaper,
+  viewMode = 'command',
+  onViewModeChange,
+  onProgressiveSetup,
 }) => {
   const [isExplanationOpen, setIsExplanationOpen] = useState(false);
 
@@ -162,6 +169,23 @@ const UnitActionBar: React.FC<UnitActionBarProps> = ({
                       <DropdownMenuItem onClick={onSaveLayout}>
                         <Save className="mr-2 h-4 w-4" />
                         Save layout as…
+                      </DropdownMenuItem>
+                    )}
+                    {onViewModeChange && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Unit board view</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onViewModeChange('command')}>
+                          Command surface{viewMode === 'command' ? ' ✓' : ''}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onViewModeChange('progressive')}>
+                          Progressive view{viewMode === 'progressive' ? ' ✓' : ''}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    {onProgressiveSetup && (
+                      <DropdownMenuItem onClick={onProgressiveSetup}>
+                        Progressive hallway setup…
                       </DropdownMenuItem>
                     )}
                     {onInsertMockData && (

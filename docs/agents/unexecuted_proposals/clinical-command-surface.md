@@ -76,8 +76,7 @@ Concept art only — not shipped UI. Files under `docs/agents/unexecuted_proposa
 | 7 | Floorplan fidelity | Hallway-enough; no precise scale or blueprints. |
 | 8 | Product name for B | **Progressive view** (locked). |
 | 9 | Nurse use of Progressive map | **Glance-only.** Once rooms are set up, nurses only need to see the map — no drag on the Progressive map. |
-| 10 | One layout or two? | **Open — see §9.6.** Kurt unsure; TT recommends shared rooms/assignments with two *presentations*, not two clinical units. |
-| 10 | One layout or two? | **Locked for PROP-4 send:** shared clinical truth; two presentations (A grid + Progressive corridor/pins). |
+| 10 | One layout or two? | **Locked:** shared clinical truth; two presentations (A grid + Progressive corridor/pins). |
 
 ## 5. Avenues Explored
 
@@ -125,7 +124,7 @@ Map + card / nurse columns + abstract hallway. Marketing and wall aesthetics. Op
 
 PROP-3 must not implement Progressive view. Document only.
 
-### How A and Progressive relate (for Kurt’s open question)
+### How A and Progressive relate
 
 They *feel* like two layouts because they *are* two jobs:
 
@@ -143,7 +142,7 @@ They *feel* like two layouts because they *are* two jobs:
 
 Do **not** maintain two separate patient lists. Do **not** require nurses to keep two boards in sync. Admin may set Progressive geometry once per unit; assignments still happen on A (or on Progressive nurse columns reading the same assignment data).
 
-**Alternative Kurt could still choose:** fully separate layouts (heavier). Only pick that if Progressive cannot be driven from shared room IDs.
+**Parked alternative:** fully separate layouts (heavier). Only pick that if Progressive cannot be driven from shared room IDs.
 
 Diagram: `mockups/clinical-command-surface/explain-a-vs-progressive-layouts.png`.
 
@@ -206,15 +205,11 @@ None blocking PROP-3.
 | Fidelity | Hallway-enough, not-to-scale; no blueprints |
 | Nurses | **Glance-only** map after setup |
 
-### 9.6 Still open — one layout or two?
-
-Kurt: unsure whether A and Progressive need two layouts for the same unit; unclear how A organizes rooms.
+### 9.6 One layout or two? — locked
 
 **How A organizes rooms (today / PROP-3):** one rectangular cell grid. Admin places room cards and staff cards on cells in Create Unit. Nurses assign by dragging room tiles onto nurse cards on that same grid. PROP-3 restyles this; it does not change the placement model.
 
-**TT recommendation:** shared clinical data (rooms + assignments); **A grid placements** for the assignment board; **Progressive corridor + room pins** for the glance map. Two presentations, not two units.
-
-**Need from Kurt:** accept that recommendation, or insist on fully separate layouts?
+**Locked (LinearThrone, PROP-4.0):** shared clinical data (rooms + assignments); **A grid placements** for the assignment board; **Progressive corridor + room pins** for the glance map. Two presentations, not two units. Progressive columns are assignable against the same nurse slots.
 
 ## 10. Suggested PM Handoff
 
