@@ -144,38 +144,56 @@ const ShiftMakerDialog: React.FC<ShiftMakerDialogProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background text-foreground">
+    <div className="dark fixed inset-0 z-50 bg-background text-foreground">
       <div className="flex h-full min-h-0 flex-col">
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-6 py-3 bg-card">
-          <div>
-            <h2 className="text-xl font-semibold tracking-wide">Oncoming Shift Blackboard</h2>
-            <p className="text-sm text-muted-foreground">
-              Drag room lines from the left onto nurse assignment slots. Edits here do not change the active unit map until activation.
-            </p>
+        <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
+          <div className="rounded-full border border-border px-3 py-1 text-sm">
+            Oncoming setup — Progressive
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {onAddNurseCard ? (
-              <Button type="button" variant="outline" onClick={() => onAddNurseCard()}>
-                Add nurse card
-              </Button>
-            ) : null}
-            {onActivateOncomingShift ? (
-              <Button
-                type="button"
-                className="bg-emerald-700 text-white hover:bg-emerald-600"
-                onClick={() => void onActivateOncomingShift()}
-              >
-                Activate oncoming shift
-              </Button>
-            ) : null}
-            <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
-              Close board
-            </Button>
+          <div className="rounded-full bg-card px-4 py-1.5 text-sm font-semibold">
+            Oncoming draft
           </div>
+          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
         </header>
 
         <div className="flex min-h-0 flex-1">
-          <aside className="w-[24rem] shrink-0 overflow-y-auto border-r border-border bg-muted/30 p-4">
+          <aside className="order-2 w-[28rem] shrink-0 overflow-y-auto border-l border-border bg-card/40 p-4">
+            <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider">Unit glance · oncoming draft</h3>
+            <p className="mb-3 text-xs text-muted-foreground">Green = claimed for oncoming. Amber = still unassigned.</p>
+            <div
+              className="mb-4 grid gap-1"
+              style={{
+                gridTemplateColumns: `repeat(${NUM_COLS_GRID}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${NUM_ROWS_GRID}, minmax(0, 0.7rem))`,
+              }}
+            >
+              {miniMapRooms.map((room) => {
+                const claimed = assignedPatientIds.has(room.id);
+                const occupied = isOccupiedBed(room.name);
+                return (
+                  <button
+                    key={room.id}
+                    type="button"
+                    onClick={() => setSelectedPatientId(room.id)}
+                    className={cn(
+                      "h-3 rounded-sm border",
+                      room.isBlocked
+                        ? "border-rose-700 bg-rose-800"
+                        : claimed
+                          ? "border-emerald-700 bg-emerald-600"
+                          : occupied
+                            ? "border-amber-600 bg-amber-700"
+                            : "border-slate-700 bg-slate-800",
+                      selectedPatientId === room.id && "ring-2 ring-sky-300",
+                    )}
+                    style={{ gridRowStart: room.gridRow, gridColumnStart: room.gridColumn }}
+                    title={room.roomDesignation}
+                  />
+                );
+              })}
+            </div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Rooms</h3>
             <div className="space-y-2">
               {sortedRoomsForList.map((patient) => {
@@ -247,50 +265,10 @@ const ShiftMakerDialog: React.FC<ShiftMakerDialogProps> = ({
             </div>
           </aside>
 
-          <section className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className="flex justify-center border-b border-slate-800 px-4 py-3">
-              <div className="rounded-md border border-slate-700 bg-slate-900 p-2">
-                <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wide text-slate-300">
-                  Mini map
-                </p>
-                <div
-                  className="grid gap-1"
-                  style={{
-                    gridTemplateColumns: `repeat(${NUM_COLS_GRID}, minmax(0, 0.8rem))`,
-                    gridTemplateRows: `repeat(${NUM_ROWS_GRID}, minmax(0, 0.8rem))`,
-                  }}
-                >
-                  {miniMapRooms.map((room) => {
-                    const isSelected = selectedPatientId === room.id;
-                    const isOccupied = isOccupiedBed(room.name);
-                    return (
-                    <button
-                      key={room.id}
-                      type="button"
-                      onClick={() => setSelectedPatientId(room.id)}
-                      className={cn(
-                        "h-3 w-3 rounded-sm border border-slate-500 transition focus:outline-none",
-                        isSelected && "border-cyan-300 ring-2 ring-cyan-300/80",
-                        room.isBlocked
-                          ? "bg-rose-700"
-                          : assignedPatientIds.has(room.id)
-                          ? "bg-slate-600"
-                          : isOccupied
-                          ? "bg-emerald-400"
-                          : "bg-slate-300"
-                      )}
-                      style={{
-                        gridRowStart: room.gridRow,
-                        gridColumnStart: room.gridColumn,
-                      }}
-                      title={`${room.roomDesignation}${room.isBlocked ? " (Out of service)" : ""}`}
-                    />
-                  )})}
-                </div>
-              </div>
-            </div>
-
+          <section className="order-1 flex min-h-0 flex-1 flex-col overflow-hidden">
             <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wider">Draft nurse assignments</h3>
+              <p className="mb-3 text-xs text-muted-foreground">Next shift. Drag a room from the glance onto a nurse.</p>
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                 {boardNurses.map((nurse) => {
                   return (
@@ -402,7 +380,24 @@ const ShiftMakerDialog: React.FC<ShiftMakerDialogProps> = ({
                   />
                 </div>
               ) : null}
+              {onAddNurseCard ? (
+                <Button type="button" variant="outline" className="mt-4 w-full border-dashed" onClick={() => onAddNurseCard()}>
+                  + Add nurse
+                </Button>
+              ) : null}
             </div>
+            {onActivateOncomingShift ? (
+              <div className="flex items-center justify-between gap-4 border-t border-border px-4 py-3">
+                <p className="text-sm text-muted-foreground">Review assignments and the unit glance before activating.</p>
+                <Button
+                  type="button"
+                  className="bg-orange-600 text-white hover:bg-orange-500"
+                  onClick={() => void onActivateOncomingShift()}
+                >
+                  Activate oncoming shift
+                </Button>
+              </div>
+            ) : null}
           </section>
         </div>
       </div>

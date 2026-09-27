@@ -121,7 +121,7 @@ export class LiveMapWallpaperService {
     if (this.isDev) {
       return 'http://localhost:5173/?mode=wallpaper';
     }
-    const indexHtml = path.join(__dirname, '../renderer/dist/index.html');
+    const indexHtml = path.join(app.getAppPath(), 'renderer', 'dist', 'index.html');
     const fileUrl = pathToFileURL(indexHtml);
     fileUrl.searchParams.set('mode', 'wallpaper');
     return fileUrl.href;

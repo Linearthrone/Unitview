@@ -9,7 +9,8 @@ import { appendAuditLine } from './ipc/secure-vault';
 
 class UnitViewApp {
   private mainWindow: BrowserWindow | null = null;
-  private isDev = process.env.NODE_ENV === 'development';
+  /** Unpackaged `electron dist/main.js` is dev even when NODE_ENV is unset. */
+  private isDev = !app.isPackaged;
   private wallpaperService: LiveMapWallpaperService | null = null;
 
   constructor() {
@@ -321,7 +322,7 @@ class UnitViewApp {
           
           const pdfData = await printWindow.webContents.printToPDF({
             printBackground: true,
-            margins: { marginType: 'custom', top: 0.5, bottom: 0.5, left: 0.5, right: 0.5 },
+            margins: { top: 0.5, bottom: 0.5, left: 0.5, right: 0.5 },
             pageSize: 'Letter',
           });
 

@@ -26,12 +26,22 @@ export interface AuthState {
   error: string | null;
 }
 
+export type UnitViewMode = 'command' | 'progressive';
+
 export interface UnitSettings {
   id: string;
   name: string;
   theme: 'light' | 'dark' | 'blue' | 'green' | 'purple';
   createdAt: Date;
   lastModified: Date;
+  /** Short designation printed on shift sheets, e.g. U1. */
+  designation?: string;
+  /** Persistent charge phone or Spectra number. */
+  chargeContact?: string;
+  /** Persistent unit clerk / front desk number. */
+  clerkContact?: string;
+  /** How the unit board presents rooms. Command surface is the live map. */
+  viewMode?: UnitViewMode;
 }
 
 export const defaultUsers: User[] = [
