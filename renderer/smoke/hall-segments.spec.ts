@@ -45,6 +45,8 @@ test('hallway setup places and rotates premade segments', async ({ page }) => {
   await page.locator('#confirm-password').fill('ChargeBoard26');
   await page.getByRole('button', { name: 'Save password' }).click();
   await expect(page.locator('#new-password')).toBeHidden({ timeout: 15000 });
+  await page.getByRole('button', { name: 'Units' }).click();
+  await expect(page.getByText('Select unit')).toBeVisible();
   await page.getByRole('button', { name: 'Enter unit' }).click();
 
   await page.getByRole('button', { name: 'Admin' }).click();
@@ -68,4 +70,18 @@ test('hallway setup places and rotates premade segments', async ({ page }) => {
   await page.getByTestId('hall-cell-2-8').click();
   await expect(page.getByText('Corner · 90°').first()).toBeVisible();
   await page.screenshot({ path: '/opt/cursor/artifacts/hall_segments_corner_and_straight.png' });
+
+  await page.getByTestId('save-progressive-hallway').click();
+  await expect(page.getByTestId('hall-segment-grid')).toHaveCount(0);
+  await expect(page.getByText('Hallway map (glance only)')).toBeVisible({ timeout: 15000 });
+  const hideStats = page.getByRole('button', { name: 'Hide stats' });
+  if (await hideStats.isVisible().catch(() => false)) {
+    await hideStats.click();
+  }
+  await page.getByText('Hallway map (glance only)').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('glance-hall-painted')).toHaveCount(8);
+  await page.screenshot({ path: '/opt/cursor/artifacts/hall_segments_saved_board.png' });
+  await page.getByLabel('Hallway map (glance only)').screenshot({
+    path: '/opt/cursor/artifacts/hall_segments_saved_map.png',
+  });
 });

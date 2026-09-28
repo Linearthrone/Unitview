@@ -21,7 +21,6 @@ import {
   cellKey,
   cellsForSegment,
   clearHallway,
-  ensureProgressiveGeometry,
   moveHallSegment,
   nextHallOrientation,
   paintFromSegments,
@@ -122,18 +121,21 @@ export default function ProgressiveSetupDialog({
 
   useEffect(() => {
     if (open) {
-      const prepared = ensureProgressiveGeometry(initial, patients);
       const editorPaint =
-        prepared.segments.length > 0
-          ? paintFromSegments(prepared.segments)
+        initial.segments.length > 0
+          ? paintFromSegments(initial.segments)
           : (initial.paintCells ?? []);
-      setDraft({ ...prepared, paintCells: editorPaint });
+      setDraft({
+        ...initial,
+        segments: initial.segments ?? [],
+        paintCells: editorPaint,
+      });
       setSelectedRoomId(null);
       setSelectedSegmentId(null);
       setHover(null);
       setPaletteOrientation(0);
     }
-  }, [open, initial, patients]);
+  }, [open, initial]);
 
   useEffect(() => {
     if (!open) return;
