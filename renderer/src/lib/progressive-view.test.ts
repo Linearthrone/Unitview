@@ -5,8 +5,14 @@ import {
   applyTemplate,
   autoPinRooms,
   buildTemplatePaint,
+  cellsForSegment,
   ensureProgressiveGeometry,
+  nextHallOrientation,
+  paintFromSegments,
+  placeHallSegment,
+  rotateHallSegment,
   sanitizeProgressiveView,
+  segmentFits,
 } from './progressive-view';
 
 function patient(overrides: Partial<Patient> = {}): Patient {
@@ -66,6 +72,7 @@ test('ensureProgressiveGeometry fills missing pins without dropping saved ones',
       templateId: 'l',
       paintCells: paint,
       roomPins: [{ patientId: 'kept', row: 2, col: 4 }],
+      segments: [],
     },
     [patient({ id: 'kept', gridRow: 1, gridColumn: 4 }), patient({ id: 'new', gridRow: 8, gridColumn: 16 })],
   );
@@ -85,4 +92,40 @@ test('applyTemplate sets hallway and pins for every room', () => {
   assert.equal(next.templateId, 'u');
   assert.equal(next.roomPins.length, 2);
   assert.ok(next.paintCells.length > 0);
+});
+
+test('straight hall segment rotates from east-west to north-south', () => {
+  const east = cellsForSegment({ id: 's', kind: 'straight3', row: 4, col: 4, orientation: 0 });
+  assert.deepEqual(east, [
+    { row: 4, col: 4 },
+    { row: 4, col: 5 },
+    { row: 4, col: 6 },
+  ]);
+  const south = cellsForSegment({ id: 's', kind: 'straight3', row: 4, col: 4, orientation: 90 });
+  assert.deepEqual(south, [
+    { row: 4, col: 4 },
+    { row: 5, col: 4 },
+    { row: 6, col: 4 },
+  ]);
+  assert.equal(nextHallOrientation(270), 0);
+});
+
+test('corner and tee reject placements that leave the canvas', () => {
+  assert.equal(segmentFits('straight5', 1, 9, 0), false);
+  assert.equal(segmentFits('straight5', 1, 1, 0), true);
+  assert.equal(segmentFits('tee', 1, 2, 0), false);
+  assert.equal(segmentFits('cross', 4, 6, 0), true);
+});
+
+test('placed segments union into paint and rotate in place', () => {
+  let state = sanitizeProgressiveView({});
+  state = placeHallSegment(state, 'straight3', 3, 3, 0);
+  state = placeHallSegment(state, 'corner', 3, 5, 0);
+  const paint = paintFromSegments(state.segments);
+  assert.ok(paint.some((cell) => cell.row === 3 && cell.col === 3));
+  assert.ok(paint.some((cell) => cell.row === 5 && cell.col === 5));
+  const placed = state.segments[0];
+  assert.ok(placed);
+  const rotated = rotateHallSegment(state, placed.id);
+  assert.equal(rotated.segments[0]?.orientation, 90);
 });
