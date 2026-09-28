@@ -129,3 +129,14 @@ test('placed segments union into paint and rotate in place', () => {
   const rotated = rotateHallSegment(state, placed.id);
   assert.equal(rotated.segments[0]?.orientation, 90);
 });
+
+test('rotate that would leave the canvas is refused', () => {
+  let state = sanitizeProgressiveView({});
+  state = placeHallSegment(state, 'straight5', 1, 1, 90);
+  const placed = state.segments[0];
+  assert.ok(placed);
+  assert.equal(placed.orientation, 90);
+  const rotated = rotateHallSegment(state, placed.id);
+  assert.equal(rotated.segments[0]?.orientation, 90);
+  assert.equal(rotated, state);
+});

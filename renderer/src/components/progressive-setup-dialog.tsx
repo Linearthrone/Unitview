@@ -96,6 +96,15 @@ function SegmentPreview({
   );
 }
 
+function payloadFits(payload: DragPayload, row: number, col: number, draft: ProgressiveViewState): boolean {
+  if ('segmentId' in payload) {
+    const current = draft.segments.find((segment) => segment.id === payload.segmentId);
+    if (!current) return false;
+    return segmentFits(current.kind, row, col, current.orientation);
+  }
+  return segmentFits(payload.kind, row, col, payload.orientation);
+}
+
 export default function ProgressiveSetupDialog({
   open,
   onOpenChange,
@@ -113,12 +122,38 @@ export default function ProgressiveSetupDialog({
 
   useEffect(() => {
     if (open) {
-      setDraft(ensureProgressiveGeometry(initial, patients));
+      const prepared = ensureProgressiveGeometry(initial, patients);
+      const editorPaint =
+        prepared.segments.length > 0
+          ? paintFromSegments(prepared.segments)
+          : (initial.paintCells ?? []);
+      setDraft({ ...prepared, paintCells: editorPaint });
       setSelectedRoomId(null);
       setSelectedSegmentId(null);
       setHover(null);
+      setPaletteOrientation(0);
     }
   }, [open, initial, patients]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (!selectedSegmentId) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea, [contenteditable="true"]')) return;
+      if (event.key === 'r' || event.key === 'R') {
+        event.preventDefault();
+        setDraft((prev) => rotateHallSegment(prev, selectedSegmentId));
+      }
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault();
+        setDraft((prev) => removeHallSegment(prev, selectedSegmentId));
+        setSelectedSegmentId(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, selectedSegmentId]);
 
   const paintCells = useMemo(
     () => (draft.segments.length > 0 ? paintFromSegments(draft.segments) : draft.paintCells),
@@ -162,30 +197,51 @@ export default function ProgressiveSetupDialog({
     );
   }, [hover, draft.segments]);
 
+  const ghostFits = hover ? payloadFits(hover.payload, hover.row, hover.col, draft) : true;
   const selectedSegment = draft.segments.find((segment) => segment.id === selectedSegmentId);
+  const armedLabel = HALL_SEGMENT_KINDS.find((item) => item.id === armedKind)?.label ?? armedKind;
+
+  const selectAdded = (prev: ProgressiveViewState, next: ProgressiveViewState) => {
+    const known = new Set(prev.segments.map((segment) => segment.id));
+    const added = next.segments.find((segment) => !known.has(segment.id));
+    if (added) setSelectedSegmentId(added.id);
+  };
 
   const dropAt = (row: number, col: number, payload: DragPayload) => {
     if ('segmentId' in payload) {
       setDraft((prev) => moveHallSegment(prev, payload.segmentId, row, col));
       setSelectedSegmentId(payload.segmentId);
+      setSelectedRoomId(null);
       return;
     }
-    if (!segmentFits(payload.kind, row, col, payload.orientation)) return;
-    setDraft((prev) => placeHallSegment(prev, payload.kind, row, col, payload.orientation));
+    setDraft((prev) => {
+      const next = placeHallSegment(prev, payload.kind, row, col, payload.orientation);
+      selectAdded(prev, next);
+      return next;
+    });
+    setSelectedRoomId(null);
   };
 
   const placeArmed = (row: number, col: number) => {
-    if (!segmentFits(armedKind, row, col, paletteOrientation)) return;
-    setDraft((prev) => placeHallSegment(prev, armedKind, row, col, paletteOrientation));
+    setDraft((prev) => {
+      const next = placeHallSegment(prev, armedKind, row, col, paletteOrientation);
+      selectAdded(prev, next);
+      return next;
+    });
+    setSelectedRoomId(null);
   };
+
+  const hoverPayload = (): DragPayload =>
+    dragRef.current ?? { kind: armedKind, orientation: paletteOrientation };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>Progressive hallway setup</DialogTitle>
           <DialogDescription>
-            Drag a hall piece onto the grid. Rotate it before or after placing. Pin rooms after the hallway is down.
+            Drag a premade hall piece onto the grid, or select it and click a cell. Turn rotates the
+            piece before it is placed. After it is down, select it and Rotate 90° (or press R).
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 md:grid-cols-[15rem_1fr_11rem] min-h-0 flex-1 overflow-hidden">
@@ -196,6 +252,7 @@ export default function ProgressiveSetupDialog({
                 type="button"
                 variant="outline"
                 className="text-base"
+                data-testid="turn-palette"
                 onClick={() => setPaletteOrientation((value) => nextHallOrientation(value))}
               >
                 <RotateCw className="h-4 w-4 mr-1.5" />
@@ -207,6 +264,8 @@ export default function ProgressiveSetupDialog({
                 key={piece.id}
                 type="button"
                 draggable
+                data-testid={`hall-piece-${piece.id}`}
+                aria-pressed={armedKind === piece.id}
                 onDragStart={(event) => {
                   const payload: DragPayload = { kind: piece.id, orientation: paletteOrientation };
                   event.dataTransfer.setData(DRAG_TYPE, JSON.stringify(payload));
@@ -231,12 +290,13 @@ export default function ProgressiveSetupDialog({
               </button>
             ))}
             <p className="text-base text-muted-foreground">
-              Selected piece places on click if you are not pinning a room.
+              {armedLabel} at {paletteOrientation}° places on click if you are not pinning a room.
             </p>
             <Button
               type="button"
               variant="outline"
               className="w-full text-base"
+              data-testid="clear-hallway"
               onClick={() => {
                 setDraft((prev) => clearHallway(prev));
                 setSelectedSegmentId(null);
@@ -245,9 +305,44 @@ export default function ProgressiveSetupDialog({
               Clear hallway
             </Button>
           </div>
-          <div className="overflow-auto border-2 border-border p-2 bg-background">
+          <div className="overflow-auto border-2 border-border p-2 bg-background min-h-0">
+            {selectedSegment ? (
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="text-base font-semibold">
+                  {HALL_SEGMENT_KINDS.find((item) => item.id === selectedSegment.kind)?.label} · {selectedSegment.orientation}°
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-base"
+                  data-testid="rotate-placed-segment"
+                  onClick={() => setDraft((prev) => rotateHallSegment(prev, selectedSegment.id))}
+                >
+                  <RotateCw className="h-4 w-4 mr-1.5" />
+                  Rotate 90°
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-base"
+                  data-testid="remove-placed-segment"
+                  onClick={() => {
+                    setDraft((prev) => removeHallSegment(prev, selectedSegment.id));
+                    setSelectedSegmentId(null);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 mr-1.5" />
+                  Remove piece
+                </Button>
+              </div>
+            ) : (
+              <p className="text-base text-muted-foreground mb-2">
+                Empty until you drop pieces. Hover a cell to preview. Invalid placements stay off the canvas.
+              </p>
+            )}
             <div
               className="grid gap-1"
+              data-testid="hall-segment-grid"
               style={{
                 gridTemplateColumns: `repeat(${HALLWAY_COLS}, minmax(0, 1fr))`,
                 gridTemplateRows: `repeat(${HALLWAY_ROWS}, minmax(2.5rem, 1fr))`,
@@ -261,12 +356,14 @@ export default function ProgressiveSetupDialog({
                   const ghost = ghostKeys.has(cellKey(row, col));
                   const covering = segmentCoveringCell(draft.segments, row, col);
                   const selected = covering?.id === selectedSegmentId;
-                  const pinnedIds = pinByCell.get(cellKey(row, col)) ?? [];
+                  const pinnedIds = hallway ? (pinByCell.get(cellKey(row, col)) ?? []) : [];
                   return (
                     <button
                       key={cellKey(row, col)}
                       type="button"
                       draggable={Boolean(covering)}
+                      data-testid={`hall-cell-${row}-${col}`}
+                      aria-label={`Hall cell ${row},${col}`}
                       onDragStart={(event) => {
                         if (!covering) return;
                         const payload: DragPayload = { segmentId: covering.id };
@@ -279,9 +376,7 @@ export default function ProgressiveSetupDialog({
                       }}
                       onDragOver={(event) => {
                         event.preventDefault();
-                        const payload =
-                          dragRef.current ?? { kind: armedKind, orientation: paletteOrientation };
-                        setHover({ row, col, payload });
+                        setHover({ row, col, payload: hoverPayload() });
                       }}
                       onDrop={(event) => {
                         event.preventDefault();
@@ -294,10 +389,23 @@ export default function ProgressiveSetupDialog({
                         dragRef.current = null;
                         setHover(null);
                       }}
+                      onMouseEnter={() => {
+                        if (selectedRoomId) return;
+                        if (!dragRef.current && covering) {
+                          setHover(null);
+                          return;
+                        }
+                        setHover({ row, col, payload: hoverPayload() });
+                      }}
+                      onMouseLeave={() => {
+                        if (!dragRef.current) setHover(null);
+                      }}
                       className={cn(
                         'min-h-[2.5rem] border text-base px-0.5',
                         ghost
-                          ? 'bg-accent border-foreground'
+                          ? ghostFits
+                            ? 'bg-accent border-foreground'
+                            : 'bg-destructive/20 border-destructive'
                           : hallway
                             ? 'bg-secondary border-foreground'
                             : 'bg-card border-transparent',
@@ -338,27 +446,6 @@ export default function ProgressiveSetupDialog({
                 <p className="text-base">
                   {HALL_SEGMENT_KINDS.find((item) => item.id === selectedSegment.kind)?.label} · {selectedSegment.orientation}°
                 </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full text-base"
-                  onClick={() => setDraft((prev) => rotateHallSegment(prev, selectedSegment.id))}
-                >
-                  <RotateCw className="h-4 w-4 mr-1.5" />
-                  Rotate 90°
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full text-base"
-                  onClick={() => {
-                    setDraft((prev) => removeHallSegment(prev, selectedSegment.id));
-                    setSelectedSegmentId(null);
-                  }}
-                >
-                  <Trash2 className="h-4 w-4 mr-1.5" />
-                  Remove piece
-                </Button>
               </div>
             ) : null}
             <p className="text-base font-semibold">Rooms</p>
@@ -385,6 +472,7 @@ export default function ProgressiveSetupDialog({
           </Button>
           <Button
             type="button"
+            data-testid="save-progressive-hallway"
             onClick={() => {
               onSave({
                 ...draft,
