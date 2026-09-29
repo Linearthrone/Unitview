@@ -61,7 +61,7 @@ function RoomChip({
       {marks.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-1">
           {marks.map((mark) => (
-            <SafetyMarkBadge key={mark.id} mark={mark} />
+            <SafetyMarkBadge key={mark.id} mark={mark} size="card" showLabel={false} />
           ))}
         </div>
       )}

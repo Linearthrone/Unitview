@@ -282,7 +282,7 @@ const PatientBlock: React.FC<PatientBlockProps> = ({
                 <CardFooter className="p-3 border-t">
                   <div className="flex gap-1.5 flex-wrap" role="list" aria-label="Safety marks">
                     {alerts.map((mark) => (
-                      <SafetyMarkBadge key={mark.id} mark={mark} />
+                      <SafetyMarkBadge key={mark.id} mark={mark} size="card" showLabel={false} />
                     ))}
                   </div>
                 </CardFooter>

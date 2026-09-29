@@ -71,7 +71,7 @@ const iconSections = [
       { Icon: Stethoscope, description: 'Nurses on the board' },
       { Icon: UserRound, description: 'PCTs' },
       { Icon: User, description: 'Max patients by staffing ratio' },
-      { Icon: AlertTriangle, description: 'Fall, DNR, restraints, isolation shapes match the cards' },
+      { Icon: AlertTriangle, description: 'Map strip: large shape + short label. Room cards: shape only.' },
     ],
   },
   {
