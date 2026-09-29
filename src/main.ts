@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, shell, ipcMain, dialog, session } from 'elect
 import * as path from 'path';
 import * as fs from 'fs';
 import { registerIpcHandlers } from './ipc/register-handlers';
+import { AppUpdater } from './updates/app-updater';
 import { LiveMapWallpaperService } from './wallpaper/live-map-wallpaper';
 import type { WallpaperMapSnapshot, WallpaperStartOptions } from './wallpaper/types';
 import { createAuditRecord } from './security/audit';
@@ -12,6 +13,7 @@ class UnitViewApp {
   /** Unpackaged `electron dist/main.js` is dev even when NODE_ENV is unset. */
   private isDev = !app.isPackaged;
   private wallpaperService: LiveMapWallpaperService | null = null;
+  private updater: AppUpdater | null = null;
 
   constructor() {
     this.initializeApp();
@@ -38,8 +40,10 @@ class UnitViewApp {
         });
       }
       this.createMainWindow();
+      this.updater = new AppUpdater(() => this.mainWindow);
       this.setupMenu();
       this.setupIpcHandlers();
+      this.updater.registerIpc();
     });
 
     // Quit when all windows are closed
@@ -251,13 +255,19 @@ class UnitViewApp {
         label: 'Help',
         submenu: [
           {
+            label: 'Check for Updates…',
+            click: () => {
+              void this.updater?.checkFromMenu();
+            },
+          },
+          {
             label: 'About UnitView',
             click: () => {
               dialog.showMessageBox(this.mainWindow!, {
                 type: 'info',
                 title: 'About UnitView',
                 message: 'UnitView Patient Management Dashboard',
-                detail: 'Version 5.1.5-c\n\nA patient-management dashboard for hospital charge nurses.\n\nBuilt with Electron and React. Unit data is stored in an AES-256-GCM encrypted vault (phi.vault.json) in the workstation user-data folder. Epic FHIR remains sandbox fixtures unless configured.',
+                detail: `Version ${app.getVersion()}\n\nA patient-management dashboard for hospital charge nurses.\n\nBuilt with Electron and React. Unit data is stored in an AES-256-GCM encrypted vault (phi.vault.json) in the workstation user-data folder. Epic FHIR remains sandbox fixtures unless configured.`,
                 buttons: ['OK'],
               });
             },

@@ -93,6 +93,20 @@ export interface UnitLayoutMetadata {
   nurseToPatientRatio: number;
   unitType: UnitType;
   printLayoutOptions?: PrintLayoutOptions;
+  /** PROP-4 Progressive presentation. Optional — Command surface does not need it. */
+  progressiveView?: {
+    preferredMode: 'command' | 'progressive';
+    templateId: 'straight' | 'l' | 'u' | 't' | 'racetrack';
+    paintCells: { row: number; col: number }[];
+    roomPins: { patientId: string; row: number; col: number }[];
+    segments?: {
+      id: string;
+      kind: 'straight3' | 'straight5' | 'corner' | 'tee' | 'cross';
+      row: number;
+      col: number;
+      orientation: 0 | 90 | 180 | 270;
+    }[];
+  };
 }
 
 /** What each draggable item on the new-unit layout map represents */

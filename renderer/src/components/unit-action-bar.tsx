@@ -29,6 +29,9 @@ import {
 import { Separator } from '@/components/ui/separator';
 import type { GridZoomControls } from '@/lib/grid-zoom';
 import IconExplanationDialog from './icon-explanation-dialog';
+import type { UnitBoardViewMode } from '@/lib/progressive-view';
+import type { UnitCensusStats } from '@/lib/patient-status-helpers';
+import { CensusStaffStatsRow } from '@/components/unit-board-stats';
 
 interface UnitActionBarProps {
   canEdit?: boolean;
@@ -47,6 +50,11 @@ interface UnitActionBarProps {
   onLeaveUnit?: () => void;
   wallpaperActive?: boolean;
   onToggleWallpaper?: () => void;
+  viewMode?: UnitBoardViewMode;
+  onViewModeChange?: (mode: UnitBoardViewMode) => void;
+  onProgressiveSetup?: () => void;
+  censusStats?: UnitCensusStats;
+  showOpsStats?: boolean;
 }
 
 const UnitActionBar: React.FC<UnitActionBarProps> = ({
@@ -66,6 +74,11 @@ const UnitActionBar: React.FC<UnitActionBarProps> = ({
   onLeaveUnit,
   wallpaperActive = false,
   onToggleWallpaper,
+  viewMode = 'command',
+  onViewModeChange,
+  onProgressiveSetup,
+  censusStats,
+  showOpsStats = false,
 }) => {
   const [isExplanationOpen, setIsExplanationOpen] = useState(false);
 
@@ -74,6 +87,12 @@ const UnitActionBar: React.FC<UnitActionBarProps> = ({
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-card/95 backdrop-blur-sm shadow-[0_-2px_10px_rgba(0,0,0,0.08)] print-hide">
         <div className="px-3 sm:px-5 py-2 flex flex-wrap items-center gap-2">
           <div className="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+            {showOpsStats && censusStats ? (
+              <>
+                <CensusStaffStatsRow census={censusStats} />
+                <Separator orientation="vertical" className="h-7 hidden sm:block" />
+              </>
+            ) : null}
             {onSyncEpicCensus && (
               <Button
                 variant="outline"
@@ -162,6 +181,23 @@ const UnitActionBar: React.FC<UnitActionBarProps> = ({
                       <DropdownMenuItem onClick={onSaveLayout}>
                         <Save className="mr-2 h-4 w-4" />
                         Save layout as…
+                      </DropdownMenuItem>
+                    )}
+                    {onViewModeChange && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Unit board view</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onViewModeChange('command')}>
+                          Command surface{viewMode === 'command' ? ' ✓' : ''}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onViewModeChange('progressive')}>
+                          Progressive view{viewMode === 'progressive' ? ' ✓' : ''}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    {onProgressiveSetup && (
+                      <DropdownMenuItem onClick={onProgressiveSetup}>
+                        Progressive hallway setup…
                       </DropdownMenuItem>
                     )}
                     {onInsertMockData && (

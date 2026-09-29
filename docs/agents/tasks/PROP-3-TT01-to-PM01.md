@@ -29,7 +29,7 @@ LinearThrone directed: thinktank first; LinearThrone approves; then TINA evaluat
 
 Ship **Option A** now: same Create Unit room map and drag-and-drop, new clinical command-surface look (unify tokens, restyle cards/header, labeled safety marks, stop fading assigned rooms, wall hides patient identifiers only and does not idle-lock). Keep Arial 18px. Do **not** replace the board with a floorplan layout in this PROP.
 
-**Progressive view** (later optional view): marketing + wall aesthetics; facility type/size opt-in. Admin uses corridor **templates/paint** and places rooms. Nurses **glance-only** on the map. Hallway-enough, no blueprints. Layout vs A: recommended shared clinical truth with two presentations (A grid for assignment, Progressive corridor+pins for glance) — Kurt still deciding §9.6.
+**Progressive view** (later optional view): marketing + wall aesthetics; facility type/size opt-in. Admin uses corridor **templates/paint** and places rooms. Nurses **glance-only** on the map. Hallway-enough, no blueprints. Layout vs A: shared clinical truth with two presentations (A grid for assignment, Progressive corridor+pins for glance). Locked in PROP-4.0.
 
 ## Seat dissent
 

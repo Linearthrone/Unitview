@@ -5,7 +5,7 @@ prop_full: PROP-4-progressive-view
 from: TT-01
 to: PM-01
 priority: P1
-status: Intake — waiting LinearThrone approval before TINA tickets
+status: accepted-pm-ticketed
 created: 2026-09-21
 sent_at: 2026-09-21
 mode: idea

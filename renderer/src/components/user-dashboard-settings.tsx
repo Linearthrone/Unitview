@@ -6,6 +6,7 @@ import { ArrowLeft, Moon, Settings, Sun } from 'lucide-react';
 import type { User } from '../types/auth';
 import { formatAppRoleLabel } from '@/lib/roles';
 import { getAppVersion } from '@/lib/app-version';
+import AppUpdateCard from './app-update-card';
 interface UserDashboardSettingsProps {
   user: User;
   onBack: () => void;
@@ -127,6 +128,7 @@ export default function UserDashboardSettings({
                   <span className="font-medium">Local</span>
                 </div>
               </div>
+              <AppUpdateCard />
             </div>
 
             <div className="pt-2">

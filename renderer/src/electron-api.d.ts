@@ -121,6 +121,25 @@ interface WallpaperStartOptions {
   unitName?: string;
 }
 
+type AppUpdatePhase =
+  | 'idle'
+  | 'checking'
+  | 'available'
+  | 'downloading'
+  | 'ready'
+  | 'current'
+  | 'unavailable'
+  | 'error';
+
+interface AppUpdateStatus {
+  phase: AppUpdatePhase;
+  packaged: boolean;
+  currentVersion: string;
+  availableVersion: string | null;
+  percent: number | null;
+  message: string;
+}
+
 interface WallpaperStatus {
   active: boolean;
   platformSupported: boolean;
@@ -138,6 +157,11 @@ declare global {
       importData: () => Promise<{ success: boolean; data?: unknown; error?: string }>;
       printToPDF: (htmlContent: string) => Promise<{ success: boolean; path?: string; error?: string }>;
       getAppVersion: () => Promise<string>;
+      getUpdateStatus: () => Promise<AppUpdateStatus>;
+      checkForUpdates: () => Promise<AppUpdateStatus>;
+      downloadUpdate: () => Promise<AppUpdateStatus>;
+      installUpdate: () => Promise<AppUpdateStatus>;
+      onUpdateStatus: (callback: (status: AppUpdateStatus) => void) => () => void;
       getUserDataPath: () => Promise<string>;
       saveSecureStore: (plaintext: string) => Promise<{ success: boolean; error?: string }>;
       loadSecureStore: () => Promise<{

@@ -1,6 +1,11 @@
 ---
 type: proposal
-status: sent-to-pm
+status: accepted-pm-ticketed
+pm_tickets:
+  - PROP-4.1-PM01-to-DBD01.md
+  - PROP-4.2-PM01-to-FED01.md
+  - PROP-4.3-PM01-to-FED01.md
+  - PROP-4.5-PM01-to-FED01.md
 tt_id: TT-01
 prop_id: PROP-4-progressive-view
 created: 2026-09-21
@@ -30,7 +35,7 @@ After PROP-3’s same-map clinical command surface, offer a **Progressive view**
 - Depends on / follows **PROP-3-clinical-command-surface** (Option A tokens, wall PHI, no idle-lock).
 - Product: UnitView Electron, local-first PHI. No cloud CAD. No third-party drawing uploads.
 - Today Create Unit places Room + staff cards on one rectangular grid; that remains A’s assignment instrument.
-- Kurt locks (2026-09-21): name **Progressive view**; admin corridor templates/paint; nurses glance-only; hallway-enough; shared clinical truth with two presentations (accepted for send-to-PM).
+- LinearThrone locks (2026-09-21 / 2026-09-27): name **Progressive view**; admin corridor templates/paint; nurses glance-only on the map; hallway-enough; shared clinical truth with two presentations. Columns are assignable.
 
 ## 3.1 Mockups for review
 

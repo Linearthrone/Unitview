@@ -12,7 +12,7 @@ House Victoria (.NET Host, Avalonia desk, Unreal body) is a **different product*
 
 | Field | Current |
 | --- | --- |
-| App | UnitView `5.1.5-c` |
+| App | UnitView `5.4.0` |
 | Renderer | `renderer/` — React, Vite, Tailwind |
 | Main | TypeScript Electron (`tsconfig.main.json` → `dist/main.js`) |
 | Data | Workstation AES-256-GCM vault (`phi.vault.json`); localStorage first-run migrate only |

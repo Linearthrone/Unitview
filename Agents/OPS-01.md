@@ -27,7 +27,7 @@ Ticket suffix for UnitView release work: `to-OPS01`.
 
 - `npm run build` / `npm run dist:win`
 - Confirm `release/UnitView Setup *.exe` exists when packaging is in scope
-- Installer notes in `BUILD_INSTRUCTIONS.md` / `INSTALLATION.md`
+- Installer notes in `WINDOWS_PACK.md` — look for `release/UnitView-Setup-5.4.0.exe` or a master `5.4.<run>` Release
 - Never put Epic keys or passwords in reports
 
 ## Out of scope
