@@ -1,4 +1,4 @@
-# UnitView 5.3.0-c — Quick start
+# UnitView 5.4 — Quick start
 
 ## Run from source
 
@@ -18,8 +18,10 @@ npm install
 npm run dist:win
 ```
 
-Installer: `release\UnitView-Setup-5.3.0-c.exe`
+Installer: `release\UnitView-Setup-5.4.0.exe`
+
+After the first 5.4 install, use **Help → Check for Updates** instead of uninstalling.
 
 That is the production pack. `release/` is gitignored — it will never appear as a committed file.
 
-**Version:** 5.3.0-c
+**Version:** 5.4.0 (master Releases use `5.4.<run>`)

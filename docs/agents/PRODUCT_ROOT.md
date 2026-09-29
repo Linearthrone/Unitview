@@ -1,6 +1,6 @@
 ---
 type: config
-updated: 2026-09-27
+updated: 2026-09-29
 project: UnitView
 ---
 
@@ -13,8 +13,8 @@ project: UnitView
 | Field | Current |
 | --- | --- |
 | Code home | `renderer/` + Electron `src/` |
-| Version | `5.3.0-c` |
-| Last sprint | PROP-4 first wave on `master` (PR #14) |
-| Active PROP | **PROP-4** Progressive (tune); Windows pack is `5.3.0-c` — see `WINDOWS_PACK.md` |
+| Version | `5.4.0` (master Releases `5.4.<run>`) |
+| Last sprint | PROP-4 hallway segments + compact stats on `master` |
+| Active PROP | Windows in-app update; Progressive tune — see `WINDOWS_PACK.md` |
 
 Do not treat this file as a second product spec. Edit README / HIPAA doc instead.

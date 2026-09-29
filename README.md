@@ -1,8 +1,8 @@
-# UnitView 5.3.0-c
+# UnitView 5.4
 
 Charge-nurse unit map and assignment dashboard. Electron + React. Local-first AES-256-GCM vault. Optional Epic FHIR census.
 
-![Version](https://img.shields.io/badge/version-5.3.0--c-blue.svg)
+![Version](https://img.shields.io/badge/version-5.4.0-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)
 
 ## Windows installer
@@ -14,7 +14,7 @@ npm install
 npm run dist:win
 ```
 
-Look for `release\UnitView-Setup-5.3.0-c.exe`. Older `5.1.5-c` / `5.2.0-c` setup files on disk are previous packs.
+Look for `release\UnitView-Setup-5.4.0.exe` locally, or a `5.4.<n>` GitHub Release after master packs. After the first 5.4 install, use **Help → Check for Updates** instead of uninstalling.
 
 ## Dev
 
@@ -42,7 +42,8 @@ npm run electron
 
 - Encrypted workstation vault (`%APPDATA%\unitview-windows\phi.vault.json`) — not SQLite
 - Command surface (PROP-3) and Progressive hallway view (PROP-4 first wave)
-- About and Settings show **5.3.0-c** from `app.getVersion()`
+- About and Settings show the packed version from `app.getVersion()`
+- Installed Windows clients can **Check for updates** after master publishes a newer Release
 
 ## Docs
 

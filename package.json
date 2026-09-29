@@ -1,6 +1,6 @@
 {
   "name": "unitview-windows",
-  "version": "5.3.0-c",
+  "version": "5.4.0",
   "description": "UnitView Patient Management Dashboard - Windows Desktop Application",
   "main": "dist/main.js",
   "homepage": "./",
@@ -16,10 +16,11 @@
     "preview": "cd renderer && npm run preview",
     "electron": "electron dist/main.js",
     "pack": "electron-builder --dir",
-    "dist": "npm run build && electron-builder",
-    "dist:win": "npm run build && electron-builder --win",
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never",
+    "dist:win:publish": "npm run build && electron-builder --win --publish always",
     "postinstall": "cd renderer && npm install",
-    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts renderer/src/lib/safety-marks.test.ts renderer/src/lib/progressive-view.test.ts",
+    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts src/updates/*.test.ts renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts renderer/src/lib/safety-marks.test.ts renderer/src/lib/progressive-view.test.ts",
     "test:fresh": "git pull && npm install && cd renderer && npm install && cd .. && npm run build && npm run electron"
   },
   "keywords": [
@@ -40,7 +41,8 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.8.9"
   },
   "build": {
     "appId": "com.unitview.windows",
@@ -64,11 +66,18 @@
         }
       ]
     },
+    "publish": {
+      "provider": "github",
+      "owner": "Linearthrone",
+      "repo": "Unitview_5.1.5c",
+      "releaseType": "release"
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "differentialPackage": true
     }
   }
 }
