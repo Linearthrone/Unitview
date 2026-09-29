@@ -75,7 +75,7 @@ SoulCore-only seats (**REX-01**, **VBOX-01**, **OPS-HOME**, **OPS-TAB**) are imp
 
 | Field | Current |
 | --- | --- |
-| Version | `5.3.0-c` (`package.json`) |
+| Version | `5.4.0` (`package.json`; master Releases `5.4.<run>`) |
 | Renderer | `renderer/` React 18 + TypeScript + Tailwind + Vite |
 | Main | Electron main (`tsconfig.main.json`) |
 | Data | AES-256-GCM `phi.vault.json` (not SQLite) |

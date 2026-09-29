@@ -1,5 +1,17 @@
 # UnitView version history
 
+## [5.4.0] - 2026-09-29
+
+### Pack
+- Installed Windows clients can **Check for updates** (Help menu or Settings) and install over the existing app
+- Master Windows pack publishes a GitHub Release stamped `5.4.<run>` so each merge is a newer feed
+- First 5.4 installer is still a one-time install for 5.3.0-c workstations; after that, do not uninstall to take a new pack
+
+### Product (already on master)
+- PROP-3 Command surface, PROP-4 Progressive hallway segments, compact board stats
+
+---
+
 ## [5.3.0-c] - 2026-09-27
 
 ### Pack
@@ -35,6 +47,6 @@
 | 4.0.5 | Broken `package.json` quotes; blank screen |
 | 4.0.x / 3.x | Desktop rewrite / deprecated web |
 
-Those files are gone from this repo. Pack **5.3.0-c** only.
+Those files are gone from this repo. Pack **5.4** only.
 
-**Current version:** 5.3.0-c
+**Current version:** 5.4.0 (master Releases use `5.4.<run>`)

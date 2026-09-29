@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import type { AuditEventInput } from './security/audit';
 import type { EpicConnectionPublic, FhirAuthMode } from './fhir/epic-config';
 import type { WallpaperMapSnapshot, WallpaperStartOptions, WallpaperStatus } from './wallpaper/types';
+import type { AppUpdateStatus } from './updates/update-status';
 
 export interface EpicConfigSaveInput extends Partial<EpicConnectionPublic> {
   privateKeyPem?: string;
@@ -14,6 +15,19 @@ export const electronAPI = {
   importData: () => ipcRenderer.invoke('import-data'),
   printToPDF: (htmlContent: string) => ipcRenderer.invoke('print-to-pdf', htmlContent),
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  getUpdateStatus: () => ipcRenderer.invoke('updates-get-status') as Promise<AppUpdateStatus>,
+  checkForUpdates: () => ipcRenderer.invoke('updates-check') as Promise<AppUpdateStatus>,
+  downloadUpdate: () => ipcRenderer.invoke('updates-download') as Promise<AppUpdateStatus>,
+  installUpdate: () => ipcRenderer.invoke('updates-install') as Promise<AppUpdateStatus>,
+  onUpdateStatus: (callback: (status: AppUpdateStatus) => void) => {
+    const listener = (_event: unknown, status: AppUpdateStatus) => {
+      callback(status);
+    };
+    ipcRenderer.on('updates-status', listener);
+    return () => {
+      ipcRenderer.removeListener('updates-status', listener);
+    };
+  },
   getUserDataPath: () => ipcRenderer.invoke('get-user-data-path'),
   saveSecureStore: (plaintext: string) => ipcRenderer.invoke('secure-store-save', plaintext),
   loadSecureStore: () => ipcRenderer.invoke('secure-store-load'),
