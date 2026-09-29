@@ -52,13 +52,20 @@ test('map stats are labeled; room cards are symbol-only', async ({ page }) => {
   await page.getByRole('button', { name: 'Admin' }).click();
   await page.getByRole('menuitem', { name: 'Insert mock patients' }).click();
 
-  await expect(page.getByRole('group', { name: 'Safety' })).toContainText('Fall');
-  await expect(page.getByRole('group', { name: 'Safety' })).toContainText('DNR');
-  await page.screenshot({ path: '/opt/cursor/artifacts/map_stats_labeled.png' });
+  const safety = page.getByRole('group', { name: 'Safety' });
+  await expect(safety.locator('[data-safety-label]').filter({ hasText: 'Fall' })).toBeVisible();
+  await expect(safety.locator('[data-safety-label]').filter({ hasText: 'DNR' })).toBeVisible();
+  await safety.screenshot({ path: '/opt/cursor/artifacts/map_stats_labeled.png' });
+
+  await page.getByRole('button', { name: /Zoom level/ }).click();
+  for (let i = 0; i < 6; i += 1) {
+    await page.getByRole('button', { name: 'Zoom in' }).click();
+  }
 
   const cardMark = page.locator('[data-patient-id] [data-safety-labeled="false"]').first();
   await expect(cardMark).toBeVisible({ timeout: 15000 });
-  await expect(cardMark).not.toContainText('Fall');
+  await expect(cardMark).toHaveAttribute('data-safety-labeled', 'false');
+  await expect(cardMark.locator('[data-safety-label]')).toHaveCount(0);
   await cardMark.scrollIntoViewIfNeeded();
   await page.locator('[data-patient-id]').first().screenshot({
     path: '/opt/cursor/artifacts/map_card_symbol_only.png',

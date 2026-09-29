@@ -19,11 +19,11 @@ export interface UnitBoardSafetyCounts {
 }
 
 const CHIP =
-  'inline-flex items-center gap-1.5 px-2 py-1 text-base leading-none font-bold tabular-nums bg-background shrink-0';
+  'inline-flex items-center gap-2 px-2.5 py-1.5 text-lg leading-none font-bold tabular-nums bg-background shrink-0';
 
 function FoleyGlyph() {
   return (
-    <svg viewBox="0 0 16 16" className="h-5 w-5" aria-hidden>
+    <svg viewBox="0 0 16 16" className="h-8 w-8" aria-hidden>
       <path
         d="M6 2.5h3.2v6.2a2.6 2.6 0 1 1-3.2 0V2.5z"
         fill="none"
@@ -151,7 +151,7 @@ function SafetyMarkCount({ mark, value }: { mark: SafetyMark; value: number }) {
   return (
     <CountChip title={mark.label} value={value} mark={mark}>
       <SafetyShape shape={mark.shape} size="map" />
-      <span>{mark.label}</span>
+      <span data-safety-label>{mark.label}</span>
     </CountChip>
   );
 }
@@ -172,7 +172,7 @@ export function SafetyStatsRow({ counts }: { counts: UnitBoardSafetyCounts }) {
       <SafetyMarkCount mark={SITTER_MARK} value={counts.sitterCount} />
       <CountChip title="Foley" value={counts.foleyCount} className="text-foreground">
         <FoleyGlyph />
-        <span>Foley</span>
+        <span data-safety-label>Foley</span>
       </CountChip>
       <SafetyMarkCount mark={CENTRAL_MARK} value={counts.centralLineCount} />
       <SafetyMarkCount mark={TUBE_MARK} value={counts.tubeFeedCount} />
@@ -192,34 +192,34 @@ export function CensusStaffStatsRow({
   return (
     <div className="flex items-center gap-1.5" role="group" aria-label="Census and staff">
       <CountChip title="Bedded" value={census.beddedPatients}>
-        <BedDouble className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <BedDouble className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>Bedded</span>
       </CountChip>
       <CountChip title="Available" value={census.availableBeds}>
-        <BedSingle className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <BedSingle className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>Open</span>
       </CountChip>
       <CountChip title="Blocked" value={census.blockedRooms} emphasize={census.blockedRooms > 0}>
-        <span className="relative inline-flex h-5 w-5 items-center justify-center" aria-hidden>
-          <BedSingle className="h-5 w-5" strokeWidth={2.5} />
-          <Ban className="absolute h-5 w-5" strokeWidth={2.75} />
+        <span className="relative inline-flex h-8 w-8 items-center justify-center" aria-hidden>
+          <BedSingle className="h-8 w-8" strokeWidth={2.5} />
+          <Ban className="absolute h-8 w-8" strokeWidth={2.75} />
         </span>
         <span>Blocked</span>
       </CountChip>
       <CountChip title="Discharges today" value={census.anticipatedDischarges}>
-        <DoorOpen className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <DoorOpen className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>DC</span>
       </CountChip>
       <CountChip title="Nurses" value={census.nurseCount} emphasize={census.nurseCount === 0}>
-        <Stethoscope className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <Stethoscope className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>RN</span>
       </CountChip>
       <CountChip title="PCTs" value={census.pctCount}>
-        <UserRound className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <UserRound className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>PCT</span>
       </CountChip>
       <CountChip title="Max patients by staffing" value={census.maxPatientsAllowed} emphasize={overCapacity}>
-        <Users className="h-5 w-5" strokeWidth={2.5} aria-hidden />
+        <Users className="h-8 w-8" strokeWidth={2.5} aria-hidden />
         <span>Max</span>
       </CountChip>
     </div>

@@ -5,28 +5,28 @@ export type SafetyShapeSize = 'card' | 'map';
 
 const SHAPE_CLASS: Record<SafetyMarkShape, Record<SafetyShapeSize, string>> = {
   triangle: {
-    card: 'inline-block h-0 w-0 border-l-[0.45rem] border-r-[0.45rem] border-b-[0.75rem] border-l-transparent border-r-transparent border-b-current',
-    map: 'inline-block h-0 w-0 border-l-[0.7rem] border-r-[0.7rem] border-b-[1.15rem] border-l-transparent border-r-transparent border-b-current',
+    card: 'inline-block h-0 w-0 border-l-[0.65rem] border-r-[0.65rem] border-b-[1.1rem] border-l-transparent border-r-transparent border-b-current',
+    map: 'inline-block h-0 w-0 border-l-[0.95rem] border-r-[0.95rem] border-b-[1.6rem] border-l-transparent border-r-transparent border-b-current',
   },
   diamond: {
-    card: 'inline-block h-3.5 w-3.5 rotate-45 border-2 border-current bg-transparent',
-    map: 'inline-block h-5 w-5 rotate-45 border-2 border-current bg-transparent',
+    card: 'inline-block h-6 w-6 rotate-45 border-2 border-current bg-transparent',
+    map: 'inline-block h-8 w-8 rotate-45 border-[3px] border-current bg-transparent',
   },
   square: {
-    card: 'inline-block h-3.5 w-3.5 border-2 border-current bg-transparent',
-    map: 'inline-block h-5 w-5 border-2 border-current bg-transparent',
+    card: 'inline-block h-6 w-6 border-2 border-current bg-transparent',
+    map: 'inline-block h-8 w-8 border-[3px] border-current bg-transparent',
   },
   circle: {
-    card: 'inline-block h-3.5 w-3.5 rounded-full border-2 border-current bg-transparent',
-    map: 'inline-block h-5 w-5 rounded-full border-2 border-current bg-transparent',
+    card: 'inline-block h-6 w-6 rounded-full border-2 border-current bg-transparent',
+    map: 'inline-block h-8 w-8 rounded-full border-[3px] border-current bg-transparent',
   },
   bar: {
-    card: 'inline-block h-4 w-1.5 bg-current',
-    map: 'inline-block h-6 w-2 bg-current',
+    card: 'inline-block h-7 w-2 bg-current',
+    map: 'inline-block h-9 w-3 bg-current',
   },
   pill: {
-    card: 'inline-block h-3 w-5 rounded-full border-2 border-current bg-transparent',
-    map: 'inline-block h-4 w-7 rounded-full border-2 border-current bg-transparent',
+    card: 'inline-block h-5 w-8 rounded-full border-2 border-current bg-transparent',
+    map: 'inline-block h-6 w-11 rounded-full border-[3px] border-current bg-transparent',
   },
 };
 
@@ -78,13 +78,17 @@ export function SafetyMarkBadge({
       aria-label={mark.label}
       className={cn(
         'inline-flex items-center font-semibold bg-card leading-none',
-        showLabel ? 'gap-1.5 px-2 py-1 text-base' : 'justify-center p-1',
+        showLabel ? 'gap-2 px-2.5 py-1.5 text-lg' : 'justify-center p-1.5',
         SAFETY_FRAME_CLASS[mark.frame],
         mark.toneClass,
       )}
     >
       <SafetyShape shape={mark.shape} size={size} />
-      {showLabel ? <span>{mark.label}</span> : <span className="sr-only">{mark.label}</span>}
+      {showLabel ? (
+        <span data-safety-label>{mark.label}</span>
+      ) : (
+        <span className="sr-only">{mark.label}</span>
+      )}
     </span>
   );
 }
