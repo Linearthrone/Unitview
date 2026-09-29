@@ -1,25 +1,50 @@
 import { cn } from '@/lib/utils';
 import type { SafetyMark, SafetyMarkShape } from '@/lib/safety-marks';
 
-export function SafetyShape({ shape }: { shape: SafetyMarkShape }) {
+export type SafetyShapeSize = 'card' | 'map';
+
+const SHAPE_CLASS: Record<SafetyMarkShape, Record<SafetyShapeSize, string>> = {
+  triangle: {
+    card: 'inline-block h-0 w-0 border-l-[0.45rem] border-r-[0.45rem] border-b-[0.75rem] border-l-transparent border-r-transparent border-b-current',
+    map: 'inline-block h-0 w-0 border-l-[0.7rem] border-r-[0.7rem] border-b-[1.15rem] border-l-transparent border-r-transparent border-b-current',
+  },
+  diamond: {
+    card: 'inline-block h-3.5 w-3.5 rotate-45 border-2 border-current bg-transparent',
+    map: 'inline-block h-5 w-5 rotate-45 border-2 border-current bg-transparent',
+  },
+  square: {
+    card: 'inline-block h-3.5 w-3.5 border-2 border-current bg-transparent',
+    map: 'inline-block h-5 w-5 border-2 border-current bg-transparent',
+  },
+  circle: {
+    card: 'inline-block h-3.5 w-3.5 rounded-full border-2 border-current bg-transparent',
+    map: 'inline-block h-5 w-5 rounded-full border-2 border-current bg-transparent',
+  },
+  bar: {
+    card: 'inline-block h-4 w-1.5 bg-current',
+    map: 'inline-block h-6 w-2 bg-current',
+  },
+  pill: {
+    card: 'inline-block h-3 w-5 rounded-full border-2 border-current bg-transparent',
+    map: 'inline-block h-4 w-7 rounded-full border-2 border-current bg-transparent',
+  },
+};
+
+export function SafetyShape({
+  shape,
+  size = 'card',
+}: {
+  shape: SafetyMarkShape;
+  size?: SafetyShapeSize;
+}) {
   switch (shape) {
     case 'triangle':
-      return (
-        <span
-          className="inline-block h-0 w-0 border-l-[0.35rem] border-r-[0.35rem] border-b-[0.6rem] border-l-transparent border-r-transparent border-b-current"
-          aria-hidden
-        />
-      );
     case 'diamond':
-      return <span className="inline-block h-2.5 w-2.5 rotate-45 border-2 border-current bg-transparent" aria-hidden />;
     case 'square':
-      return <span className="inline-block h-2.5 w-2.5 border-2 border-current bg-transparent" aria-hidden />;
     case 'circle':
-      return <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-current bg-transparent" aria-hidden />;
     case 'bar':
-      return <span className="inline-block h-3.5 w-1 bg-current" aria-hidden />;
     case 'pill':
-      return <span className="inline-block h-2 w-3.5 rounded-full border-2 border-current bg-transparent" aria-hidden />;
+      return <span className={SHAPE_CLASS[shape][size]} aria-hidden />;
     default: {
       const _never: never = shape;
       return _never;
@@ -36,18 +61,30 @@ export const SAFETY_FRAME_CLASS: Record<SafetyMark['frame'], string> = {
   round: 'border-2 border-solid rounded-full',
 };
 
-export function SafetyMarkBadge({ mark }: { mark: SafetyMark }) {
+export function SafetyMarkBadge({
+  mark,
+  showLabel = true,
+  size = 'map',
+}: {
+  mark: SafetyMark;
+  showLabel?: boolean;
+  size?: SafetyShapeSize;
+}) {
   return (
     <span
       data-safety-mark={mark.id}
+      data-safety-labeled={showLabel ? 'true' : 'false'}
+      title={mark.label}
+      aria-label={mark.label}
       className={cn(
-        'inline-flex items-center gap-1.5 px-1.5 py-0.5 text-base leading-none font-semibold bg-card',
+        'inline-flex items-center font-semibold bg-card leading-none',
+        showLabel ? 'gap-1.5 px-2 py-1 text-base' : 'justify-center p-1',
         SAFETY_FRAME_CLASS[mark.frame],
         mark.toneClass,
       )}
     >
-      <SafetyShape shape={mark.shape} />
-      <span>{mark.label}</span>
+      <SafetyShape shape={mark.shape} size={size} />
+      {showLabel ? <span>{mark.label}</span> : <span className="sr-only">{mark.label}</span>}
     </span>
   );
 }
