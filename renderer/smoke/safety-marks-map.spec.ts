@@ -51,23 +51,33 @@ test('map stats are labeled; room cards are symbol-only', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Admin' }).click();
   await page.getByRole('menuitem', { name: 'Insert mock patients' }).click();
+  await expect(page.getByText('Mock Data Inserted', { exact: true })).toBeVisible();
+  await page.locator('[toast-close]').click({ force: true });
+  await expect(page.getByText('Mock Data Inserted', { exact: true })).toBeHidden();
 
   const safety = page.getByRole('group', { name: 'Safety' });
   await expect(safety.locator('[data-safety-label]').filter({ hasText: 'Fall' })).toBeVisible();
   await expect(safety.locator('[data-safety-label]').filter({ hasText: 'DNR' })).toBeVisible();
-  await safety.screenshot({ path: '/opt/cursor/artifacts/map_stats_labeled.png' });
+  await safety.screenshot({ path: '/opt/cursor/artifacts/map_stats_strip_labeled.png' });
+  await page.screenshot({
+    path: '/opt/cursor/artifacts/map_board_header_labeled.png',
+    clip: { x: 0, y: 0, width: 1280, height: 220 },
+  });
 
-  await page.getByRole('button', { name: /Zoom level/ }).click();
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 8; i += 1) {
     await page.getByRole('button', { name: 'Zoom in' }).click();
   }
 
-  const cardMark = page.locator('[data-patient-id] [data-safety-labeled="false"]').first();
+  const markedCard = page.locator('[data-patient-id]').filter({ has: page.locator('[data-safety-mark]') }).first();
+  await markedCard.evaluate((node) => {
+    node.scrollIntoView({ block: 'center', inline: 'center' });
+  });
+  const cardMark = markedCard.locator('[data-safety-labeled="false"]').first();
   await expect(cardMark).toBeVisible({ timeout: 15000 });
   await expect(cardMark).toHaveAttribute('data-safety-labeled', 'false');
   await expect(cardMark.locator('[data-safety-label]')).toHaveCount(0);
-  await cardMark.scrollIntoViewIfNeeded();
-  await page.locator('[data-patient-id]').first().screenshot({
-    path: '/opt/cursor/artifacts/map_card_symbol_only.png',
+  await markedCard.screenshot({ path: '/opt/cursor/artifacts/map_card_symbol_only_full.png' });
+  await markedCard.getByRole('list', { name: 'Safety marks' }).screenshot({
+    path: '/opt/cursor/artifacts/map_card_symbols_closeup.png',
   });
 });
