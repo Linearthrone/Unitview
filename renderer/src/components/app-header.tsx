@@ -1,13 +1,11 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LayoutGrid,
   Printer,
   ClipboardSignature,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,9 +14,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
 import type { NameAlertGroup } from '@/lib/name-alerts';
 import type { IsolationBreakdown } from '@/lib/safety-marks';
+import type { UnitCensusStats } from '@/lib/patient-status-helpers';
+import {
+  CensusStaffStatsRow,
+  SafetyStatsRow,
+  useOpsStatsFit,
+} from '@/components/unit-board-stats';
 
 interface AppHeaderProps {
   title: string;
@@ -26,15 +29,7 @@ interface AppHeaderProps {
   facilityName?: string;
   facilityLogoUrl?: string;
   toolName?: string;
-  censusStats: {
-    beddedPatients: number;
-    availableBeds: number;
-    blockedRooms: number;
-    anticipatedDischarges: number;
-    nurseCount: number;
-    pctCount: number;
-    maxPatientsAllowed: number;
-  };
+  censusStats: UnitCensusStats;
   dnrCount: number;
   restraintCount: number;
   foleyCount: number;
@@ -51,18 +46,8 @@ interface AppHeaderProps {
   canEdit?: boolean;
   onPrint?: (reportType: 'charge' | 'assignments') => void;
   onConfigureAssignmentPrint?: () => void;
+  onOpsStatsPlacement?: (opsOnTop: boolean) => void;
 }
-
-const CensusRow: React.FC<{
-  label: string;
-  value: number;
-  emphasize?: boolean;
-}> = ({ label, value, emphasize }) => (
-  <div className="flex items-baseline justify-between gap-3 text-base leading-tight">
-    <span className="text-muted-foreground">{label}</span>
-    <span className={cn('font-bold tabular-nums', emphasize && 'text-destructive')}>{value}</span>
-  </div>
-);
 
 const AppHeader: React.FC<AppHeaderProps> = ({
   title,
@@ -86,20 +71,23 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   canEdit = true,
   onPrint,
   onConfigureAssignmentPrint,
+  onOpsStatsPlacement,
 }) => {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const [statsCollapsed, setStatsCollapsed] = useState(false);
+  const { hostRef, measureRef, opsOnTop } = useOpsStatsFit();
   const heading = facilityName?.trim() || title;
-  const isolationTotal =
-    isolationBreakdown
-      ? isolationBreakdown.contact +
-        isolationBreakdown.airborne +
-        isolationBreakdown.droplet +
-        isolationBreakdown.other
-      : isolationCount;
-  const overCapacity =
-    censusStats.nurseCount === 0 ||
-    (censusStats.nurseCount > 0 && censusStats.beddedPatients > censusStats.maxPatientsAllowed);
+  const safetyCounts = {
+    fallCount,
+    dnrCount,
+    restraintCount,
+    isolationBreakdown,
+    isolationCount,
+    involuntaryHoldCount,
+    sitterCount,
+    foleyCount,
+    centralLineCount,
+    tubeFeedCount,
+  };
 
   useEffect(() => {
     setCurrentTime(new Date());
@@ -107,55 +95,36 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    onOpsStatsPlacement?.(opsOnTop);
+  }, [opsOnTop, onOpsStatsPlacement]);
+
   return (
     <>
       <header className="bg-card text-card-foreground border-b-2 border-border z-40 print-hide">
-        <div className="px-3 sm:px-5 py-3 space-y-3 max-w-[100vw]">
-          <div className="flex flex-wrap items-start gap-x-6 gap-y-3 justify-between">
-            <div className="flex items-start gap-3 min-w-0">
+        <div className="px-3 sm:px-5 py-2 space-y-2 max-w-[100vw]">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 justify-between">
+            <div className="flex items-center gap-3 min-w-0">
               {facilityLogoUrl ? (
                 <img
                   src={facilityLogoUrl}
                   alt=""
-                  className="h-12 w-auto max-w-[8rem] object-contain shrink-0 mt-0.5"
+                  className="h-10 w-auto max-w-[8rem] object-contain shrink-0"
                 />
               ) : null}
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-headline font-bold text-foreground leading-tight">
+                <h1 className="text-2xl font-headline font-bold text-foreground leading-tight truncate">
                   {heading}
                 </h1>
-                <p className="text-base text-muted-foreground mt-0.5 truncate">
+                <p className="text-base text-muted-foreground truncate">
                   {toolName}
                   {unitName ? ` · ${unitName}` : ''}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 text-base text-muted-foreground"
-                onClick={() => setStatsCollapsed((v) => !v)}
-              >
-                {statsCollapsed ? (
-                  <>
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                    Show stats
-                  </>
-                ) : (
-                  <>
-                    <ChevronUp className="h-4 w-4 mr-1" />
-                    Hide stats
-                  </>
-                )}
-              </Button>
-            </div>
-
-            <div className="flex flex-col items-end gap-2 ml-auto shrink-0">
-              <div className="flex items-center gap-2 flex-wrap justify-end">
-                {onPrint && (
+            <div className="flex items-center gap-2 ml-auto shrink-0">
+              {onPrint && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="shrink-0 text-base">
@@ -180,79 +149,52 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                )}
-                <div className="text-right shrink-0 tabular-nums">
-                  <div className="font-semibold text-lg leading-none">
-                    {currentTime
-                      ? currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                      : '—'}
-                  </div>
-                  <div className="text-base text-muted-foreground mt-1 max-w-[9rem] sm:max-w-none">
-                    {currentTime
-                      ? currentTime.toLocaleDateString([], {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      : ''}
-                  </div>
+              )}
+              <div className="text-right shrink-0 tabular-nums">
+                <div className="font-semibold text-lg leading-none">
+                  {currentTime
+                    ? currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : '—'}
+                </div>
+                <div className="text-base text-muted-foreground max-w-[9rem] sm:max-w-none">
+                  {currentTime
+                    ? currentTime.toLocaleDateString([], {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : ''}
                 </div>
               </div>
             </div>
           </div>
 
-          {!statsCollapsed && (
-            <div className="grid gap-3 sm:grid-cols-3">
-              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
-                <h3 className="text-base font-semibold mb-1.5">Census</h3>
-                <div className="space-y-1">
-                  <CensusRow label="Bedded" value={censusStats.beddedPatients} />
-                  <CensusRow label="Available" value={censusStats.availableBeds} />
-                  <CensusRow label="Blocked" value={censusStats.blockedRooms} />
-                  <CensusRow label="Discharges" value={censusStats.anticipatedDischarges} />
-                </div>
-              </section>
-              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
-                <h3 className="text-base font-semibold mb-1.5">Staff</h3>
-                <div className="space-y-1">
-                  <CensusRow label="Nurses" value={censusStats.nurseCount} emphasize={censusStats.nurseCount === 0} />
-                  <CensusRow label="PCTs" value={censusStats.pctCount} />
-                  <CensusRow label="Max" value={censusStats.maxPatientsAllowed} emphasize={overCapacity} />
-                </div>
-              </section>
-              <section className="border-2 border-border bg-background px-3 py-2 min-w-0">
-                <h3 className="text-base font-semibold mb-1.5">Safety</h3>
-                <div className="space-y-1">
-                  <CensusRow label="Fall" value={fallCount} />
-                  <CensusRow label="DNR" value={dnrCount} />
-                  <CensusRow label="Restraints" value={restraintCount} />
-                  <CensusRow label="Isolation" value={isolationTotal} />
-                  {isolationBreakdown && (
-                    <p className="text-base text-muted-foreground leading-tight">
-                      Contact {isolationBreakdown.contact}
-                      {' · '}
-                      Airborne {isolationBreakdown.airborne}
-                      {' · '}
-                      Droplet {isolationBreakdown.droplet}
-                      {isolationBreakdown.other > 0 ? ` · Other ${isolationBreakdown.other}` : ''}
-                    </p>
-                  )}
-                  <CensusRow label="1013/2013" value={involuntaryHoldCount} />
-                  <CensusRow label="Sitter" value={sitterCount} />
-                  <CensusRow label="Foleys" value={foleyCount} />
-                  <CensusRow label="Central lines" value={centralLineCount} />
-                  <CensusRow label="Tube feeds" value={tubeFeedCount} />
-                </div>
-              </section>
+          <div ref={hostRef} className="relative min-w-0">
+            <div
+              ref={measureRef}
+              className="absolute left-0 top-0 flex items-center gap-3 whitespace-nowrap opacity-0 pointer-events-none"
+              aria-hidden
+            >
+              <SafetyStatsRow counts={safetyCounts} />
+              <CensusStaffStatsRow census={censusStats} />
             </div>
-          )}
+            <div className="flex items-center gap-3 min-w-0 overflow-x-auto">
+              <SafetyStatsRow counts={safetyCounts} />
+              {opsOnTop ? (
+                <>
+                  <span className="h-6 w-px bg-border shrink-0" aria-hidden />
+                  <CensusStaffStatsRow census={censusStats} />
+                </>
+              ) : null}
+            </div>
+          </div>
 
           {nameAlertGroups.length > 0 && (
             <div
-              className="rounded-md border-2 border-amber-800 bg-amber-50 px-3 py-2 text-base text-amber-950 dark:border-amber-200 dark:bg-amber-950 dark:text-amber-50"
+              className="rounded-md border-2 border-amber-800 bg-amber-50 px-3 py-1.5 text-base text-amber-950 dark:border-amber-200 dark:bg-amber-950 dark:text-amber-50"
               role="status"
             >
-              <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold">Name alerts</p>
                 {onAcknowledgeNameAlerts && canEdit && (
                   <Button
@@ -266,7 +208,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   </Button>
                 )}
               </div>
-              <ul className="space-y-1.5">
+              <ul className="space-y-1 mt-1">
                 {nameAlertGroups.map((g) => (
                   <li key={g.key}>
                     <span className="font-medium">{g.label}:</span>{' '}
