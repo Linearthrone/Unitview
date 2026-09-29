@@ -23,18 +23,28 @@ function writeRestricted(filePath: string, contents: string | Buffer): void {
   }
 }
 
+/** The vault key is 32 raw bytes. On disk it is the base64 form, wrapped by the OS keychain when available. */
+function materialToMasterKey(material: string | Buffer): Buffer {
+  if (Buffer.isBuffer(material) && material.length === 32) return material;
+  const text = Buffer.isBuffer(material) ? material.toString('utf8') : material;
+  const decoded = Buffer.from(text, 'base64');
+  if (decoded.length === 32) return decoded;
+  if (Buffer.isBuffer(material) && material.length >= 32) return material.subarray(0, 32);
+  return Buffer.from(text).subarray(0, 32);
+}
+
 function loadOrCreateMasterKey(): Buffer {
   const keyPath = userDataPath(MASTER_KEY_FILE);
   if (fs.existsSync(keyPath)) {
     const raw = fs.readFileSync(keyPath);
     if (safeStorage.isEncryptionAvailable()) {
       try {
-        return Buffer.from(safeStorage.decryptString(raw));
+        return materialToMasterKey(safeStorage.decryptString(raw));
       } catch {
         // Fall through to treat as raw key from older/dev environments
       }
     }
-    return raw.length >= 32 ? raw.subarray(0, 32) : Buffer.concat([raw, randomBytes(32)]).subarray(0, 32);
+    return materialToMasterKey(raw);
   }
 
   const key = randomBytes(32);
@@ -55,11 +65,43 @@ export function saveVault(plaintext: string): void {
   writeFileAtomicRestricted(userDataPath(VAULT_FILE), JSON.stringify(payload));
 }
 
+/** Older builds saved the vault with the base64 text itself, not the decoded 32-byte key. */
+function masterKeyCandidates(): Buffer[] {
+  const keyPath = userDataPath(MASTER_KEY_FILE);
+  if (!fs.existsSync(keyPath)) return [loadOrCreateMasterKey()];
+  const raw = fs.readFileSync(keyPath);
+  const candidates: Buffer[] = [];
+  const push = (key: Buffer) => {
+    if (!candidates.some((existing) => existing.equals(key))) candidates.push(key);
+  };
+  if (safeStorage.isEncryptionAvailable()) {
+    try {
+      const text = safeStorage.decryptString(raw);
+      const decoded = Buffer.from(text, 'base64');
+      if (decoded.length === 32) push(decoded);
+      push(Buffer.from(text));
+    } catch {
+      // Older key files were raw bytes.
+    }
+  }
+  if (raw.length === 32) push(raw);
+  else if (raw.length >= 32) push(raw.subarray(0, 32));
+  return candidates.length > 0 ? candidates : [loadOrCreateMasterKey()];
+}
+
 export function loadVault(): string | null {
   const filePath = userDataPath(VAULT_FILE);
   if (!fs.existsSync(filePath)) return null;
   const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8')) as EncryptedPayload;
-  return decryptUtf8(parsed, loadOrCreateMasterKey());
+  let lastError: unknown;
+  for (const key of masterKeyCandidates()) {
+    try {
+      return decryptUtf8(parsed, key);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('Vault decrypt failed');
 }
 
 export function saveEpicSecrets(secrets: { privateKeyPem?: string }): void {

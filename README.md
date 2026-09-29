@@ -1,4 +1,4 @@
-# UnitView v5.2.0-c - Patient Management Dashboard
+# UnitView v5.3.0 - Patient Management Dashboard
 
 ![Version](https://img.shields.io/badge/version-5.2.0--c-blue.svg)
 ![Status](https://img.shields.io/badge/status-stable-green.svg)
@@ -205,7 +205,7 @@ npm run build:main
 npm run dist:win
 ```
 
-Output: `release/UnitView Setup 5.2.0-c.exe` (exact filename follows `package.json` version)
+Output: `release/UnitView Setup 5.3.0.exe` (exact filename follows `package.json` version)
 
 ---
 
@@ -285,8 +285,8 @@ MIT License - See LICENSE file for details
 ## 👥 Credits
 
 **Developed by:** Linearthrone  
-**Version:** 5.2.0-c  
-**Release Date:** November 4, 2024 (5.0.1 line); current package is 5.2.0-c
+**Version:** 5.3.0  
+**Release Date:** September 27, 2026
 
 ---
 
@@ -311,7 +311,7 @@ This is a private project. For feature requests or bug reports, please contact t
 
 ---
 
-## What's New in v5.2.0-c
+## What's New in v5.3.0
 
 See [CHANGELOG.md](CHANGELOG.md) for the full list. Highlights:
 
@@ -348,12 +348,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the full list. Highlights:
 
 ## ✅ Production Ready
 
-UnitView v5.2.0-c is the current package with the unit operations UI overhaul, Epic FHIR/HIPAA work, and PROP-1 vault persistence honesty.
+UnitView v5.3.0 is the current Windows package: clinical shell, oncoming-shift draft, census bar, and the encrypted store fix.
 
 **Enjoy using UnitView!** 🏥
 
 ---
 
 **Last Updated:** 2026-09-06  
-**Version:** 5.2.0-c  
+**Version:** 5.3.0  
 **Status:** Active development (UI overhaul + PROP-1 persistence honesty)

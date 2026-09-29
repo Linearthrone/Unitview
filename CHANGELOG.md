@@ -1,5 +1,14 @@
 # UnitView - Complete Version History
 
+## [5.3.0] - 2026-09-27
+
+### Deliverable
+Windows installer for the current app: clinical navy shell, unit management sidebar, oncoming-shift draft, census bar, vault open fix, Electron 43.
+
+Settings shows this version from the packaged app.
+
+---
+
 ## [5.2.0-c] - 2026-06-20
 
 ### ✨ Features
@@ -164,6 +173,6 @@
 
 ---
 
-**Current Version:** 5.2.0-c  
+**Current Version:** 5.3.0  
 **Release Date:** November 4, 2024  
 **Status:** Production Ready ✅

@@ -1,6 +1,6 @@
 {
   "name": "unitview-windows",
-  "version": "5.2.0-c",
+  "version": "5.3.0",
   "description": "UnitView Patient Management Dashboard - Windows Desktop Application",
   "main": "dist/main.js",
   "homepage": "./",
@@ -46,7 +46,7 @@
     "appId": "com.unitview.windows",
     "productName": "UnitView",
     "directories": {
-      "output": "release"
+      "output": "release/5.3.0"
     },
     "files": [
       "dist/**/*",

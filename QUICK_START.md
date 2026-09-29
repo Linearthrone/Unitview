@@ -1,4 +1,4 @@
-# UnitView v5.2.0-c - Quick Start Guide
+# UnitView v5.3.0 - Quick Start Guide
 
 ## 🚀 Get Started in 5 Minutes
 
@@ -64,4 +64,4 @@ Installer will be in the `release/` folder.
 
 ---
 
-**Version:** 5.2.0-c | **Status:** Candidate build
+**Version:** 5.3.0 | **Status:** Current Windows deliverable

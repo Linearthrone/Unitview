@@ -590,27 +590,30 @@ export class SimpleDatabase {
   }
 }
 
-// Database singleton
+// Database singleton. One in-flight open so React Strict Mode cannot treat
+// "still opening" as "store failed".
 let db: SimpleDatabase | null = null;
+let opening: Promise<SimpleDatabase> | null = null;
 
-export const initializeDatabase = async (): Promise<SimpleDatabase> => {
+export const initializeDatabase = (): Promise<SimpleDatabase> => {
   if (db?.isStoreAvailable()) {
-    return db;
+    return Promise.resolve(db);
   }
-  if (db && !db.isStoreAvailable()) {
-    throw new StoreUnavailableError();
+  if (opening) {
+    return opening;
   }
 
-  db = new SimpleDatabase();
-  try {
-    await db.initialize();
-  } catch (error) {
-    if (!(error instanceof StoreUnavailableError)) {
-      db = null;
-    }
+  opening = (async () => {
+    const next = db ?? new SimpleDatabase();
+    db = next;
+    await next.initialize();
+    return next;
+  })().catch((error: unknown) => {
+    opening = null;
     throw error;
-  }
-  return db;
+  });
+
+  return opening;
 };
 
 export const getDb = async (): Promise<SimpleDatabase> => {
