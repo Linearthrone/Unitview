@@ -125,15 +125,120 @@ export const SANDBOX_ALLERGIES: FhirAllergyIntolerance[] = [
 ];
 
 export function buildSandboxContexts(): PatientContext[] {
-  return SANDBOX_PATIENTS.map((patient) => {
+  const extras = buildExpandedSandboxCensus();
+  const patients = [...SANDBOX_PATIENTS, ...extras.patients];
+  const encounters = [...SANDBOX_ENCOUNTERS, ...extras.encounters];
+  const flags = [...SANDBOX_FLAGS, ...extras.flags];
+  const conditions = [...SANDBOX_CONDITIONS, ...extras.conditions];
+  const nutritionOrders = [...SANDBOX_NUTRITION, ...extras.nutrition];
+  const allergies = [...SANDBOX_ALLERGIES, ...extras.allergies];
+  return patients.map((patient) => {
     const id = patient.id ?? '';
     return {
       patient,
-      encounter: SANDBOX_ENCOUNTERS.find((enc) => enc.subject?.reference?.endsWith(id)),
-      flags: SANDBOX_FLAGS.filter((flag) => flag.subject?.reference?.endsWith(id)),
-      conditions: SANDBOX_CONDITIONS.filter((condition) => condition.subject?.reference?.endsWith(id)),
-      nutritionOrders: SANDBOX_NUTRITION.filter((order) => order.patient?.reference?.endsWith(id)),
-      allergies: SANDBOX_ALLERGIES.filter((allergy) => allergy.patient?.reference?.endsWith(id)),
+      encounter: encounters.find((enc) => enc.subject?.reference?.endsWith(id)),
+      flags: flags.filter((flag) => flag.subject?.reference?.endsWith(id)),
+      conditions: conditions.filter((condition) => condition.subject?.reference?.endsWith(id)),
+      nutritionOrders: nutritionOrders.filter((order) => order.patient?.reference?.endsWith(id)),
+      allergies: allergies.filter((allergy) => allergy.patient?.reference?.endsWith(id)),
     };
   });
+}
+
+const CORE_SANDBOX_ROOMS = new Set([812, 813, 814]);
+const EXTRA_GIVEN = [
+  'Amina', 'Jonah', 'Priya', 'Mateo', 'Helen', 'Omar', 'Yuki', 'Nora',
+  'Theo', 'Ingrid', 'Luis', 'Sable', 'Kenji', 'Freya', 'Ibrahim', 'Marisol',
+  'Owen', 'Talia', 'Hassan', 'Greta', 'Nico', 'Pilar', 'Seth', 'Willa',
+  'Ravi', 'Elsa', 'Diego', 'Jun', 'Hana', 'Paolo', 'Ruth', 'Kian',
+  'Beatrice', 'Malik', 'Clara', 'Yusuf', 'Ivy',
+];
+const EXTRA_FAMILY = [
+  'Okoye', 'Park', 'Mehta', 'Alvarez', 'Brennan', 'Haddad', 'Nakamura', 'Iversen',
+  'Brooks', 'Lindqvist', 'Santos', 'Crow', 'Fujita', 'Olsen', 'Diallo', 'Vega',
+  'Grant', 'Cohen', 'Rahman', 'Weber', 'Rossi', 'Castillo', 'Quinn', 'Hart',
+  'Sharma', 'Berg', 'Mora', 'Cho', 'Yamamoto', 'Ricci', 'Klein', 'Nouri',
+  'Moreau', 'Adeyemi', 'Novak', 'Farouk', 'Lane',
+];
+const EXTRA_REASONS = [
+  'Cellulitis', 'GI bleed', 'Hyponatremia', 'Post-op hip', 'COPD flare',
+  'Pyelonephritis', 'Atrial fibrillation with RVR', 'DKA', 'Stroke workup', 'Pancreatitis',
+];
+
+function buildExpandedSandboxCensus(): {
+  patients: FhirPatient[];
+  encounters: FhirEncounter[];
+  flags: FhirFlag[];
+  conditions: FhirCondition[];
+  nutrition: FhirNutritionOrder[];
+  allergies: FhirAllergyIntolerance[];
+} {
+  const rooms = Array.from({ length: 40 }, (_, index) => 801 + index).filter((room) => !CORE_SANDBOX_ROOMS.has(room));
+  const patients: FhirPatient[] = [];
+  const encounters: FhirEncounter[] = [];
+  const flags: FhirFlag[] = [];
+  const conditions: FhirCondition[] = [];
+  const nutrition: FhirNutritionOrder[] = [];
+  const allergies: FhirAllergyIntolerance[] = [];
+
+  rooms.forEach((room, index) => {
+    const id = `eSandbox-${room}`;
+    const given = EXTRA_GIVEN[index % EXTRA_GIVEN.length] ?? 'Pat';
+    const family = EXTRA_FAMILY[index % EXTRA_FAMILY.length] ?? 'Patient';
+    const gender: FhirPatient['gender'] = index % 2 === 0 ? 'female' : 'male';
+    const year = 1948 + (index % 40);
+    patients.push({
+      resourceType: 'Patient',
+      id,
+      identifier: [{ system: MRN_SYSTEM, value: String(210000 + room), type: { coding: [{ code: 'MR' }] } }],
+      name: [{ use: 'official', family, given: [given] }],
+      gender,
+      birthDate: `${year}-06-15`,
+    });
+    encounters.push({
+      resourceType: 'Encounter',
+      id: `eEnc-${room}`,
+      status: 'in-progress',
+      subject: { reference: `Patient/${id}` },
+      period: { start: `2026-09-${String((index % 27) + 1).padStart(2, '0')}T10:00:00Z` },
+      reasonCode: [{ text: EXTRA_REASONS[index % EXTRA_REASONS.length] ?? 'Inpatient stay' }],
+      location: [{ location: { display: `Room ${room}` } }],
+    });
+    if (index % 5 === 0) {
+      flags.push({
+        resourceType: 'Flag',
+        status: 'active',
+        code: { text: 'Fall risk' },
+        subject: { reference: `Patient/${id}` },
+      });
+    }
+    if (index % 7 === 0) {
+      flags.push({
+        resourceType: 'Flag',
+        status: 'active',
+        code: { text: 'Contact isolation' },
+        subject: { reference: `Patient/${id}` },
+      });
+    }
+    if (index % 11 === 0) {
+      allergies.push({
+        resourceType: 'AllergyIntolerance',
+        patient: { reference: `Patient/${id}` },
+        code: { text: 'Sulfa' },
+      });
+    }
+    conditions.push({
+      resourceType: 'Condition',
+      code: { text: EXTRA_REASONS[index % EXTRA_REASONS.length] ?? 'Inpatient stay' },
+      subject: { reference: `Patient/${id}` },
+    });
+    nutrition.push({
+      resourceType: 'NutritionOrder',
+      status: 'active',
+      patient: { reference: `Patient/${id}` },
+      oralDiet: { instruction: index % 3 === 0 ? 'Cardiac' : 'Regular' },
+    });
+  });
+
+  return { patients, encounters, flags, conditions, nutrition, allergies };
 }

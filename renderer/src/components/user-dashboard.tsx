@@ -24,6 +24,7 @@ import {
   LogOut,
   Shield,
   Activity,
+  Trash2,
 } from 'lucide-react';
 import { User, UnitSettings } from '../types/auth';
 import { formatAppRoleLabel, getRoleCapabilities } from '@/lib/roles';
@@ -31,17 +32,28 @@ import type { CreateUnitPayload } from '../types/patient';
 import { authService } from '../services/authService';
 import * as layoutService from '../services/layoutService';
 import { computeFacilityStatistics, type FacilityStatistics } from '../services/facilityStatsService';
-import { getLastOpenedUnitName } from '../lib/last-unit-storage';
+import { getLastOpenedUnitName, clearLastOpenedUnitName } from '../lib/last-unit-storage';
 import {
   getFavoriteUnitNames,
   sortUnitsWithFavoritesAndLast,
   toggleFavoriteUnit,
+  removeFavoriteUnit,
 } from '../lib/favorite-units-storage';
 import CreateUnitDialog from './create-unit-dialog';
 import UserDashboardSettings from './user-dashboard-settings';
 import EditUnitDialog, { type EditUnitValues } from './edit-unit-dialog';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from './ui/context-menu';
 import { Input } from './ui/input';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from './ui/alert-dialog';
 import { applyAppTheme, normalizeAppTheme } from '@/lib/app-theme';
 import { FieldHint, ManagementShell, shellCard, type ManagementSection } from './management-shell';
 import type { UnitViewMode } from '../types/auth';
@@ -73,6 +85,7 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
   const [screen, setScreen] = useState<'main' | 'settings'>('main');
   const [isEditUnitOpen, setIsEditUnitOpen] = useState(false);
   const [unitToEdit, setUnitToEdit] = useState<UnitSettings | null>(null);
+  const [unitToDelete, setUnitToDelete] = useState<UnitSettings | null>(null);
 
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('dark');
 
@@ -230,6 +243,27 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
     setUnitToEdit(null);
     await loadInitialData();
     showMessage('success', `Unit "${nextName}" updated.`);
+  };
+
+  const handleDeleteUnit = async () => {
+    if (!unitToDelete || !roleCaps.isAdmin) return;
+    const name = unitToDelete.name;
+    try {
+      await layoutService.deleteLayout(name);
+      authService.deleteUnitSettings(unitToDelete.id);
+      if (getLastOpenedUnitName(user.id) === name) {
+        clearLastOpenedUnitName(user.id);
+      }
+      setFavoriteUnits(removeFavoriteUnit(user.id, name));
+      setUnitToDelete(null);
+      if (selectedUnit === name) {
+        setSelectedUnit('');
+      }
+      await loadInitialData();
+      showMessage('success', `Unit "${name}" deleted.`);
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : 'Could not delete unit.');
+    }
   };
 
   if (isLoading) {
@@ -606,6 +640,20 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
                 Enter unit
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
+              {roleCaps.isAdmin && selectedUnit && (
+                <Button
+                  variant="outline"
+                  className="text-destructive border-destructive"
+                  data-testid="delete-unit"
+                  onClick={() => {
+                    const unit = sortedUnits.find((item) => item.name === selectedUnit);
+                    if (unit) setUnitToDelete(unit);
+                  }}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete unit
+                </Button>
+              )}
             </div>
 
             {roleCaps.isAdmin && (
@@ -680,6 +728,13 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
                             <Pencil className="w-4 h-4 mr-2" />
                             Edit unit
                           </ContextMenuItem>
+                          <ContextMenuItem
+                            className="text-destructive"
+                            onClick={() => setUnitToDelete(unit)}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete unit
+                          </ContextMenuItem>
                         </ContextMenuContent>
                       </ContextMenu>
                     );
@@ -706,6 +761,26 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
         existingLayoutNames={availableLayoutNames}
         onSave={handleSaveEditedUnit}
       />
+      <AlertDialog open={Boolean(unitToDelete)} onOpenChange={(open) => { if (!open) setUnitToDelete(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this unit?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This removes <span className="font-semibold">{unitToDelete?.name}</span> and its rooms, staff, and hallway layout from this workstation. Only Entity Admin and Facility Admin can do this. It cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              data-testid="confirm-delete-unit"
+              onClick={() => void handleDeleteUnit()}
+            >
+              Delete unit
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

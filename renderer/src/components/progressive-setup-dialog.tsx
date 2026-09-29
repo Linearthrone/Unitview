@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { RotateCw, Trash2 } from 'lucide-react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { Patient } from '@/types/patient';
 import {
   Dialog,
@@ -14,23 +14,28 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { hallStaggerRowStyle } from '@/lib/hall-stagger';
 import {
-  HALLWAY_COLS,
-  HALLWAY_ROWS,
   HALL_SEGMENT_KINDS,
+  MAX_HALLWAY_COLS,
+  MAX_HALLWAY_ROWS,
+  MIN_HALLWAY_COLS,
+  MIN_HALLWAY_ROWS,
   cellKey,
   cellsForSegment,
   clearHallway,
+  hallwaySizeOf,
   moveHallSegment,
   nextHallOrientation,
   paintFromSegments,
   placeHallSegment,
   placeRoomPin,
   removeHallSegment,
+  resizeHallway,
   rotateHallSegment,
   segmentCoveringCell,
   segmentFits,
-  segmentOffsets,
+  segmentPreviewCells,
   type HallOrientation,
   type HallSegmentKind,
   type ProgressiveViewState,
@@ -70,23 +75,24 @@ function SegmentPreview({
   kind: HallSegmentKind;
   orientation: HallOrientation;
 }) {
-  const origin = 3;
-  const keys = new Set(
-    segmentOffsets(kind, orientation).map((offset) => cellKey(origin + offset.dr, origin + offset.dc)),
-  );
+  const preview = segmentPreviewCells(kind, orientation);
   return (
     <div
-      className="grid gap-px w-[4.5rem] shrink-0"
-      style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
+      className="grid gap-px shrink-0"
+      style={{
+        gridTemplateColumns: `repeat(${preview.cols}, 0.55rem)`,
+        gridTemplateRows: `repeat(${preview.rows}, 0.55rem)`,
+      }}
       aria-hidden
+      data-testid={`hall-preview-${kind}-${orientation}`}
     >
-      {Array.from({ length: 5 }, (_, rowIdx) =>
-        Array.from({ length: 5 }, (_, colIdx) => {
-          const on = keys.has(cellKey(rowIdx + 1, colIdx + 1));
+      {Array.from({ length: preview.rows }, (_, rowIdx) =>
+        Array.from({ length: preview.cols }, (_, colIdx) => {
+          const on = preview.keys.has(cellKey(rowIdx, colIdx));
           return (
             <span
               key={`${rowIdx}-${colIdx}`}
-              className={cn('h-2 w-full border', on ? 'bg-foreground border-foreground' : 'bg-card border-border/40')}
+              className={cn('block border', on ? 'bg-foreground border-foreground' : 'bg-card border-border/40')}
             />
           );
         }),
@@ -96,12 +102,13 @@ function SegmentPreview({
 }
 
 function payloadFits(payload: DragPayload, row: number, col: number, draft: ProgressiveViewState): boolean {
+  const size = hallwaySizeOf(draft);
   if ('segmentId' in payload) {
     const current = draft.segments.find((segment) => segment.id === payload.segmentId);
     if (!current) return false;
-    return segmentFits(current.kind, row, col, current.orientation);
+    return segmentFits(current.kind, row, col, current.orientation, size);
   }
-  return segmentFits(payload.kind, row, col, payload.orientation);
+  return segmentFits(payload.kind, row, col, payload.orientation, size);
 }
 
 export default function ProgressiveSetupDialog({
@@ -121,12 +128,15 @@ export default function ProgressiveSetupDialog({
 
   useEffect(() => {
     if (open) {
+      const size = hallwaySizeOf(initial);
       const editorPaint =
         initial.segments.length > 0
-          ? paintFromSegments(initial.segments)
+          ? paintFromSegments(initial.segments, size)
           : (initial.paintCells ?? []);
       setDraft({
         ...initial,
+        hallwayCols: size.cols,
+        hallwayRows: size.rows,
         segments: initial.segments ?? [],
         paintCells: editorPaint,
       });
@@ -157,9 +167,10 @@ export default function ProgressiveSetupDialog({
     return () => window.removeEventListener('keydown', onKey);
   }, [open, selectedSegmentId]);
 
+  const size = hallwaySizeOf(draft);
   const paintCells = useMemo(
-    () => (draft.segments.length > 0 ? paintFromSegments(draft.segments) : draft.paintCells),
-    [draft.segments, draft.paintCells],
+    () => (draft.segments.length > 0 ? paintFromSegments(draft.segments, size) : draft.paintCells),
+    [draft.segments, draft.paintCells, size],
   );
   const paint = useMemo(
     () => new Set(paintCells.map((cell) => cellKey(cell.row, cell.col))),
@@ -233,34 +244,33 @@ export default function ProgressiveSetupDialog({
     setSelectedRoomId(null);
   };
 
+  const rotateArmedOrSelected = (row: number, col: number) => {
+    const covering = segmentCoveringCell(draft.segments, row, col);
+    if (covering) {
+      setSelectedSegmentId(covering.id);
+      setDraft((prev) => rotateHallSegment(prev, covering.id));
+      return;
+    }
+    setPaletteOrientation((value) => nextHallOrientation(value));
+  };
+
   const hoverPayload = (): DragPayload =>
     dragRef.current ?? { kind: armedKind, orientation: paletteOrientation };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="!left-3 !top-3 !right-3 !bottom-3 !translate-x-0 !translate-y-0 !max-w-none w-auto h-auto !max-h-none overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>Progressive hallway setup</DialogTitle>
           <DialogDescription>
-            Drag a premade hall piece onto the grid, or select it and click a cell. Turn rotates the
-            piece before it is placed. After it is down, select it and Rotate 90° (or press R).
+            Resize the canvas with the row and column buttons. Right-click a piece (palette or placed) to rotate it.
+            A wire stub drops between two blocks onto the next staggered row.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-3 md:grid-cols-[15rem_1fr_11rem] min-h-0 flex-1 overflow-hidden">
+        <div className="grid gap-3 md:grid-cols-[16rem_1fr_11rem] min-h-0 flex-1 overflow-hidden">
           <div className="space-y-2 overflow-auto">
             <p className="text-base font-semibold">Hall pieces</p>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="text-base"
-                data-testid="turn-palette"
-                onClick={() => setPaletteOrientation((value) => nextHallOrientation(value))}
-              >
-                <RotateCw className="h-4 w-4 mr-1.5" />
-                Turn {paletteOrientation}°
-              </Button>
-            </div>
+            <p className="text-base text-muted-foreground">Right-click a piece to turn it before placing.</p>
             {HALL_SEGMENT_KINDS.map((piece) => (
               <button
                 key={piece.id}
@@ -268,6 +278,11 @@ export default function ProgressiveSetupDialog({
                 draggable
                 data-testid={`hall-piece-${piece.id}`}
                 aria-pressed={armedKind === piece.id}
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  setArmedKind(piece.id);
+                  setPaletteOrientation((value) => nextHallOrientation(value));
+                }}
                 onDragStart={(event) => {
                   const payload: DragPayload = { kind: piece.id, orientation: paletteOrientation };
                   event.dataTransfer.setData(DRAG_TYPE, JSON.stringify(payload));
@@ -288,12 +303,72 @@ export default function ProgressiveSetupDialog({
                 )}
               >
                 <SegmentPreview kind={piece.id} orientation={paletteOrientation} />
-                <span className="font-semibold">{piece.label}</span>
+                <span className="font-semibold">
+                  {piece.label}
+                  {armedKind === piece.id ? ` · ${paletteOrientation}°` : ''}
+                </span>
               </button>
             ))}
-            <p className="text-base text-muted-foreground">
-              {armedLabel} at {paletteOrientation}° places on click if you are not pinning a room.
+            <p className="text-base text-muted-foreground" data-testid="turn-palette">
+              {armedLabel} at {paletteOrientation}° — right-click to rotate.
             </p>
+            <div className="border-2 border-border p-2 space-y-2">
+              <p className="text-base font-semibold">Canvas size</p>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-base">Columns {size.cols}</span>
+                <div className="flex gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    data-testid="hall-cols-minus"
+                    aria-label="Fewer columns"
+                    disabled={size.cols <= MIN_HALLWAY_COLS}
+                    onClick={() => setDraft((prev) => resizeHallway(prev, prev.hallwayCols - 1, prev.hallwayRows))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    data-testid="hall-cols-plus"
+                    aria-label="More columns"
+                    disabled={size.cols >= MAX_HALLWAY_COLS}
+                    onClick={() => setDraft((prev) => resizeHallway(prev, prev.hallwayCols + 1, prev.hallwayRows))}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-base">Rows {size.rows}</span>
+                <div className="flex gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    data-testid="hall-rows-minus"
+                    aria-label="Fewer rows"
+                    disabled={size.rows <= MIN_HALLWAY_ROWS}
+                    onClick={() => setDraft((prev) => resizeHallway(prev, prev.hallwayCols, prev.hallwayRows - 1))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    data-testid="hall-rows-plus"
+                    aria-label="More rows"
+                    disabled={size.rows >= MAX_HALLWAY_ROWS}
+                    onClick={() => setDraft((prev) => resizeHallway(prev, prev.hallwayCols, prev.hallwayRows + 1))}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
             <Button
               type="button"
               variant="outline"
@@ -307,22 +382,13 @@ export default function ProgressiveSetupDialog({
               Clear hallway
             </Button>
           </div>
-          <div className="overflow-auto border-2 border-border p-2 bg-background min-h-0">
+          <div className="overflow-auto border-2 border-border p-2 bg-background min-h-0 flex flex-col">
             {selectedSegment ? (
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="text-base font-semibold">
                   {HALL_SEGMENT_KINDS.find((item) => item.id === selectedSegment.kind)?.label} · {selectedSegment.orientation}°
                 </span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="text-base"
-                  data-testid="rotate-placed-segment"
-                  onClick={() => setDraft((prev) => rotateHallSegment(prev, selectedSegment.id))}
-                >
-                  <RotateCw className="h-4 w-4 mr-1.5" />
-                  Rotate 90°
-                </Button>
+                <span className="text-base text-muted-foreground">Right-click to rotate · Delete to remove</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -339,105 +405,106 @@ export default function ProgressiveSetupDialog({
               </div>
             ) : (
               <p className="text-base text-muted-foreground mb-2">
-                Empty until you drop pieces. Hover a cell to preview. Invalid placements stay off the canvas.
+                Empty until you drop pieces. Hover a cell to preview. Right-click rotates. Invalid placements stay off the canvas.
               </p>
             )}
-            <div
-              className="grid gap-1"
-              data-testid="hall-segment-grid"
-              style={{
-                gridTemplateColumns: `repeat(${HALLWAY_COLS}, minmax(0, 1fr))`,
-                gridTemplateRows: `repeat(${HALLWAY_ROWS}, minmax(2.5rem, 1fr))`,
-              }}
-            >
-              {Array.from({ length: HALLWAY_ROWS }, (_, rowIdx) =>
-                Array.from({ length: HALLWAY_COLS }, (_, colIdx) => {
-                  const row = rowIdx + 1;
-                  const col = colIdx + 1;
-                  const hallway = paint.has(cellKey(row, col));
-                  const ghost = ghostKeys.has(cellKey(row, col));
-                  const covering = segmentCoveringCell(draft.segments, row, col);
-                  const selected = covering?.id === selectedSegmentId;
-                  const pinnedIds = hallway ? (pinByCell.get(cellKey(row, col)) ?? []) : [];
-                  return (
-                    <button
-                      key={cellKey(row, col)}
-                      type="button"
-                      draggable={Boolean(covering)}
-                      data-testid={`hall-cell-${row}-${col}`}
-                      aria-label={`Hall cell ${row},${col}`}
-                      onDragStart={(event) => {
-                        if (!covering) return;
-                        const payload: DragPayload = { segmentId: covering.id };
-                        event.dataTransfer.setData(DRAG_TYPE, JSON.stringify(payload));
-                        event.dataTransfer.setData('text/plain', JSON.stringify(payload));
-                        event.dataTransfer.effectAllowed = 'move';
-                        dragRef.current = payload;
-                        setSelectedSegmentId(covering.id);
-                        setSelectedRoomId(null);
-                      }}
-                      onDragOver={(event) => {
-                        event.preventDefault();
-                        setHover({ row, col, payload: hoverPayload() });
-                      }}
-                      onDrop={(event) => {
-                        event.preventDefault();
-                        const payload = readDragPayload(event) ?? dragRef.current;
-                        dragRef.current = null;
-                        setHover(null);
-                        if (payload) dropAt(row, col, payload);
-                      }}
-                      onDragEnd={() => {
-                        dragRef.current = null;
-                        setHover(null);
-                      }}
-                      onMouseEnter={() => {
-                        if (selectedRoomId) return;
-                        if (!dragRef.current && covering) {
-                          setHover(null);
-                          return;
-                        }
-                        setHover({ row, col, payload: hoverPayload() });
-                      }}
-                      onMouseLeave={() => {
-                        if (!dragRef.current) setHover(null);
-                      }}
-                      className={cn(
-                        'min-h-[2.5rem] border text-base px-0.5',
-                        ghost
-                          ? ghostFits
-                            ? 'bg-accent border-foreground'
-                            : 'bg-destructive/20 border-destructive'
-                          : hallway
-                            ? 'bg-secondary border-foreground'
-                            : 'bg-card border-transparent',
-                        selected && 'ring-2 ring-foreground',
-                      )}
-                      onClick={() => {
-                        if (selectedRoomId) {
-                          setDraft((prev) => placeRoomPin(prev, selectedRoomId, row, col));
-                          setSelectedRoomId(null);
-                          return;
-                        }
-                        if (covering) {
-                          setSelectedSegmentId(covering.id);
-                          return;
-                        }
-                        placeArmed(row, col);
-                      }}
-                    >
-                      {pinnedIds.map((id) => {
-                        const room = patients.find((patient) => patient.id === id);
-                        return (
-                          <span key={id} className="block truncate font-semibold">
-                            {room?.roomDesignation ?? id}
-                          </span>
-                        );
-                      })}
-                    </button>
-                  );
-                }),
-              )}
+            <div className="flex flex-col gap-1 min-h-0 flex-1" data-testid="hall-segment-grid">
+              {Array.from({ length: size.rows }, (_, rowIdx) => {
+                const row = rowIdx + 1;
+                return (
+                  <div key={`row-${row}`} style={hallStaggerRowStyle(row, size.cols)}>
+                    {Array.from({ length: size.cols }, (_, colIdx) => {
+                      const col = colIdx + 1;
+                      const hallway = paint.has(cellKey(row, col));
+                      const ghost = ghostKeys.has(cellKey(row, col));
+                      const covering = segmentCoveringCell(draft.segments, row, col);
+                      const selected = covering?.id === selectedSegmentId;
+                      const pinnedIds = hallway ? (pinByCell.get(cellKey(row, col)) ?? []) : [];
+                      return (
+                        <button
+                          key={cellKey(row, col)}
+                          type="button"
+                          draggable={Boolean(covering)}
+                          data-testid={`hall-cell-${row}-${col}`}
+                          aria-label={`Hall cell ${row},${col}`}
+                          onContextMenu={(event) => {
+                            event.preventDefault();
+                            rotateArmedOrSelected(row, col);
+                          }}
+                          onDragStart={(event) => {
+                            if (!covering) return;
+                            const payload: DragPayload = { segmentId: covering.id };
+                            event.dataTransfer.setData(DRAG_TYPE, JSON.stringify(payload));
+                            event.dataTransfer.setData('text/plain', JSON.stringify(payload));
+                            event.dataTransfer.effectAllowed = 'move';
+                            dragRef.current = payload;
+                            setSelectedSegmentId(covering.id);
+                            setSelectedRoomId(null);
+                          }}
+                          onDragOver={(event) => {
+                            event.preventDefault();
+                            setHover({ row, col, payload: hoverPayload() });
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            const payload = readDragPayload(event) ?? dragRef.current;
+                            dragRef.current = null;
+                            setHover(null);
+                            if (payload) dropAt(row, col, payload);
+                          }}
+                          onDragEnd={() => {
+                            dragRef.current = null;
+                            setHover(null);
+                          }}
+                          onMouseEnter={() => {
+                            if (selectedRoomId) return;
+                            if (!dragRef.current && covering) {
+                              setHover(null);
+                              return;
+                            }
+                            setHover({ row, col, payload: hoverPayload() });
+                          }}
+                          onMouseLeave={() => {
+                            if (!dragRef.current) setHover(null);
+                          }}
+                          className={cn(
+                            'min-h-[2.5rem] border text-base px-0.5',
+                            ghost
+                              ? ghostFits
+                                ? 'bg-accent border-foreground'
+                                : 'bg-destructive/20 border-destructive'
+                              : hallway
+                                ? 'bg-secondary border-foreground'
+                                : 'bg-card border-transparent',
+                            selected && 'ring-2 ring-foreground',
+                          )}
+                          onClick={() => {
+                            if (selectedRoomId) {
+                              setDraft((prev) => placeRoomPin(prev, selectedRoomId, row, col));
+                              setSelectedRoomId(null);
+                              return;
+                            }
+                            if (covering) {
+                              setSelectedSegmentId(covering.id);
+                              return;
+                            }
+                            placeArmed(row, col);
+                          }}
+                        >
+                          {pinnedIds.map((id) => {
+                            const room = patients.find((patient) => patient.id === id);
+                            return (
+                              <span key={id} className="block truncate font-semibold">
+                                {room?.roomDesignation ?? id}
+                              </span>
+                            );
+                          })}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="overflow-auto space-y-2">
@@ -476,9 +543,12 @@ export default function ProgressiveSetupDialog({
             type="button"
             data-testid="save-progressive-hallway"
             onClick={() => {
+              const nextSize = hallwaySizeOf(draft);
               onSave({
                 ...draft,
-                paintCells: draft.segments.length > 0 ? paintFromSegments(draft.segments) : draft.paintCells,
+                hallwayCols: nextSize.cols,
+                hallwayRows: nextSize.rows,
+                paintCells: draft.segments.length > 0 ? paintFromSegments(draft.segments, nextSize) : draft.paintCells,
                 preferredMode: 'progressive',
               });
               onOpenChange(false);

@@ -79,11 +79,11 @@ export async function createLayout(layoutName: LayoutName): Promise<void> {
 }
 
 export async function deleteLayout(layoutName: LayoutName): Promise<void> {
-  try {
-    const db = await getDb();
-    db.deleteLayout(layoutName);
-  } catch (error) {
-    console.error('Error deleting layout:', error);
+  const db = await getDb();
+  db.deleteLayout(layoutName);
+  if (db.getUserPreference('lastSelectedLayout') === layoutName) {
+    const remaining = db.getAvailableLayouts();
+    db.setUserPreference('lastSelectedLayout', remaining[0] ?? '');
   }
 }
 

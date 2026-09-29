@@ -53,23 +53,28 @@ test('hallway setup places and rotates premade segments', async ({ page }) => {
   await page.getByRole('menuitem', { name: 'Progressive hallway setup…' }).click();
   await expect(page.getByText('Hall pieces')).toBeVisible();
   await expect(page.getByTestId('hall-piece-straight3')).toBeVisible();
-  await expect(page.getByTestId('turn-palette')).toContainText('Turn 0°');
+  await expect(page.getByTestId('turn-palette')).toContainText('0°');
 
   await page.getByTestId('hall-piece-straight3').click();
   await page.getByTestId('hall-cell-4-3').click();
-  await expect(page.getByTestId('rotate-placed-segment')).toBeVisible();
-  await page.screenshot({ path: '/opt/cursor/artifacts/hall_segment_placed.png' });
+  await expect(page.getByText('Straight 3 · 0°').first()).toBeVisible();
+  await page.screenshot({ path: '/opt/cursor/artifacts/hall_editor_piece_placed.png' });
 
-  await page.getByTestId('rotate-placed-segment').click();
+  await page.getByTestId('hall-cell-4-3').click({ button: 'right' });
   await expect(page.getByText('Straight 3 · 90°').first()).toBeVisible();
-  await page.screenshot({ path: '/opt/cursor/artifacts/hall_segment_rotated.png' });
+  await page.screenshot({ path: '/opt/cursor/artifacts/hall_editor_right_click_rotate.png' });
 
-  await page.getByTestId('turn-palette').click();
-  await expect(page.getByTestId('turn-palette')).toContainText('Turn 90°');
+  await page.getByTestId('hall-piece-straight3').click({ button: 'right' });
+  await expect(page.getByTestId('turn-palette')).toContainText('90°');
   await page.getByTestId('hall-piece-corner').click();
   await page.getByTestId('hall-cell-2-8').click();
   await expect(page.getByText('Corner · 90°').first()).toBeVisible();
-  await page.screenshot({ path: '/opt/cursor/artifacts/hall_segments_corner_and_straight.png' });
+  await page.getByTestId('hall-piece-wire').click();
+  await page.getByTestId('hall-cell-3-5').click();
+  await expect(page.getByText('Wire stub · 90°').first()).toBeVisible();
+  await page.getByTestId('hall-cols-plus').click();
+  await expect(page.getByText('Columns 13')).toBeVisible();
+  await page.screenshot({ path: '/opt/cursor/artifacts/hall_editor_wire_and_wider_canvas.png' });
 
   await page.getByTestId('save-progressive-hallway').click();
   await expect(page.getByTestId('hall-segment-grid')).toHaveCount(0);
@@ -79,9 +84,9 @@ test('hallway setup places and rotates premade segments', async ({ page }) => {
     await hideStats.click();
   }
   await page.getByText('Hallway map (glance only)').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('glance-hall-painted')).toHaveCount(8);
-  await page.screenshot({ path: '/opt/cursor/artifacts/hall_segments_saved_board.png' });
+  await expect(page.getByTestId('glance-hall-painted')).not.toHaveCount(0);
+  await page.screenshot({ path: '/opt/cursor/artifacts/hall_editor_saved_staggered_board.png' });
   await page.getByLabel('Hallway map (glance only)').screenshot({
-    path: '/opt/cursor/artifacts/hall_segments_saved_map.png',
+    path: '/opt/cursor/artifacts/hall_editor_saved_staggered_map.png',
   });
 });

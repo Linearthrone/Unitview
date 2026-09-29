@@ -10,9 +10,11 @@ import {
   nextHallOrientation,
   paintFromSegments,
   placeHallSegment,
+  resizeHallway,
   rotateHallSegment,
   sanitizeProgressiveView,
   segmentFits,
+  segmentPreviewCells,
 } from './progressive-view';
 
 function patient(overrides: Partial<Patient> = {}): Patient {
@@ -73,6 +75,8 @@ test('ensureProgressiveGeometry fills missing pins without dropping saved ones',
       paintCells: paint,
       roomPins: [{ patientId: 'kept', row: 2, col: 4 }],
       segments: [],
+      hallwayCols: 12,
+      hallwayRows: 8,
     },
     [patient({ id: 'kept', gridRow: 1, gridColumn: 4 }), patient({ id: 'new', gridRow: 8, gridColumn: 16 })],
   );
@@ -128,6 +132,31 @@ test('placed segments union into paint and rotate in place', () => {
   assert.ok(placed);
   const rotated = rotateHallSegment(state, placed.id);
   assert.equal(rotated.segments[0]?.orientation, 90);
+});
+
+test('wire stub drops to the next row between two blocks', () => {
+  const cells = cellsForSegment({ id: 'w', kind: 'wire', row: 3, col: 4, orientation: 0 });
+  assert.deepEqual(cells, [
+    { row: 3, col: 4 },
+    { row: 3, col: 5 },
+    { row: 4, col: 4 },
+  ]);
+});
+
+test('canvas resize keeps in-bounds pieces and drops overflow', () => {
+  let state = sanitizeProgressiveView({ hallwayCols: 12, hallwayRows: 8 });
+  state = placeHallSegment(state, 'straight5', 1, 8, 0);
+  assert.equal(state.segments.length, 1);
+  const shrunk = resizeHallway(state, 8, 8);
+  assert.equal(shrunk.hallwayCols, 8);
+  assert.equal(shrunk.segments.length, 0);
+});
+
+test('preview cells fit the whole straight5 instead of clipping', () => {
+  const preview = segmentPreviewCells('straight5', 0);
+  assert.equal(preview.cols, 5);
+  assert.equal(preview.rows, 1);
+  assert.equal(preview.keys.size, 5);
 });
 
 test('rotate that would leave the canvas is refused', () => {

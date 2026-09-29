@@ -134,7 +134,7 @@ export default function EpicFhirSettings({ actorEmployeeNumber }: EpicFhirSettin
             </CardTitle>
             <CardDescription>
               Pull in-progress encounters from Epic using SMART Backend Services. TLS is required.
-              Register the app at fhir.epic.com and upload the public JWKS.
+              Register the app at fhir.epic.com and upload the public JWKS. Sandbox fixtures fill rooms 801–840 (Lopez / Lin / Roberts stay on 812–814) when you click Sync Epic census — no credentials required.
             </CardDescription>
           </div>
           <Badge variant={configured ? 'default' : 'secondary'}>
