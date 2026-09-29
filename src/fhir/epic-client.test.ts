@@ -9,6 +9,7 @@ test('sandbox fixture mode returns a mapped census without calling Epic', async 
     authMode: 'sandbox_fixtures',
   });
   assert.equal(result.source, 'sandbox_fixtures');
-  assert.equal(result.records.length, 3);
+  assert.ok(result.records.length >= 36);
   assert.ok(result.records.every((record) => record.fhirPatientId && record.roomHint));
+  assert.ok(result.records.some((record) => record.name === 'Camila Lopez'));
 });

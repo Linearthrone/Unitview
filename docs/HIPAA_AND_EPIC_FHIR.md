@@ -20,7 +20,16 @@ UnitView can now pull an inpatient census from Epic FHIR and applies workstation
    - Set patient data source to **Epic FHIR census**
 5. Open a unit and click **Sync Epic census**, or just enter the unit — census sync runs automatically when the data source is Epic.
 
-Until credentials are issued, leave auth mode on **Epic-shaped sandbox fixtures**. That maps synthetic R4 patients (Lopez / Lin / Roberts) onto rooms 812–814 so the workflow can be tested without a live token.
+Until credentials are issued, leave auth mode on **Epic-shaped sandbox fixtures**. That pack now includes the three named Epic sandbox people (Lopez / Lin / Roberts on rooms 812–814) plus generated inpatients for rooms **801–840**, so **Sync Epic census** can fill a typical 30–40 bed unit.
+
+How to fill most of a unit:
+
+1. Admin → **Epic FHIR** → Auth mode **Epic-shaped sandbox fixtures**. Patient data source **Epic FHIR census**. Save.
+2. Open the unit (rooms should already exist — vacant is fine).
+3. Click **Sync Epic census**. Records match by room number first, then leftover census occupies remaining vacant beds.
+4. To fill from local demo charts instead of FHIR-shaped names, use Admin → **Insert mock patients**. That path does not talk to Epic.
+
+Live Backend Services still need a real client ID, private key, and the unit **Location** FHIR ID. Open Epic sandbox patients at fhir.epic.com only apply when auth mode is live and Encounter search returns them.
 
 Default sandbox endpoints:
 

@@ -99,9 +99,11 @@ export interface UnitLayoutMetadata {
     templateId: 'straight' | 'l' | 'u' | 't' | 'racetrack';
     paintCells: { row: number; col: number }[];
     roomPins: { patientId: string; row: number; col: number }[];
+    hallwayCols?: number;
+    hallwayRows?: number;
     segments?: {
       id: string;
-      kind: 'straight3' | 'straight5' | 'corner' | 'tee' | 'cross';
+      kind: 'straight3' | 'straight5' | 'corner' | 'tee' | 'cross' | 'wire';
       row: number;
       col: number;
       orientation: 0 | 90 | 180 | 270;

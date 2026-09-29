@@ -24,6 +24,12 @@ export function toggleFavoriteUnit(userId: string, unitName: string): string[] {
   return next;
 }
 
+export function removeFavoriteUnit(userId: string, unitName: string): string[] {
+  const next = getFavoriteUnitNames(userId).filter((name) => name !== unitName);
+  localStorage.setItem(storageKey(userId), JSON.stringify(next));
+  return next;
+}
+
 export function sortUnitsWithFavoritesAndLast(
   units: { name: string }[],
   favoriteNames: string[],

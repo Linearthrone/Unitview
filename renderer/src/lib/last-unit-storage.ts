@@ -15,3 +15,11 @@ export function setLastOpenedUnitName(userId: string, unitName: string): void {
     // ignore
   }
 }
+
+export function clearLastOpenedUnitName(userId: string): void {
+  try {
+    localStorage.removeItem(keyFor(userId));
+  } catch {
+    // ignore
+  }
+}
