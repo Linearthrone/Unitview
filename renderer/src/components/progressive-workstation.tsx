@@ -154,7 +154,7 @@ export default function ProgressiveWorkstation({
           </div>
         </section>
       </div>
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 min-h-0 flex flex-col">
         <ProgressiveGlanceMap
           patients={patients}
           geometry={geometry}
