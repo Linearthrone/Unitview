@@ -1,4 +1,4 @@
-# UnitView 5.4 — Quick start
+# Unitview — Quick start
 
 ## Run from source
 
@@ -18,10 +18,10 @@ npm install
 npm run dist:win
 ```
 
-Installer: `release\UnitView-Setup-5.4.0.exe`
+Installer: `release\Unitview-Setup-<version>.exe` (version from root `package.json`)
 
-After the first 5.4 install, use **Help → Check for Updates** instead of uninstalling.
+After the first 5.4-line install, use **Help → Check for Updates** instead of uninstalling.
 
 That is the production pack. `release/` is gitignored — it will never appear as a committed file.
 
-**Version:** 5.4.0 (master Releases use `5.4.<run>`)
+**Version:** root `package.json`. Every commit increments the patch.

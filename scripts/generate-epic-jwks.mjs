@@ -2,7 +2,7 @@
 /**
  * Generates an RSA key pair and JWKS suitable for Epic SMART Backend Services.
  * Upload jwks.json (or the public certificate) at fhir.epic.com.
- * Keep private.pem only on the UnitView workstation vault.
+ * Keep private.pem only on the Unitview workstation vault.
  */
 import { generateKeyPairSync } from 'crypto';
 import { writeFileSync } from 'fs';

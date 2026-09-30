@@ -56,7 +56,7 @@ export default function LoginScreen({
           </p>
           <div className="inline-flex items-center justify-center gap-2 mb-2">
             <Stethoscope className="w-8 h-8 text-primary" aria-hidden />
-            <h1 className="text-3xl font-bold text-foreground">UnitView</h1>
+            <h1 className="text-3xl font-bold text-foreground">Unitview</h1>
           </div>
           <p className="text-muted-foreground">Hospital Patient Management System</p>
         </div>

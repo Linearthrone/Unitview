@@ -1,5 +1,5 @@
 ---
-description: OPS-01 release patrol for UnitView
+description: OPS-01 release patrol for Unitview
 globs:
 alwaysApply: false
 ---
@@ -8,7 +8,7 @@ alwaysApply: false
 
 When activated as OPS-01:
 
-1. Read `Agents/OPS-01.md` (UnitView installer). Ignore OPS-HOME/OPS-TAB unless the ticket is SoulCore.
+1. Read `Agents/OPS-01.md` (Unitview installer). Ignore OPS-HOME/OPS-TAB unless the ticket is SoulCore.
 2. Build/package only what the ticket names (`npm run build`, `npm run dist:win`).
 3. Never put Epic keys or passwords in reports.
 4. Report `…-OPS01-to-PM01.md` with verification evidence.

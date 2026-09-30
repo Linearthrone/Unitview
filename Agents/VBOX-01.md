@@ -4,14 +4,14 @@ id: VBOX-01
 callsign: VBOX
 role: VirtualBox + Ubuntu Admin
 reports_to: PM-01
-project: House Victoria (SoulCore seat — not a UnitView owner)
+project: House Victoria (SoulCore seat — not a Unitview owner)
 source: Linearthrone/SoulCore.AI
 version: 1.0
 created: 2026-08-17
 status: imported
 ---
 
-> **UnitView:** Do not ticket VBOX-01 for this product. Keep for `victoria-sandbox` only.
+> **Unitview:** Do not ticket VBOX-01 for this product. Keep for `victoria-sandbox` only.
 
 # VBOX-01 · VirtualBox + Ubuntu Admin
 

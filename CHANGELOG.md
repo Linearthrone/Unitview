@@ -1,10 +1,19 @@
-# UnitView version history
+# Unitview version history
+
+## [5.4.1] - 2026-09-30
+
+### Pack
+- Product and git name is **Unitview** (GitHub repo `Linearthrone/Unitview`)
+- Every commit increments the patch in `package.json` (git hook). Installer and About use that number
+- Master packs no longer overwrite the patch with a GitHub Actions run number
+
+---
 
 ## [5.4.0] - 2026-09-29
 
 ### Pack
 - Installed Windows clients can **Check for updates** (Help menu or Settings) and install over the existing app
-- Master Windows pack publishes a GitHub Release stamped `5.4.<run>` so each merge is a newer feed
+- Master Windows pack published a GitHub Release stamped `5.4.<run>` (replaced in 5.4.1 by per-commit patch)
 - First 5.4 installer is still a one-time install for 5.3.0-c workstations; after that, do not uninstall to take a new pack
 
 ### Product (already on master)
@@ -16,7 +25,7 @@
 
 ### Pack
 - New version number so Windows installers are distinguishable from leftover `5.1.5-c` and `5.2.0-c` setups
-- Installer filename is now `UnitView-Setup-5.3.0-c.exe` (`release/`, gitignored)
+- Installer filename is now `Unitview-Setup-5.3.0-c.exe` (`release/`, gitignored)
 - About box uses `app.getVersion()` instead of a hardcoded `5.1.5-c` string
 - GitHub Actions **Windows pack** workflow uploads that `.exe` as an artifact
 
@@ -56,6 +65,6 @@ Settings shows this version from the packaged app.
 | 4.0.5 | Broken `package.json` quotes; blank screen |
 | 4.0.x / 3.x | Desktop rewrite / deprecated web |
 
-Those files are gone from this repo. Pack **5.4** only.
+Those files are gone from this repo. Pack from current `package.json` only.
 
-**Current version:** 5.4.0 (master Releases use `5.4.<run>`)
+**Current version:** root `package.json` (patch +1 on every commit)

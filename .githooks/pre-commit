@@ -1,0 +1,16 @@
+#!/bin/sh
+# Every product commit increments the patch in package.json (and the renderer fallback).
+if [ "${SKIP_VERSION_BUMP}" = "1" ]; then
+  exit 0
+fi
+
+root="$(git rev-parse --show-toplevel)" || exit 1
+cd "$root" || exit 1
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit: node is required to bump the Unitview version" >&2
+  exit 1
+fi
+
+node scripts/bump-version.mjs || exit 1
+git add package.json renderer/package.json renderer/src/lib/app-version.ts

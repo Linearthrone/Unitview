@@ -315,7 +315,7 @@ export default function UnitViewClient({
       toast({
         variant: 'destructive',
         title: 'Desktop map unavailable',
-        description: 'Live desktop wallpaper requires the UnitView desktop app.',
+        description: 'Live desktop wallpaper requires the Unitview desktop app.',
       });
       return;
     }
@@ -1638,10 +1638,10 @@ export default function UnitViewClient({
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader
-        title={facilityProfile.name || 'UnitView'}
+        title={facilityProfile.name || 'Unitview'}
         facilityName={facilityProfile.name}
         facilityLogoUrl={facilityProfile.logoDataUrl}
-        toolName="UnitView"
+        toolName="Unitview"
         unitName={`${getFriendlyLayoutName(currentLayoutName)}${isOncomingShiftSetup ? ' (Oncoming shift setup)' : ''}`}
         censusStats={censusStats}
         dnrCount={dnrCount}
@@ -1983,7 +1983,7 @@ export default function UnitViewClient({
         }}
       />
       <footer className="text-center py-2 px-4 pb-14 text-xs text-muted-foreground border-t print-hide">
-        UnitView &copy; {currentYear !== null ? currentYear : ''}
+        Unitview &copy; {currentYear !== null ? currentYear : ''}
       </footer>
     </div>
   );

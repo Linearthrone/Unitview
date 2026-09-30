@@ -3,7 +3,7 @@ type: config
 id: PROP-NUMBERING
 updated: 2026-09-21
 owner: PM-01 / TT-01
-project: UnitView
+project: Unitview
 ---
 
 # PROP numbering (TT → PM)
@@ -27,19 +27,19 @@ Imported from SoulCore.AI. Stops TT intake IDs from colliding with PM `TASK-###`
 
 1. **TT never invents `TASK-###` for new idea intakes.** Use `PROP-N-subject`.
 2. **PM owns division of labor.** Suggested `PROP-N.M` from TT are hints.
-3. Legacy `TASK-{date}-{id}-…` files remain valid for pre-PROP UnitView work (through the 2026-06-20 sprint). Do not reuse those integers for new TT ideas.
+3. Legacy `TASK-{date}-{id}-…` files remain valid for pre-PROP Unitview work (through the 2026-06-20 sprint). Do not reuse those integers for new TT ideas.
 4. Reports: `docs/agents/reports/PROP-{N}.{M}-{ROLE}-to-PM01.md`.
 5. Unblock evals of an **existing** `TASK-*` may still return `TASK-*-TT01-to-PM01.md`, but any **new** proposal spawned from that eval gets a fresh `PROP-N`.
 
-## Registry (UnitView)
+## Registry (Unitview)
 
 | prop_id | Subject | Status | Splits |
 | --- | --- | --- | --- |
-| PROP-1-persistence-honesty | Fail-closed vault writes; docs honesty; no SQLite-now | **merged** — [PR #2](https://github.com/Linearthrone/Unitview_5.1.5c/pull/2) → `master` `11754bf` (2026-09-06) | 1.1–1.7 closed |
-| PROP-2-in-memory-transitions | Kill hard reloads; delete leftover twins; remaining honesty docs | **merged** — [PR #4](https://github.com/Linearthrone/Unitview_5.1.5c/pull/4) → `master` `eddbbf9` (2026-09-21) | 2.1–2.5 closed |
+| PROP-1-persistence-honesty | Fail-closed vault writes; docs honesty; no SQLite-now | **merged** — [PR #2](https://github.com/Linearthrone/Unitview/pull/2) → `master` `11754bf` (2026-09-06) | 1.1–1.7 closed |
+| PROP-2-in-memory-transitions | Kill hard reloads; delete leftover twins; remaining honesty docs | **merged** — [PR #4](https://github.com/Linearthrone/Unitview/pull/4) → `master` `eddbbf9` (2026-09-21) | 2.1–2.5 closed |
 | PROP-3-clinical-command-surface | Same-map clinical UI redesign; wall privacy + no idle-lock | **accepted** — 3.1/3.3 merged; 3.2 in PR #13 | 3.1 FED, 3.2 FED, 3.3 SEC, 3.4 FED, 3.5 QA |
 | PROP-4-progressive-view | Optional Progressive view (corridor templates/paint; glance map) after PROP-3 | **accepted** — lock `PROP-4.0`; first wave 4.1–4.3 + 4.5 | 4.1 DBD, 4.2–4.5 FED, 4.6 SEC, 4.7 QA |
 
 Next free `N`: **5**.
 
-Historical UnitView sprint (closed): see `docs/agents/reports/TASK-20260620-004-PM01-SPRINT-COMPLETE.md`.
+Historical Unitview sprint (closed): see `docs/agents/reports/TASK-20260620-004-PM01-SPRINT-COMPLETE.md`.

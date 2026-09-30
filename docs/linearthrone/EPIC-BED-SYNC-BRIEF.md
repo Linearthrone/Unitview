@@ -9,11 +9,11 @@
 
 ## Product intent
 
-1. Resolve the occupying patient for a UnitView room **by the unit’s bed / room number** (match Epic inpatient location).
+1. Resolve the occupying patient for a Unitview room **by the unit’s bed / room number** (match Epic inpatient location).
 2. Populate **everything shown on the Charge Nurse Report** (room-card click → `ReportSheet`) from Epic where available.
 3. **Expand** that report (and printable charge report) with an **Allergies** section.
 
-Staff assignments (current/prior nurse & PCT) remain UnitView-owned; Epic does not replace shift assignments.
+Staff assignments (current/prior nurse & PCT) remain Unitview-owned; Epic does not replace shift assignments.
 
 ---
 
@@ -21,19 +21,19 @@ Staff assignments (current/prior nurse & PCT) remain UnitView-owned; Epic does n
 
 ### Overview
 
-| UI field | UnitView today | Epic FHIR candidates (typical) |
+| UI field | Unitview today | Epic FHIR candidates (typical) |
 |----------|----------------|--------------------------------|
 | Name | `patient.name` | `Patient.name` |
 | Age | `patient.age` | derived from `Patient.birthDate` |
 | Gender | `patient.gender` | `Patient.gender` |
-| Current / prior nurse & PCT | UnitView staff cards | **Do not overwrite from Epic** |
+| Current / prior nurse & PCT | Unitview staff cards | **Do not overwrite from Epic** |
 | Chief complaint | `patient.chiefComplaint` | Encounter reason / Condition / ADT reason (facility-specific) |
 | Admit date | `patient.admitDate` | `Encounter.period.start` |
 | EDD | `patient.dischargeDate` | planned discharge extension / AnticipatedDischarge (facility-specific) |
 
 ### Clinical
 
-| UI field | UnitView today | Epic FHIR candidates |
+| UI field | Unitview today | Epic FHIR candidates |
 |----------|----------------|----------------------|
 | Diet | `patient.diet` | NutritionOrder / Observation |
 | Mobility | `patient.mobility` | Observation / CarePlan (often custom) |
@@ -50,14 +50,14 @@ Staff assignments (current/prior nurse & PCT) remain UnitView-owned; Epic does n
 
 ### Notes
 
-| UI field | UnitView today | Epic |
+| UI field | Unitview today | Epic |
 |----------|----------------|------|
-| Notes | `patient.notes` | optional ClinicalNote — **default keep UnitView handoff notes** |
+| Notes | `patient.notes` | optional ClinicalNote — **default keep Unitview handoff notes** |
 | Pending procedures | `patient.pendingProcedures` | ServiceRequest (planned) |
 
 ### New — Allergies
 
-| UI field | UnitView target | Epic FHIR |
+| UI field | Unitview target | Epic FHIR |
 |----------|-----------------|-----------|
 | Allergies | `patient.allergies: string[]` (or structured `{substance, criticality, reaction}[]`) | `AllergyIntolerance` for patient |
 
@@ -67,7 +67,7 @@ Show on: ReportSheet Clinical (or dedicated section), admit/update form, printab
 
 ## Key: bed number → Epic patient
 
-### UnitView side
+### Unitview side
 
 - Match key = **`roomDesignation`** (preferred) and/or numeric `bedNumber`, per unit layout.
 - Occupied only when Epic has an active inpatient encounter at that location.
@@ -79,14 +79,14 @@ Show on: ReportSheet Clinical (or dedicated section), admit/update form, printab
 3. Read `Encounter.subject` → `Patient/{id}`.
 4. Parallel reads: Patient, AllergyIntolerance?patient=, Flag?patient=, Condition?, NutritionOrder?, MedicationRequest?, ServiceRequest?, Observation? (per mapping table).
 
-**Open question for facility IT:** exact Location naming vs UnitView `roomDesignation` (e.g. `Room 812` vs `812` vs `8N-812`). Need a mapping table or normalization rule.
+**Open question for facility IT:** exact Location naming vs Unitview `roomDesignation` (e.g. `Room 812` vs `812` vs `8N-812`). Need a mapping table or normalization rule.
 
 ---
 
 ## Architecture (required)
 
 ```
-UnitView Electron (UI)
+Unitview Electron (UI)
     → IPC / HTTPS
 Backend proxy (secrets never in renderer)
     → OAuth2 / SMART Backend Services or user-context SMART

@@ -1,7 +1,7 @@
 # PROP-2 — PM-01 closeout
 
 **Status:** MERGED  
-**PR:** https://github.com/Linearthrone/Unitview_5.1.5c/pull/4  
+**PR:** https://github.com/Linearthrone/Unitview/pull/4  
 **Merge:** `eddbbf9` on `master` (2026-09-21, LinearThrone / Linearthrone)
 
 ## Shipped

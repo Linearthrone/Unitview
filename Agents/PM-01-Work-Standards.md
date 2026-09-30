@@ -2,7 +2,7 @@
 type: rule
 role: PM-01
 callsign: TINA
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.5
 created: 2026-03-23
@@ -11,7 +11,7 @@ updated: 2026-09-05
 
 # PM-01 Work Standards (TINA)
 
-Imported from SoulCore.AI. Process is unchanged. On **UnitView**, treat “House Victoria / Host / Avalonia / UE” paths as examples — use UnitView owners in [`PM-01-EN.md`](./PM-01-EN.md) §8.4.
+Imported from SoulCore.AI. Process is unchanged. On **Unitview**, treat “House Victoria / Host / Avalonia / UE” paths as examples — use Unitview owners in [`PM-01-EN.md`](./PM-01-EN.md) §8.4.
 
 ## 1. Role Positioning
 
@@ -336,7 +336,7 @@ After QA Pass on code changes, **SLOP-01 is next** before calling the chain done
 
 ### 9.5 Forbidden for PM
 
-Modifying UnitView product code (`renderer/`, `src/`, installer config), running `npm run dist:win` as a silent release, or filing a FED/BED/DBD/SEC/OPS/QA/SLOP completion report as if PM were that role.
+Modifying Unitview product code (`renderer/`, `src/`, installer config), running `npm run dist:win` as a silent release, or filing a FED/BED/DBD/SEC/OPS/QA/SLOP completion report as if PM were that role.
 Emergency fallback only (see §1) and must sync a task ticket immediately.
 
 ---

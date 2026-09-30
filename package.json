@@ -1,7 +1,7 @@
 {
   "name": "unitview-windows",
-  "version": "5.4.0",
-  "description": "UnitView Patient Management Dashboard - Windows Desktop Application",
+  "version": "5.4.1",
+  "description": "Unitview Patient Management Dashboard - Windows Desktop Application",
   "main": "dist/main.js",
   "homepage": "./",
   "scripts": {
@@ -20,7 +20,9 @@
     "dist:win": "npm run build && electron-builder --win --publish never",
     "dist:win:publish": "npm run build && electron-builder --win --publish always",
     "postinstall": "cd renderer && npm install",
-    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts src/updates/*.test.ts renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts renderer/src/lib/safety-marks.test.ts renderer/src/lib/progressive-view.test.ts",
+    "prepare": "node scripts/install-git-hooks.mjs",
+    "version:bump": "node scripts/bump-version.mjs",
+    "test": "npx --yes tsx --test src/security/*.test.ts src/fhir/*.test.ts src/ipc/*.test.ts src/wallpaper/*.test.ts src/updates/*.test.ts scripts/bump-version.test.mjs renderer/src/lib/vault-init.test.ts renderer/src/lib/wallpaper-snapshot.test.ts renderer/src/lib/safety-marks.test.ts renderer/src/lib/progressive-view.test.ts",
     "test:fresh": "git pull && npm install && cd renderer && npm install && cd .. && npm run build && npm run electron"
   },
   "keywords": [
@@ -46,11 +48,11 @@
   },
   "build": {
     "appId": "com.unitview.windows",
-    "productName": "UnitView",
+    "productName": "Unitview",
     "directories": {
       "output": "release"
     },
-    "artifactName": "UnitView-Setup-${version}.${ext}",
+    "artifactName": "Unitview-Setup-${version}.${ext}",
     "files": [
       "dist/**/*",
       "renderer/dist/**/*",
@@ -69,7 +71,7 @@
     "publish": {
       "provider": "github",
       "owner": "Linearthrone",
-      "repo": "Unitview_5.1.5c",
+      "repo": "Unitview",
       "releaseType": "release"
     },
     "nsis": {

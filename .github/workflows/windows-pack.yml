@@ -24,9 +24,6 @@ jobs:
       - name: Install renderer dependencies
         working-directory: renderer
         run: npm install
-      - name: Stamp pack version from this workflow run
-        if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        run: node scripts/stamp-pack-version.mjs ${{ github.run_number }}
       - name: Read pack version
         id: ver
         shell: pwsh
@@ -46,7 +43,7 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: UnitView-Setup-${{ steps.ver.outputs.version }}
+          name: Unitview-Setup-${{ steps.ver.outputs.version }}
           path: release/*.exe
           if-no-files-found: error
           retention-days: 30

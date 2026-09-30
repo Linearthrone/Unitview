@@ -18,12 +18,12 @@ Prior sprint `TASK-20260620-004` remains **CLOSED**. This opens net-new scope.
 | Priority | Task | Owner | Status |
 |----------|------|--------|--------|
 | P0 | TASK-20260713-001 — LinearThrone.com site | DEV-01 | **ACTIVE** (scaffold + design in `website/`) |
-| P0 | TASK-20260713-003 — UnitView 5.2.0-c verify + report | DEV-01 | **ACTIVE** (parallel) |
+| P0 | TASK-20260713-003 — Unitview 5.2.0-c verify + report | DEV-01 | **ACTIVE** (parallel) |
 | P1 | TASK-20260713-002 — Site QA | QA-01 | **HOLD** until 001 accepted |
 
 ## Product note
 
-Corporate web presence for **LinearThrone Technologies** at **linearthrone.com**, with UnitView as the featured product. Brief: `docs/linearthrone/SITE-BRIEF.md`.
+Corporate web presence for **LinearThrone Technologies** at **linearthrone.com**, with Unitview as the featured product. Brief: `docs/linearthrone/SITE-BRIEF.md`.
 
 ## Contact
 

@@ -1,11 +1,11 @@
 ---
 type: roster
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 updated: 2026-09-05
 ---
 
-# UnitView agent roster (from SoulCore.AI)
+# Unitview agent roster (from SoulCore.AI)
 
 Role packs imported from [Linearthrone/SoulCore.AI](https://github.com/Linearthrone/SoulCore.AI) `Agents/` so this repo can run the same file-based team as House Victoria.
 
@@ -19,7 +19,7 @@ Activate a seat with `@Agents/{ID}.md`. Tickets live in `docs/agents/tasks/`. Re
 
 Start here: [`PM-01.md`](./PM-01.md) → [`PM-01-EN.md`](./PM-01-EN.md) + [`PM-01-Work-Standards.md`](./PM-01-Work-Standards.md).
 
-## UnitView execution seats
+## Unitview execution seats
 
 | ID | Role | Owns in this repo |
 | --- | --- | --- |
@@ -31,11 +31,11 @@ Start here: [`PM-01.md`](./PM-01.md) → [`PM-01-EN.md`](./PM-01-EN.md) + [`PM-0
 | **QA-01** | QA | Smoke, regression, issue files — **no product code edits** |
 | **SLOP-01** | Slop auditor | Post-QA duplicate/alias/slop audit — **read-only** |
 | **TT-01** | Thinktank | Ideas + stuck-ticket unblock → proposals, never execution tickets |
-| **DEV-01** | Legacy combined | Historical UnitView `to-DEV01` only. **Do not open new DEV-01 tickets.** |
+| **DEV-01** | Legacy combined | Historical Unitview `to-DEV01` only. **Do not open new DEV-01 tickets.** |
 
-## SoulCore machine seats (not default UnitView owners)
+## SoulCore machine seats (not default Unitview owners)
 
-Keep these playbooks for LinearThrone's shared machines. Do **not** ticket them for UnitView product work.
+Keep these playbooks for LinearThrone's shared machines. Do **not** ticket them for Unitview product work.
 
 | ID | Scope |
 | --- | --- |
@@ -51,9 +51,9 @@ docs/agents/
 ├── tasks/                  # pending tickets (active queue)
 ├── reports/                # pending review reports
 ├── issues/                 # QA-filed issues
-├── log/                    # historical UnitView archive (pre-PROP)
+├── log/                    # historical Unitview archive (pre-PROP)
 ├── unexecuted_proposals/   # TT-01 proposals
 └── PROP_NUMBERING.md       # PROP registry
 ```
 
-New TT-sourced work uses `PROP-{N}.{M}-PM01-to-{ROLE}.md`. Legacy UnitView chores keep `TASK-{date}-{ID}-PM01-to-{ROLE}.md`.
+New TT-sourced work uses `PROP-{N}.{M}-PM01-to-{ROLE}.md`. Legacy Unitview chores keep `TASK-{date}-{ID}-PM01-to-{ROLE}.md`.

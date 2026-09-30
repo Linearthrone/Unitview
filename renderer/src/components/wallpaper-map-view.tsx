@@ -48,7 +48,7 @@ export default function WallpaperMapView() {
     >
       <header className="flex items-end justify-between px-8 pt-6 pb-4 border-b border-white/10">
         <div>
-          <p className="text-sm uppercase tracking-[0.35em] text-cyan-200/70">UnitView</p>
+          <p className="text-sm uppercase tracking-[0.35em] text-cyan-200/70">Unitview</p>
           <h1 className="text-4xl font-semibold tracking-tight text-white mt-1">{snapshot.unitName}</h1>
         </div>
         <div className="text-right text-sm text-slate-300/90">

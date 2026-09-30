@@ -12,7 +12,7 @@ prop_id: PROP-3-clinical-command-surface
 created: 2026-09-21
 updated: 2026-09-21
 title: Clinical command surface
-need: Make UnitView look like the future of healthcare — professional, engaging, and calm — without turning the unit board into a consumer app or a new spreadsheet.
+need: Make Unitview look like the future of healthcare — professional, engaging, and calm — without turning the unit board into a consumer app or a new spreadsheet.
 sent_at: 2026-09-21
 pm_intake: docs/agents/tasks/PROP-3-TT01-to-PM01.md
 ---
@@ -21,7 +21,7 @@ pm_intake: docs/agents/tasks/PROP-3-TT01-to-PM01.md
 
 ## 1. Need / Want
 
-LinearThrone wants a full UI redesign. UnitView should look like the future of healthcare: professional, engaging, and pleasing to look at. It should not feel like dated spreadsheet manipulation.
+LinearThrone wants a full UI redesign. Unitview should look like the future of healthcare: professional, engaging, and pleasing to look at. It should not feel like dated spreadsheet manipulation.
 
 ## 2. Goal & Success Criteria
 
@@ -30,13 +30,13 @@ A charge nurse recognizes the unit on day one, can still drag a room onto a nurs
 Success is both of these, and the first one kills the work if it fails:
 
 1. **Safety glance.** Isolation subtype, fall risk, DNR, restraints, and name alerts are readable with no hover, on the workstation and in black-and-white print. Color is never the only channel.
-2. **Calm command surface.** Occupied-and-assigned rooms are quiet and full contrast. Unassigned or unsafe rooms are the only cells that speak. Facility branding leads; UnitView is the tool name, not a stethoscope hero.
+2. **Calm command surface.** Occupied-and-assigned rooms are quiet and full contrast. Unassigned or unsafe rooms are the only cells that speak. Facility branding leads; Unitview is the tool name, not a stethoscope hero.
 3. **Same job.** The 17×10 map, stable room positions, drag-and-drop, census contents, admit/discharge dialogs, Spectra, and both print targets stay. WALLDISPLAY hides patient identifiers only (not clinical quick-reference fields).
 4. **No storage program.** No vault rewrite, no SQLite, no React/Vite/Tailwind major upgrade, no split of `unit-view-client.tsx` in this wave.
 
 ## 3. Context & Constraints
 
-- Product is UnitView `5.1.5-c` (Electron, React 18, Vite, Tailwind, shadcn). Not House Victoria.
+- Product is Unitview `5.1.5-c` (Electron, React 18, Vite, Tailwind, shadcn). Not House Victoria.
 - Local-first PHI. HIPAA source of truth: `docs/HIPAA_AND_EPIC_FHIR.md`. Renderer must not become the long-term PHI owner.
 - April 2026 UI checklist (`docs/agents/ui-review/TASK-20260422-013-UI-DECISION-CHECKLIST.md`) kept almost every control, asked for a clinical-dark login, a facility logo slot, better contrast, and roles including WALLDISPLAY. It also conflicts with itself on five named themes versus light + clinical-dark only, and on 18px Arial versus a denser heading scale.
 - Visual debt today:

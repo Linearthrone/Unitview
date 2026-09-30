@@ -88,9 +88,9 @@ export class AppUpdater {
     if (!app.isPackaged) {
       await prompt({
         type: 'info',
-        title: 'UnitView updates',
+        title: 'Unitview updates',
         message: 'Updates only apply to the installed Windows app.',
-        detail: `This session is ${app.getVersion()} (unpackaged). Install a 5.4 pack once, then use Check for updates.`,
+        detail: `This session is ${app.getVersion()} (unpackaged). Install a packaged Windows build once, then use Check for updates.`,
         buttons: ['OK'],
       });
       return;
@@ -99,7 +99,7 @@ export class AppUpdater {
     if (this.status.phase === 'available' && this.status.availableVersion) {
       const choice = await prompt({
         type: 'info',
-        title: 'UnitView updates',
+        title: 'Unitview updates',
         message: `Pack ${this.status.availableVersion} is available.`,
         detail: `This workstation is ${this.status.currentVersion}. Download and install without uninstalling first. Unit data in the vault stays put.`,
         buttons: ['Download and install', 'Later'],
@@ -114,7 +114,7 @@ export class AppUpdater {
       } else if (afterDownload === 'error') {
         await prompt({
           type: 'error',
-          title: 'UnitView updates',
+          title: 'Unitview updates',
           message: 'Download failed.',
           detail: this.status.message,
           buttons: ['OK'],
@@ -125,7 +125,7 @@ export class AppUpdater {
     if (this.status.phase === 'current') {
       await prompt({
         type: 'info',
-        title: 'UnitView updates',
+        title: 'Unitview updates',
         message: 'This workstation is on the latest pack.',
         detail: this.status.message,
         buttons: ['OK'],
@@ -135,7 +135,7 @@ export class AppUpdater {
     if (this.status.phase === 'error') {
       await prompt({
         type: 'error',
-        title: 'UnitView updates',
+        title: 'Unitview updates',
         message: 'Could not check for updates.',
         detail: this.status.message,
         buttons: ['OK'],

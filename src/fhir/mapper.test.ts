@@ -35,7 +35,7 @@ test('maps code status phrases', () => {
 test('maps Epic-shaped sandbox patients into census records', () => {
   const now = new Date(Date.UTC(2026, 7, 29));
   const records = buildSandboxContexts().map((ctx) => mapPatientToCensus(ctx, { now }));
-  assert.equal(records.length, 3);
+  assert.equal(records.length, 40);
 
   const camila = records.find((r) => r.mrn === '203713');
   assert.ok(camila);

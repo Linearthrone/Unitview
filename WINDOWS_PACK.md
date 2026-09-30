@@ -1,25 +1,31 @@
-# UnitView 5.4 — Windows pack
+# Unitview — Windows pack
 
 The production installer is **not stored in git**. `release/` is gitignored.
 
-Packs published from **master** are stamped `5.4.<run>` (GitHub Actions run number) so each merge is a newer installer. The About box and Settings read that number from `app.getVersion()`.
+The shipping version is root `package.json`. Every commit increments the patch (see README **Versioning**). Master Windows pack publishes that version as a GitHub Release. The About box and Settings read it from `app.getVersion()`.
+
+## GitHub repository
+
+The git remote and updater feed are **Linearthrone/Unitview**.
+
+LinearThrone: rename the GitHub repository in **Settings → General → Repository name** from `Unitview_5.1.5c` to `Unitview` before relying on **Check for updates**. GitHub keeps redirects for old clone URLs; electron-updater does not, so the feed must match the live repo name.
 
 ## Where the installer is
 
-### Installed workstation (after the first 5.4 pack)
+### Installed workstation (after the first 5.4-line pack)
 
 1. **Help → Check for Updates…**, or **Settings → Check for updates**
 2. If a newer master pack exists, download and install. Do **not** uninstall first. The vault stays in `%APPDATA%\unitview-windows`.
 
-A 5.3.0-c (or older) install does not have this button. Install **one** 5.4 pack by hand, then use the button after that.
+A 5.3.0-c (or older) install does not have this button. Install **one** 5.4-line pack by hand, then use the button after that.
 
 ### GitHub Release (what the button reads)
 
-Each successful **master** Windows pack publishes a GitHub Release (`UnitView-Setup-5.4.<n>.exe` plus `latest.yml`). That is the feed the installed app checks.
+Each successful **master** Windows pack publishes a GitHub Release (`Unitview-Setup-<version>.exe` plus `latest.yml`). That is the feed the installed app checks.
 
 ### GitHub Actions artifact
 
-The **Windows pack** workflow still uploads the `.exe` as an artifact named `UnitView-Setup-5.4.<n>` (or `UnitView-Setup-5.4.0` on pull requests).
+The **Windows pack** workflow uploads the `.exe` as an artifact named `Unitview-Setup-<version>` using `package.json`.
 
 ### Local Windows machine
 
@@ -33,8 +39,8 @@ Or double-click `build.bat`.
 Electron-builder writes:
 
 ```
-release\UnitView-Setup-5.4.0.exe
-release\win-unpacked\UnitView.exe
+release\Unitview-Setup-<version>.exe
+release\win-unpacked\Unitview.exe
 ```
 
 That `.exe` is the NSIS installer. The unpacked folder is a portable run, not the installer.

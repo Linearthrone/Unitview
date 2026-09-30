@@ -1,8 +1,8 @@
 /**
- * Epic FHIR field map (UnitView Charge Nurse Report)
+ * Epic FHIR field map (Unitview Charge Nurse Report)
  *
  * Live wiring (Phase B.1) — Location → Encounter → Patient, then:
- * | UnitView field           | FHIR resource / path                          |
+ * | Unitview field           | FHIR resource / path                          |
  * |--------------------------|-----------------------------------------------|
  * | name                     | Patient.name                                  |
  * | age                      | Patient.birthDate (derived)                   |
@@ -17,9 +17,9 @@
  * | isolation/restraints/…   | Flag / Observation                            |
  * | codeStatus               | Consent / Observation                         |
  * | pendingProcedures        | ServiceRequest                                |
- * | assignedNurse / PCT      | UnitView only — never overwrite from Epic     |
+ * | assignedNurse / PCT      | Unitview only — never overwrite from Epic     |
  *
- * Bed key: UnitView roomDesignation → GET Location?name=… → Encounter at that location.
+ * Bed key: Unitview roomDesignation → GET Location?name=… → Encounter at that location.
  */
 
 import type { CodeStatus, MobilityStatus, OrientationStatus, Patient, PatientGender } from '@/types/patient';
@@ -119,7 +119,7 @@ export async function syncBedFromEpic(
   };
 }
 
-/** Merge Epic patch into a room row without touching UnitView staff assignments. */
+/** Merge Epic patch into a room row without touching Unitview staff assignments. */
 export function applyEpicPatchToPatient(patient: Patient, patch: EpicPatientPatch): Patient {
   return {
     ...patient,
@@ -151,7 +151,7 @@ export function applyEpicPatchToPatient(patient: Patient, patch: EpicPatientPatc
     lastEpicSyncAt: patch.lastEpicSyncAt ?? patient.lastEpicSyncAt,
     awaitingTransport: false,
     isBlocked: patient.isBlocked,
-    // Preserve UnitView staffing:
+    // Preserve Unitview staffing:
     // assignedNurse, priorShiftNurse, priorShiftTech unchanged
   };
 }

@@ -2,13 +2,13 @@
 type: role
 id: OPS-TAB
 role: Tablet gateway (Tasker HTTP primary — Termux optional)
-project: House Victoria (SoulCore seat — not a UnitView owner)
+project: House Victoria (SoulCore seat — not a Unitview owner)
 source: Linearthrone/SoulCore.AI
 version: 1.5
 updated: 2026-09-03
 ---
 
-> **UnitView:** Do not ticket OPS-TAB for this product.
+> **Unitview:** Do not ticket OPS-TAB for this product.
 
 # OPS-TAB · Tablet gateway (Tasker HTTP · Termux optional)
 

@@ -2,7 +2,7 @@
 type: role
 id: BED-01
 role: Backend Development Engineer
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.2
 updated: 2026-09-05
@@ -11,7 +11,7 @@ updated: 2026-09-05
 # BED-01 Backend Development Engineer
 
 [Role] Backend Development Engineer, ID BED-01
-[Project] UnitView
+[Project] Unitview
 [Position] Owns Electron main process, IPC, and non-UI services
 
 ---

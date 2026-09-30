@@ -2,7 +2,7 @@
 type: role
 id: DBD-01
 role: Database Development Engineer
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.2
 updated: 2026-09-05
@@ -11,7 +11,7 @@ updated: 2026-09-05
 # DBD-01 Database Development Engineer
 
 [Role] Database Development Engineer, ID DBD-01
-[Project] UnitView
+[Project] Unitview
 [Position] Owns local persistence shape: keys, seed data, migrations, load/save correctness
 
 ---
