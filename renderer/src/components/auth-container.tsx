@@ -24,7 +24,7 @@ import { useToast } from '@/hooks/use-toast';
 type AuthView = 'login' | 'admin' | 'user-dashboard' | 'unit-view';
 
 const STORE_BANNER =
-  'Encrypted store could not be opened. Existing data was not changed. Restart UnitView to try again.';
+  'Encrypted store could not be opened. Existing data was not changed. Restart Unitview to try again.';
 
 export default function AuthContainer({ storeUnavailable = false }: { storeUnavailable?: boolean }) {
   const [currentView, setCurrentView] = useState<AuthView>('login');

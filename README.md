@@ -1,9 +1,22 @@
-# UnitView 5.4
+# Unitview
 
 Charge-nurse unit map and assignment dashboard. Electron + React. Local-first AES-256-GCM vault. Optional Epic FHIR census.
 
-![Version](https://img.shields.io/badge/version-5.4.0-blue.svg)
+The GitHub repository name is **Unitview**. Read the shipping version from root `package.json` — every commit increments the patch.
+
 ![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)
+
+## Versioning
+
+Every commit that lands product, docs, or pack changes bumps the patch in:
+
+- root `package.json`
+- `renderer/package.json`
+- `renderer/src/lib/app-version.ts` (`APP_VERSION_FALLBACK`)
+
+That bump is a git `pre-commit` hook (`.githooks/pre-commit`). `npm install` sets `core.hooksPath` via the `prepare` script. Skip a bump only with `SKIP_VERSION_BUMP=1`.
+
+The Windows installer and GitHub Release use that same `package.json` version. Master packs no longer overwrite the patch with a GitHub Actions run number.
 
 ## Windows installer
 
@@ -14,7 +27,9 @@ npm install
 npm run dist:win
 ```
 
-Look for `release\UnitView-Setup-5.4.0.exe` locally, or a `5.4.<n>` GitHub Release after master packs. After the first 5.4 install, use **Help → Check for Updates** instead of uninstalling.
+Look for `release\Unitview-Setup-<version>.exe` (version from `package.json`). After the first 5.4-line install, use **Help → Check for Updates** instead of uninstalling.
+
+**GitHub rename (LinearThrone):** Settings → General → Repository name → `Unitview`. The updater feed and electron-builder publish target `Linearthrone/Unitview`. Until that rename is done, in-app updates 404.
 
 ## Dev
 

@@ -2,13 +2,13 @@
 type: role
 id: OPS-HOME
 role: Home PC My Machines worker (Cursor)
-project: House Victoria (SoulCore seat — not a UnitView owner)
+project: House Victoria (SoulCore seat — not a Unitview owner)
 source: Linearthrone/SoulCore.AI
 version: 1.0
 updated: 2026-08-26
 ---
 
-> **UnitView:** Do not ticket OPS-HOME for this product. Use `OPS-01.md` for Windows installer work.
+> **Unitview:** Do not ticket OPS-HOME for this product. Use `OPS-01.md` for Windows installer work.
 
 # OPS-HOME · Home PC worker
 

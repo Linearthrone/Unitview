@@ -12,7 +12,7 @@ export const PRINT_STYLE_PRESET_CATALOG: PrintStylePresetMeta[] = [
   {
     id: 'classic',
     label: 'Classic clinical',
-    description: 'Black borders, centered headers — matches the original UnitView handoff sheet.',
+    description: 'Black borders, centered headers — matches the original Unitview handoff sheet.',
     bestFor: 'Familiar charge-nurse printouts',
     suggestedOrientation: 'portrait',
   },

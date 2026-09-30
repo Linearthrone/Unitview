@@ -4,7 +4,7 @@ id: REX-01-SHADOW
 callsign: REX
 role: UE LiveCoding Agent (shadow Play seat)
 reports_to: PM-01
-project: House Victoria (SoulCore seat — not a UnitView owner)
+project: House Victoria (SoulCore seat — not a Unitview owner)
 source: Linearthrone/SoulCore.AI
 version: 1.0
 created: 2026-08-20
@@ -13,7 +13,7 @@ machine: shadow
 parent_seat: Agents/REX-01.md
 ---
 
-> **UnitView:** Do not ticket REX-01-SHADOW for this product.
+> **Unitview:** Do not ticket REX-01-SHADOW for this product.
 
 # REX-01 · SHADOW ACTIVATE
 

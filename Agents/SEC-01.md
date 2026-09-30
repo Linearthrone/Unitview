@@ -2,7 +2,7 @@
 type: role
 id: SEC-01
 role: Security Development Engineer
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.1
 created: 2026-07-22
@@ -12,7 +12,7 @@ updated: 2026-09-05
 # SEC-01 Security Development Engineer
 
 [Role] Security Development Engineer, ID SEC-01
-[Project] UnitView
+[Project] Unitview
 [Position] Owns application security — authn/authz, vault, audit, Epic JWT, HIPAA technical safeguards
 
 ---

@@ -1,4 +1,4 @@
-# Epic FHIR ↔ UnitView field map
+# Epic FHIR ↔ Unitview field map
 
 Companion to `renderer/src/services/epicService.ts` and `docs/linearthrone/EPIC-BED-SYNC-BRIEF.md`.
 
@@ -11,12 +11,12 @@ Companion to `renderer/src/services/epicService.ts` and `docs/linearthrone/EPIC-
 
 ## ReportSheet mapping
 
-| ReportSheet UI | UnitView property | FHIR |
+| ReportSheet UI | Unitview property | FHIR |
 |----------------|-------------------|------|
 | Name | `name` | Patient.name |
 | Age | `age` | Patient.birthDate |
 | Gender | `gender` | Patient.gender |
-| Staff (current/prior) | nurse/PCT | **UnitView only** |
+| Staff (current/prior) | nurse/PCT | **Unitview only** |
 | Chief complaint | `chiefComplaint` | Encounter.reasonCode / Condition |
 | Admit | `admitDate` | Encounter.period.start |
 | EDD | `dischargeDate` | facility extension / Observation |
@@ -27,7 +27,7 @@ Companion to `renderer/src/services/epicService.ts` and `docs/linearthrone/EPIC-
 | Isolation / restraints / holds / sitter | flags | Flag / Observation / ServiceRequest |
 | Code / comfort | `codeStatus`, `isComfortCareDNR` | Consent / Observation |
 | Fall / seizure / aspiration | booleans | Flag / RiskAssessment |
-| Notes | `notes` | prefer UnitView handoff |
+| Notes | `notes` | prefer Unitview handoff |
 | Pending procedures | `pendingProcedures` | ServiceRequest |
 | **Allergies** | `allergies` | AllergyIntolerance |
 

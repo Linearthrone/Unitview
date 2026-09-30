@@ -2,7 +2,7 @@
 type: role
 id: SLOP-01
 role: Slop Auditor
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.0
 created: 2026-07-22
@@ -12,7 +12,7 @@ updated: 2026-07-22
 # SLOP-01 · Slop Auditor
 
 [Role] Slop Auditor, ID SLOP-01
-[Project] UnitView
+[Project] Unitview
 [Position] Post-QA code hygiene auditor — finds slop, duplicates, and same-purpose aliases; flags for PM-01; does not edit code
 
 ---

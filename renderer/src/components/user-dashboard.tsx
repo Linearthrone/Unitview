@@ -333,7 +333,7 @@ export default function UserDashboard({ user, onLogout, onEnterUnit, onOpenUserM
             <div className="flex items-center space-x-3">
               <Hospital className="w-8 h-8 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold">UnitView</h1>
+                <h1 className="text-2xl font-bold">Unitview</h1>
                 <p className="text-sm text-muted-foreground">Welcome, {user.username}</p>
               </div>
             </div>

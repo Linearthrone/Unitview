@@ -1,6 +1,6 @@
 # Epic FHIR and HIPAA technical safeguards
 
-UnitView can now pull an inpatient census from Epic FHIR and applies workstation-level HIPAA Security Rule technical safeguards. This is **not** a legal certification. A covered entity still needs policies, workforce training, a risk analysis, and a Business Associate Agreement before using the app with real PHI.
+Unitview can now pull an inpatient census from Epic FHIR and applies workstation-level HIPAA Security Rule technical safeguards. This is **not** a legal certification. A covered entity still needs policies, workforce training, a risk analysis, and a Business Associate Agreement before using the app with real PHI.
 
 ## Get data from Epic
 
@@ -41,7 +41,7 @@ Live calls use HTTPS only. The private key never leaves the Electron main proces
 
 ## Technical safeguards implemented
 
-| Control | What UnitView does |
+| Control | What Unitview does |
 | --- | --- |
 | Unique user identification | Employee-number login, roles, wall-display PHI hiding |
 | Emergency access / least privilege | Role capabilities already hide identifiers from WALLDISPLAY |

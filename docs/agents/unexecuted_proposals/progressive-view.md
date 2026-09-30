@@ -33,7 +33,7 @@ After PROP-3’s same-map clinical command surface, offer a **Progressive view**
 ## 3. Context & Constraints
 
 - Depends on / follows **PROP-3-clinical-command-surface** (Option A tokens, wall PHI, no idle-lock).
-- Product: UnitView Electron, local-first PHI. No cloud CAD. No third-party drawing uploads.
+- Product: Unitview Electron, local-first PHI. No cloud CAD. No third-party drawing uploads.
 - Today Create Unit places Room + staff cards on one rectangular grid; that remains A’s assignment instrument.
 - LinearThrone locks (2026-09-21 / 2026-09-27): name **Progressive view**; admin corridor templates/paint; nurses glance-only on the map; hallway-enough; shared clinical truth with two presentations. Columns are assignable.
 

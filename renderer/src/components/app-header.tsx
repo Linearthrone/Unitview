@@ -54,7 +54,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   unitName,
   facilityName,
   facilityLogoUrl,
-  toolName = 'UnitView',
+  toolName = 'Unitview',
   censusStats,
   dnrCount,
   restraintCount,

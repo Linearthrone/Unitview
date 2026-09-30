@@ -53,7 +53,7 @@ test('QA smoke: startup/login/dashboard/menu and drag signal', async ({ page }) 
   await expect(page.getByRole('button', { name: 'Enter unit' })).toBeEnabled();
   await page.getByRole('button', { name: 'Enter unit' }).click();
 
-  await expect(page.getByText('UnitView').first()).toBeVisible();
+  await expect(page.getByText('Unitview').first()).toBeVisible();
 
   await page.getByRole('button', { name: 'Print' }).click();
   await expect(page.getByRole('menuitem', { name: 'Charge report' })).toBeVisible();

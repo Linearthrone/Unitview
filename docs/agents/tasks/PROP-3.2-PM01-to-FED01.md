@@ -23,7 +23,7 @@ On the **existing** room map (do not change `gridRow` / `gridColumn` semantics o
 
 - Assigned occupied rooms: **full contrast** + a settled mark. Stop opacity-as-done.
 - Safety: **shape + short text** for isolation subtype (contact / airborne / droplet distinct), fall risk, DNR, restraints, name alerts. No hover-only, no color-only.
-- Group census in the header; facility branding leads; UnitView is the tool name.
+- Group census in the header; facility branding leads; Unitview is the tool name.
 - Preserve `[data-patient-id]` drag, Print → Charge report, oncoming-shift control, login labels.
 
 ## Do not

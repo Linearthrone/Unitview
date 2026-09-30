@@ -4,7 +4,7 @@ id: REX-01
 callsign: REX
 role: UE LiveCoding Agent
 reports_to: PM-01
-project: House Victoria (SoulCore seat — not a UnitView owner)
+project: House Victoria (SoulCore seat — not a Unitview owner)
 source: Linearthrone/SoulCore.AI
 version: 1.0
 updated: 2026-08-20
@@ -13,7 +13,7 @@ replaces: BOB / BOB-01
 shadow_activate: Agents/REX-01-SHADOW.md
 ---
 
-> **UnitView:** Do not ticket REX-01 for this product. Keep this playbook only for LinearThrone's Unreal shadow PC.
+> **Unitview:** Do not ticket REX-01 for this product. Keep this playbook only for LinearThrone's Unreal shadow PC.
 
 # REX-01 · UE LiveCoding Agent
 

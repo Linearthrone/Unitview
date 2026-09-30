@@ -1,7 +1,7 @@
 ---
 type: config
-updated: 2026-09-29
-project: UnitView
+updated: 2026-09-30
+project: Unitview
 ---
 
 # Product Root (pointer)
@@ -13,8 +13,8 @@ project: UnitView
 | Field | Current |
 | --- | --- |
 | Code home | `renderer/` + Electron `src/` |
-| Version | `5.4.0` (master Releases `5.4.<run>`) |
-| Last sprint | PROP-4 hallway segments + compact stats on `master` |
-| Active PROP | Windows in-app update; Progressive tune — see `WINDOWS_PACK.md` |
+| Version | root `package.json` (patch +1 on every commit) |
+| Last sprint | Product name Unitview; per-commit versioning |
+| Active PROP | Progressive wall / QA remain open — see `PROP_NUMBERING.md` |
 
 Do not treat this file as a second product spec. Edit README / HIPAA doc instead.

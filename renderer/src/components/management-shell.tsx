@@ -56,7 +56,7 @@ export function ManagementShell({
         <div className="px-4 py-5 flex items-center gap-3 border-b border-white/10">
           <Shield className="h-8 w-8 text-sky-400" />
           <div>
-            <div className="font-semibold leading-tight">UnitView</div>
+            <div className="font-semibold leading-tight">Unitview</div>
             <div className="text-xs text-slate-400">Unit Management</div>
           </div>
         </div>

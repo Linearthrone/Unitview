@@ -2,7 +2,7 @@
 type: role
 id: DEV-01
 role: Legacy combined development (retired for new work)
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI (DEV-01 removed there)
 version: 1.0
 updated: 2026-09-05
@@ -10,7 +10,7 @@ updated: 2026-09-05
 
 # DEV-01 · Legacy combined developer
 
-UnitView historically ticketed **DEV-01** for all code. SoulCore.AI split that seat into **FED-01 / BED-01 / DBD-01 / SEC-01**.
+Unitview historically ticketed **DEV-01** for all code. SoulCore.AI split that seat into **FED-01 / BED-01 / DBD-01 / SEC-01**.
 
 **New tickets:** do **not** use `to-DEV01`. PM-01 (TINA) must pick the narrowest owner.
 

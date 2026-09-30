@@ -2,7 +2,7 @@
 type: role
 id: FED-01
 role: Frontend Development Engineer
-project: UnitView
+project: Unitview
 source: Linearthrone/SoulCore.AI
 version: 1.2
 updated: 2026-09-05
@@ -11,7 +11,7 @@ updated: 2026-09-05
 # FED-01 Frontend Development Engineer
 
 [Role] Frontend Development Engineer, ID FED-01
-[Project] UnitView
+[Project] Unitview
 [Position] Owns the React renderer: unit map, dashboards, dialogs, prints UI
 
 ---

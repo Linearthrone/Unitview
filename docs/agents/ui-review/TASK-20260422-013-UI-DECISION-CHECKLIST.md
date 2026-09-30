@@ -200,7 +200,7 @@ For each row, mark **all that apply**:
 
 | # | Item | Keep? | Exclude? | Move? | If moving → | Notes |
 |:-:|------|:-----:|:--------:|:-----:|:------------|:------|
-| 3.1.1 | UnitView title + stethoscope icon | X☐ | ☐ | ☐ | | |
+| 3.1.1 | Unitview title + stethoscope icon | X☐ | ☐ | ☐ | | |
 | 3.1.2 | Unit name subtitle | X☐ | ☐ | ☐ | | |
 0| 3.1.3 | Patients / Rooms count line | X☐ | ☐ | ☐ | | |
 | 3.1.4 | Oncoming shift label in unit name | ☐ | ☐ | X☐ | | *Not in current header; draft shift is separate overlay* lets move this closer to 3.3 section |
@@ -477,7 +477,7 @@ For each row, mark **all that apply**:
 
 | # | Item | Keep? | Exclude? | Move? | If moving → | Notes |
 |:-:|------|:-----:|:--------:|:-----:|:------------|:------|
-| 8.1.1 | UnitView copyright footer | X☐ | ☐ | ☐ | | |
+| 8.1.1 | Unitview copyright footer | X☐ | ☐ | ☐ | | |
 | 8.1.2 | Toast notifications |X ☐ | ☐ | ☐ | | |
 | 8.1.3 | Print-hide class on header/footer/main workspace |X ☐ | ☐ | ☐ | | |
 

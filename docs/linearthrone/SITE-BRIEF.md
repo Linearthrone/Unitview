@@ -5,7 +5,7 @@
 | **Domain** | linearthrone.com |
 | **Version** | 5.2.0-c companion marketing site |
 | **Owner** | PM-01 |
-| **Primary product focus** | UnitView |
+| **Primary product focus** | Unitview |
 | **Contact** | LinearThrone contact (linearthrone.com) |
 
 ## Brand
@@ -14,13 +14,13 @@
 
 | Division / product | Role on site |
 |--------------------|--------------|
-| **UnitView** | Flagship focus — full capability page |
+| **Unitview** | Flagship focus — full capability page |
 | **LLMOD** | Sibling division — vision teaser only |
 | **House Victoria AI Systems** | Sibling division — vision teaser only |
 
 ## Tone
 
-Future-tech, precise, hospital-grounded. Visionary without vaporware. UnitView pages must be concrete about *why units need it*; other projects stay intentionally brief and compelling.
+Future-tech, precise, hospital-grounded. Visionary without vaporware. Unitview pages must be concrete about *why units need it*; other projects stay intentionally brief and compelling.
 
 ## Site map
 
@@ -40,7 +40,7 @@ Future-tech, precise, hospital-grounded. Visionary without vaporware. UnitView p
 - Landing hero: brand-first, one headline, one supporting line, primary CTAs; no card clutter in hero.
 - Avoid purple-on-white AI clichés and cream/terracotta broadsheet looks.
 
-## UnitView content pillars
+## Unitview content pillars
 
 1. **Purpose** — real-time unit command visibility for nursing leadership and floor staff.
 2. **Why hospitals need it** — census clarity, assignment fairness, handoff safety, reduced whiteboard chaos.
@@ -49,7 +49,7 @@ Future-tech, precise, hospital-grounded. Visionary without vaporware. UnitView p
 
 ## Media assets (DEV / content)
 
-> **Repo note:** The marketing site was split out of UnitView into  
+> **Repo note:** The marketing site was split out of Unitview into  
 > `%USERPROFILE%\OneDrive\Documents\Coding Projects\linearthrone.com_codebase`  
 > (see `website/README.md` in this repo). Place media under that project's `public/media/unitview/`.
 
@@ -61,6 +61,6 @@ Until real assets land, the site uses branded UI mock frames as stand-ins.
 ## Acceptance
 
 - All routes load; contact mailto works.
-- UnitView page includes purpose, hospital need, unit benefits, feature grid, and media slots.
+- Unitview page includes purpose, hospital need, unit benefits, feature grid, and media slots.
 - LLMOD / House Victoria remain vague but professional.
 - Deployable as static site to linearthrone.com.
